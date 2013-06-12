@@ -1,0 +1,14 @@
+/**
+     * @var integer
+     *
+     * @ORM\Column(name="user_id", type="integer")
+     */
+     
+     
+/**
+     *@ORM\ManyToOne(targetEntity="\Site\SavalizeBundle\Entity\Customer", inversedBy="notifications")
+     *@ORM\JoinColumn(name="customer_id", referencedColumnName="id", onDelete = "CASCADE")
+     */
+    private $customer;
+    
+

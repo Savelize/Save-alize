@@ -1,0 +1,59 @@
+{% extends '::base.html.twig' %}
+{% block title %}User Settings{% endblock %}
+{% block body %}
+<div class="container-fluid" >
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#">Save and Socialize</a>
+
+        <div class="nav-collapse">
+            <ul class="nav" style="font-weight:normal">
+                <li><a href="#">New Purchases</a> </li>
+                <li><a href="#">My Alerts</a></li>
+                <li><a href="#">History</a></li>
+                <li><a href="#">Product Reviews</a></li>
+                <li><a href="#">Reports</a></li>
+                <li class="active"><a href="#">Settings</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="row-fluid content"> 
+        <div class="span3" >
+            <ul class="nav nav-list" >
+                <li><a href="#"><h5>Personal Settings</h5></a></li>
+                <li class="divider"></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><h5>Account Settings</h5><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><h6>Add/Remove Category</h6></a></li>
+                        <li><a href="#"><h6>Linked Accounts</h6></a></li>
+                    </ul>
+                </li>
+                <li class="divider"></li>
+                <li><a href="#"><h5> Manage Favourites</h5></a></li>
+                <li class="divider"></li>
+                <li><a href="#"><h5> My Circles</h5></a></li>
+            </ul>
+        </div>
+        <div class="span8" style="padding-left: 5px">
+            <form action="#" method="post" >
+                <h3>Category list:</h3><br>
+                {% for key, value in categories %}
+                    <label class="checkbox inline">
+                        <input type="checkbox" value="{{key}}" {% if true %}checked{% endif %}> {{value}}
+                    </label>
+                {% endfor %}
+                    <br><br>
+                <input type="submit" value="Submit" class="btn btn-info"/>
+            </form>
+        </div>
+    </div>
+        </div>
+{% endblock %}

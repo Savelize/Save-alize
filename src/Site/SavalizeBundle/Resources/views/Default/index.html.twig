@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Up and Running with Bootstrap</title>
+<link href="{{asset('css/bootstrap.css')}}" rel="stylesheet" type="text/css">
+<link href="{{asset('css/bootstrap-responsive.css')}}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="{{asset('font-awesome/css/font-awesome.min.css')}}">
+<link rel="stylesheet" href="{{asset('css/main.css')}}">
+<!-- HTML5 shim for IE backwards compatibility -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="container-fluid" >
+	<div class="navbar" >
+  <div class="navbar-inner">
+    <a class="brand" href="#">Save and Socialize</a>
+    <ul class="nav pull-right">
+   <form class="navbar-form ">
+  <input type="text" class="span2" placeholder="User name">
+  <input type="password" class="span2" placeholder="Password">
+  <button type="submit" class="btn">Log In</button>
+	</form>
+    </ul>
+  </div>
+</div>
+<br>
+	<div class="row-fluid">
+    	<header class="span9">
+            <p><strong>Save and Socialize</strong> Join over 500 hundred of the most creative and brilliant minds of art colleges all around the world for five days of lectures by world-renowned art scholars and artists.</p>
+    	<ul class="thumbnails">
+        	<li class="span4">
+            	<article class="thumbnail">
+                	<img src="{{asset('img/ferrar.jpg')}}" alt="Jonathan Ferrar."/>
+                    <h3>Jonathan Ferrar</h3>
+                    <p>Labeled as "The Artist to Watch in 2012" by the London Review, Jonathan Ferrar has already sold one of the highest priced-commissions on record paid to an art student.</p>
+                </article>
+            </li>        
+            
+            <li class="span4">
+            	<article class="thumbnail">
+                	<img src="{{asset('img/jerome.jpg')}}" alt="Jennifer Jerome." />
+                    <h3>Jennifer Jerome</h3>
+                    <p>A native of New Orleans, much of Jennifer Jerome's work has centered around abstract images that depict flooding and rebuilding, having grown up as a teenager in the post-flood years.</p>
+                </article>
+            </li> 
+            
+            <li class="span4">
+            	<article class="thumbnail">
+                	<img src="{{asset('img/larue.jpg')}}" alt="LaVonne LaRue." />
+                    <h3>LaVonne LaRue</h3>
+                    <p>LaVonne LaRue's giant-sized paintings all around Chicago tell the story of love, nature, and conservation - themes that are central to her heart.</p>
+                </article>
+            </li> 
+            
+        </ul>
+        </header>     
+    <div class="span3 form-signup">
+       		<h2>Sign Up</h2>
+                    <form class="form-inline">
+                        <div class="control-group	">
+                            <label class="control-label" for="inputUserName">User Name</label>
+                            <div class="controls">
+                                <input type="text" id="inputUserName" placeholder="User Name">                 
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputEmail">Email</label>
+                            <div class="controls">
+                                <input type="text" id="inputEmail" placeholder="Email">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputPassword">Password</label>
+                            <div class="controls">
+                                <input type="password" id="inputPassword" placeholder="Password">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputRePassword">Repeat Password</label>
+                            <div class="controls">
+                                <input type="password" id="inputRePassword" placeholder="Repeat Password">
+                            </div>
+                        </div>
+                      <div>
+                            <input type="submit" value="Register" class="btn btn-success btn-large" >
+                        </div>
+                    </form>
+       </div> 
+       </div>   
+</div>
+<script src="{{asset('js/jquery.js')}}"></script>
+<script src="{{asset('js/bootstrap.min.js')}}"></script>
+</body>
+</html>

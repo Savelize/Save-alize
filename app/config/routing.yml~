@@ -1,0 +1,4 @@
+site_savalize:
+    resource: "@SiteSavalizeBundle/Resources/config/routing.yml"
+    prefix:   /
+

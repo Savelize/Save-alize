@@ -1,0 +1,53 @@
+site_savalize_homepage:
+    pattern:  /
+    defaults: { _controller: SiteSavalizeBundle:Default:index }
+
+#site_ajax_get_date:
+#    pattern: /usrhistory/{date}
+#    defaults: { controller: SiteSavalizeBundle:Customer:historyDateSelection }
+#    requirements:
+#      date: \d+
+
+site_user_page4:
+    pattern: /usrhistory
+    defaults: { _controller: SiteSavalizeBundle:Customer:historyDateSelection }
+    
+site_company_page10:
+    pattern: /page10
+    defaults: { _controller: SiteSavalizeBundle:Company:page10 }
+
+
+site_savalize_viewNotifications:
+    pattern: /show/{id}/{page}
+    defaults: { _controller: SiteSavalizeBundle:Customer:shownotification }
+    requirements:
+        page: \d+
+        
+site_savalize_displayDummyChart:
+    pattern: /displayChart
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayEnteryChartPage }
+    
+site_savalize_ajaxtoshowchart:
+  pattern:  /usr/renderreport
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
+
+SiteSavalizeBundle_reviews:
+    pattern:  /reviews/show
+    defaults: { _controller: SiteSavalizeBundle:Default:showReviews }
+    
+contact_us:
+  pattern:  /user/contact
+  defaults: { _controller: SiteSavalizeBundle:Customer:contact }
+  
+contact_us_company:
+  pattern:  /company/contact
+  defaults: { _controller: SiteSavalizeBundle:Company:contact }
+
+site_personal_user_settings:
+    pattern: /personalusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:personalusersettings }
+    
+site_category_user_settings:
+    pattern: /categoryusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:categoryusersettings }
+

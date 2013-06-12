@@ -1,0 +1,126 @@
+<?php
+
+namespace Site\SavalizeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Broduct
+ *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="Site\SavalizeBundle\Entity\BroductRepository")
+ */
+class Broduct
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=30)
+     */
+    private $name;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="confirmed", type="integer")
+     */
+    private $confirmed;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isDeleted", type="boolean")
+     */
+    private $isDeleted;
+
+    
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Broduct
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set confirmed
+     *
+     * @param integer $confirmed
+     * @return Broduct
+     */
+    public function setConfirmed($confirmed)
+    {
+        $this->confirmed = $confirmed;
+    
+        return $this;
+    }
+
+    /**
+     * Get confirmed
+     *
+     * @return integer 
+     */
+    public function getConfirmed()
+    {
+        return $this->confirmed;
+    }
+
+    /**
+     * Set isDeleted
+     *
+     * @param boolean $isDeleted
+     * @return Broduct
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+    
+        return $this;
+    }
+
+    /**
+     * Get isDeleted
+     *
+     * @return boolean 
+     */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
+    }
+}
