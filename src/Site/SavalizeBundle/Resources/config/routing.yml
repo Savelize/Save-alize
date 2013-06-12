@@ -62,3 +62,14 @@ site_personal_admin_settings:
 site_personal_company_settings:
     pattern: /personalcompanysettings
     defaults: { _controller: SiteSavalizeBundle:Company:personalcompanysettings }
+
+user_signIn:
+    pattern:  /signIn
+    defaults: { _controller: "SiteSavalizeBundle:Default:signIn" }
+    requirements: { _method: post }
+    
+user_signUp:
+    pattern:  /signUp
+    defaults: { _controller: "SiteSavalizeBundle:Default:signUp" }
+    requirements: { _method: post }
+

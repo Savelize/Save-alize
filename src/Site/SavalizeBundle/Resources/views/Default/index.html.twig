@@ -8,6 +8,7 @@
 <link href="{{asset('css/bootstrap-responsive.css')}}" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="{{asset('font-awesome/css/font-awesome.min.css')}}">
 <link rel="stylesheet" href="{{asset('css/main.css')}}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- HTML5 shim for IE backwards compatibility -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -20,11 +21,13 @@
   <div class="navbar-inner">
     <a class="brand" href="#">Save and Socialize</a>
     <ul class="nav pull-right">
-   <form class="navbar-form ">
-  <input type="text" class="span2" placeholder="User name">
-  <input type="password" class="span2" placeholder="Password">
-  <button type="submit" class="btn">Log In</button>
-	</form>
+   <form action="{{ path('site_savalize_homepage') }}" method="post" {{ form_enctype(SignInform) }} class="navbar-form form-inline">
+        {{ form_widget(SignInform.User_Name) }}
+        {{ form_widget(SignInform.Password) }}
+           {{ form_rest(SignInform) }}
+                            <input type="submit" value="Log in" class="btn">
+                      
+                    </form>
     </ul>
   </div>
 </div>
@@ -61,34 +64,17 @@
         </header>     
     <div class="span3 form-signup">
        		<h2>Sign Up</h2>
-                    <form class="form-inline">
-                        <div class="control-group	">
-                            <label class="control-label" for="inputUserName">User Name</label>
-                            <div class="controls">
-                                <input type="text" id="inputUserName" placeholder="User Name">                 
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="inputEmail">Email</label>
-                            <div class="controls">
-                                <input type="text" id="inputEmail" placeholder="Email">
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="inputPassword">Password</label>
-                            <div class="controls">
-                                <input type="password" id="inputPassword" placeholder="Password">
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="inputRePassword">Repeat Password</label>
-                            <div class="controls">
-                                <input type="password" id="inputRePassword" placeholder="Repeat Password">
-                            </div>
-                        </div>
-                      <div>
-                            <input type="submit" value="Register" class="btn btn-success btn-large" >
-                        </div>
+                <form action="{{ path('user_signUp') }}" method="post" {{ form_enctype(signUpform) }} class="form-inline">
+    
+    <div class="control-group">
+    {{ form_label(signUpform.User_Name) }}
+    {{ form_widget(signUpform.User_Name) }}
+    {{ form_errors(signUpform.User_Name) }}
+
+    {{ form_rest(signUpform) }}
+            </div>
+                            <input type="submit" value="Sign Up" class="btn btn-success btn-large">
+                      
                     </form>
        </div> 
        </div>   
