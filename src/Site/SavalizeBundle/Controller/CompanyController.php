@@ -8,6 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Site\SavalizeBundle\Entity\Company;
 use Site\SavalizeBundle\Form\CompanyType;
 
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Collection;
+
 /**
  * Company controller.
  *
@@ -186,5 +190,51 @@ class CompanyController extends Controller
     
     public function page10Action(){
         return $this->render('SiteSavalizeBundle:Company:page10.html.twig');
+    }
+    
+    /* company personal settings */
+    public function personalcompanysettingsAction(){
+        $request = $this->getRequest();
+        $collectionConstraint = new Collection(array(
+            'Name' => new NotBlank(),
+            'Username' => new NotBlank(),
+            'Password' => new NotBlank(),
+            'Confirm_password' => new NotBlank(),
+            'Email' => array(new Email(), new NotBlank()),
+            'Telephone' => array(),
+            'Country' => array(),
+            'City' => array(),
+            'Region' => array(),
+            'upload_your_photo' => array()
+            
+        ));
+        $data = array();
+        $formBuilder = $this->createFormBuilder($data, array(
+                    'validation_constraint' => $collectionConstraint,
+                ))
+                ->add('Name')
+                ->add('Username')
+                ->add('Password', 'password')
+                ->add('Confirm_password', 'password')
+                ->add('Email', 'email', array('attr' => array('class' => 'email')))
+                ->add('Telephone','text',array('required' => false))
+                ->add('Country','text',array('required' => false))
+                ->add('City','text',array('required' => false))
+                ->add('Region','text',array('required' => false))
+                ->add('upload_your_photo','file', array('required' => false))
+                
+        ;
+        $form = $formBuilder->getForm();
+        //check if this is the user posted his data
+        if ($request->getMethod() == 'POST') {
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    //$fdata = $form->getData();
+                    return $this->redirect($this->generateUrl('site_savalize_homepage'));
+                }
+            }
+        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView()));
     }
 }

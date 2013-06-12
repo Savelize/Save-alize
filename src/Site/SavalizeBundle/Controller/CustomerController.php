@@ -373,5 +373,10 @@ class CustomerController extends Controller {
         );
         return $this->render('SiteSavalizeBundle:Customer:categoryusersettings.html.twig', array('categories' => $catarr));
     }
+    
+    /* user linked-account settings */
+    public function linkedusersettingsAction(){
+        return $this->render('SiteSavalizeBundle:Customer:linkedusersettings.html.twig');
+    }
 
 }

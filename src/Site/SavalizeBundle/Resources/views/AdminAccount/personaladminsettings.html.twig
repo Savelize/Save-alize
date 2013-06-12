@@ -1,0 +1,46 @@
+{% extends '::base.html.twig' %}
+{% block title %}Admin Settings{% endblock %}
+{% block body %}
+<div class="container-fluid" >
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#">Save and Socialize</a>
+
+        <div class="nav-collapse">
+            <ul class="nav" style="font-weight:normal">
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">New Product Approval</a></li>
+                <li class="active"><a href="#">Settings</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="row-fluid content"> 
+        <div class="span3" >
+            <ul class="nav nav-list" >
+                <li><a href="#"><h5>Personal Settings</h5></a></li>
+                <li class="divider"></li>
+            </ul>
+        </div>
+        <div class="span8" style="padding-left: 5px">
+            <form action="#" method="post" {{ form_enctype(form) }}>
+                {{ form_errors(form) }}
+
+                {{ form_label(form.First_Name) }}
+                {{ form_widget(form.First_Name) }}
+                {{ form_errors(form.First_Name) }}
+
+                {{ form_rest(form) }}
+                    <br>
+                <input type="submit" value="Edit" class="btn btn-info"/>
+            </form>
+        </div>
+    </div>
+        </div>
+{% endblock %}

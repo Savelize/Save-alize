@@ -51,3 +51,14 @@ site_category_user_settings:
     pattern: /categoryusersettings
     defaults: { _controller: SiteSavalizeBundle:Customer:categoryusersettings }
 
+site_linked_user_settings:
+    pattern: /linkedusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:linkedusersettings }
+    
+site_personal_admin_settings:
+    pattern: /personaladminsettings
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:personaladminsettings }
+    
+site_personal_company_settings:
+    pattern: /personalcompanysettings
+    defaults: { _controller: SiteSavalizeBundle:Company:personalcompanysettings }
