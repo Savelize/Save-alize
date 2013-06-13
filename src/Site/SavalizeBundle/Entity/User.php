@@ -34,7 +34,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="lname", type="string", length=30)
+     * @ORM\Column(name="lname", type="string", length=30,nullable=true)
      */
     private $lname;
 
@@ -49,7 +49,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=20)
+     * @ORM\Column(name="password", type="string", length=255)
      */
     private $password;
 

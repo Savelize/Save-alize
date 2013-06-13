@@ -2,42 +2,36 @@ site_savalize_homepage:
     pattern:  /
     defaults: { _controller: SiteSavalizeBundle:Default:index }
 
-#site_ajax_get_date:
-#    pattern: /usrhistory/{date}
-#    defaults: { controller: SiteSavalizeBundle:UserAccount:historyDateSelection }
-#    requirements:
-#      date: \d+
-
 site_user_page4:
-    pattern: /usrhistory
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:historyDateSelection }
+    pattern: /userhistory
+    defaults: { _controller: SiteSavalizeBundle:Customer:historyDateSelection }
     
 site_company_page10:
     pattern: /page10
     defaults: { _controller: SiteSavalizeBundle:Company:page10 }
 
-<<<<<<< HEAD
+
 site_savalize_viewNotifications:
     pattern: /show/{id}/{page}
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:shownotification }
+    defaults: { _controller: SiteSavalizeBundle:Customer:shownotification }
     requirements:
         page: \d+
         
 site_savalize_displayDummyChart:
     pattern: /displayChart
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:displayEnteryChartPage }
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayEnteryChartPage }
     
 site_savalize_ajaxtoshowchart:
   pattern:  /usr/renderreport
-  defaults: { _controller: SiteSavalizeBundle:UserAccount:displayDummyChart }
-=======
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
+
 SiteSavalizeBundle_reviews:
     pattern:  /reviews/show
     defaults: { _controller: SiteSavalizeBundle:Default:showReviews }
     
 contact_us:
   pattern:  /user/contact
-  defaults: { _controller: SiteSavalizeBundle:UserAccount:contact }
+  defaults: { _controller: SiteSavalizeBundle:Customer:contact }
   
 contact_us_company:
   pattern:  /company/contact
@@ -45,9 +39,14 @@ contact_us_company:
 
 site_personal_user_settings:
     pattern: /personalusersettings
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:personalusersettings }
+    defaults: { _controller: SiteSavalizeBundle:Customer:personalusersettings }
     
 site_category_user_settings:
     pattern: /categoryusersettings
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:categoryusersettings }
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
+    defaults: { _controller: SiteSavalizeBundle:Customer:categoryusersettings }
+    
+site_ajax_get_calendar:
+    pattern: /calendar
+    defaults: { _controller: SiteSavalizeBundle:Customer:usrhistory }
+
+

@@ -2,12 +2,6 @@ site_savalize_homepage:
     pattern:  /
     defaults: { _controller: SiteSavalizeBundle:Default:index }
 
-#site_ajax_get_date:
-#    pattern: /usrhistory/{date}
-#    defaults: { controller: SiteSavalizeBundle:Customer:historyDateSelection }
-#    requirements:
-#      date: \d+
-
 site_user_page4:
     pattern: /usrhistory
     defaults: { _controller: SiteSavalizeBundle:Customer:historyDateSelection }
@@ -46,10 +40,51 @@ contact_us_company:
 site_personal_user_settings:
     pattern: /personalusersettings
     defaults: { _controller: SiteSavalizeBundle:Customer:personalusersettings }
+
+site_linked_user_settings:
+    pattern: /linkedusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:linkedusersettings }
     
+site_password_user_settings:
+    pattern: /passwordusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:passwordusersettings }
+    
+site_personal_admin_settings:
+    pattern: /personaladminsettings
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:personaladminsettings }
+    
+site_password_admin_settings:
+    pattern: /passwordadminsettings
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:passwordadminsettings }
+    
+site_personal_company_settings:
+    pattern: /personalcompanysettings
+    defaults: { _controller: SiteSavalizeBundle:Company:personalcompanysettings }
+
+site_password_company_settings:
+    pattern: /passwordcompanysettings
+    defaults: { _controller: SiteSavalizeBundle:Company:passwordcompanysettings }
+
+user_signIn:
+    pattern:  /signIn
+    defaults: { _controller: "SiteSavalizeBundle:Default:signIn" }
+    requirements: { _method: post }
+    
+
 site_category_user_settings:
     pattern: /categoryusersettings
     defaults: { _controller: SiteSavalizeBundle:Customer:categoryusersettings }
+    
+site_ajax_get_calendar:
+    pattern: /calendar
+    defaults: { _controller: SiteSavalizeBundle:Customer:usrhistory }
+
+
+user_signUp:
+    pattern:  /signUp
+    defaults: { _controller: "SiteSavalizeBundle:Default:signUp" }
+    requirements: { _method: post }
+
 
 site_savalize_insert_seen_notification:
     pattern: /seen

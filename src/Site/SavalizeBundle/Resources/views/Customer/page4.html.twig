@@ -36,6 +36,7 @@
 
         <h2>History</h2>
         <div style="float: left">
+            <button id="switchView">Switch View</button>
             <ul>
                      {#% for usr in monthlydata %}
                     <li>
@@ -54,26 +55,28 @@
                         </ul> 
 
                         <div id = 'calendar' style="margin-left: 50%; margin-top: 10%;">
-
+                            <div id="detailedData" style="float: left;"></div>
 
                         </div>
                     </div>
                 </div>
             </div>
 <ul>
-{% for m in monthlydata %}
+{#% for m in monthlydata %}
         <li>
             {{ m.productPrice }}
             {{ m.productName }}
 {#% set monthlydataArr = {'name': (name), 'price': (price)} %#}
-        </li>
-{% endfor %}
+      <!--  </li>-->
+{#% endfor %#}
 </ul>
-            <input type="hidden" id="hiddenMonth" value="{{ month }}">
-            <input type="hidden" id="monthlyData" value="{{ monthlydataJSON }}">
+            <input type="hidden" id="hiddenMonth" value="{#{ month }#}">
+            <input type="hidden" id="monthlyData" value="{{ monthlydata }}">
 {% endblock %}
 
 {% block javascripts %}
+            <script> var calendarpath = "{{ path('site_user_page4') }}" </script>
             <script src="{{asset('js/fullcalendar.js')}}"></script>
-            <script src="{{asset('js/mira_js.js')}}"></script>
+            <script src="{{asset('js/mira_js_1.js')}}"></script>
+            
 {% endblock %}

@@ -185,37 +185,36 @@ class CustomerController extends Controller {
 
     /* user history page 4 */
 
-    public function usrhistoryAction() {
-        $id = 1;
-        $em = $this->getDoctrine()->getEntityManager();
-        $usrhistory = $em->getRepository('SiteSavalizeBundle:History')->find($id);
-        return $this->render('SiteSavalizeBundle:Customer:page4.html.twig', array('monthlydata' => $usrhistory));
-    }
-
     public function historyDateSelectionAction() {
         $request = $this->container->get('request');
-        //$dateDoctrine = $request->query->get('date');
-        $dateDoctrine = "2013-06-06";
-        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
-        $result = $repository->getMonthlyPurchases($dateDoctrine);
-        $month = $repository->getMonth($dateDoctrine);
-        // $month = 06;
-        $monthlyData = $result;
+        $start = $request->get('start');
+        $end = $request->get('end');
 
+        $start = gmdate("Y-m-d H:i:s", $start);
+        $end = gmdate("Y-m-d H:i:s", $end);
+
+        $repository = $this->getDoctrine()->getEntityManager();
+
+
+        $result = $repository->getRepository('SiteSavalizeBundle:History')->getMonthlyPurchases($start, $end);
+        $resultArr = [];
         for ($i = 0; $i < count($result); $i++) {
             $myrepository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
             $x = $result[$i]->getProductBrand()->getId();
             $productResult[$i] = $myrepository->find($x);
             $boughtAt[$i] = $result[$i]->getBaughtAt()->format('Y-m-d');
-           
-            $resultArr[$i] = ['productName' => $productResult[$i]->getName(),
-             'productPrice' => $result[$i]->getPrice(),
-             'boughtAt' => $boughtAt[$i]];
+
+            $resultArr[$i] = ['title' => $productResult[$i]->getName(), 'data' => ['product' => $productResult[$i]->getName(),
+                    'price' => (string) $result[$i]->getPrice()],
+                'start' => $boughtAt[$i]];
         }
-        // print_r($resultArr);
-        // return new Response(json_encode($response));
-        return $this->render('SiteSavalizeBundle:Customer:page4.html.twig', array('monthlydata' => $resultArr, 'monthlydataJSON' => json_encode($resultArr), 'month' => $month));
-        // return new Response
+
+        return new Response(json_encode($resultArr), 200, array('Content-Type: application/json'));
+    }
+
+    public function usrhistoryAction() {
+        $resultArr = $this->historyDateSelectionAction();
+        return $this->render('SiteSavalizeBundle:Customer:page4.html.twig', array('monthlydata' => $resultArr));
     }
 
     public function shownotificationAction( $page ) {
@@ -266,18 +265,20 @@ class CustomerController extends Controller {
     // }
 
     public function displayDummyChartAction() {
-        $startDate = "2013-06-07";
+        $startDate = "2013-06-01";
         $endDate = "2013-06-30";
+
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
         $result = $repository->dateRangeData($startDate, $endDate);
+//
+//        for ($i = 0; $i < count($result); $i++) {
+//            $resultArr[$i] = ['productName' => $result[$i]->getName(),
+//                'productPrice' => $result[$i]->getPrice()];
+//        }
 
-        for ($i = 0; $i < count($result); $i++) {
-            $resultArr[$i] = ['productName' => $result[$i]->getProduct()->getName(),
-                'productPrice' => $result[$i]->getPrice()];
-        }
+
 
         return new Response(json_encode($resultArr));
-        
     }
 
     public function displayEnteryChartPageAction() {
@@ -356,38 +357,14 @@ class CustomerController extends Controller {
         $form = $formBuilder->getForm();
         return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView()));
     }
-
-    /* user add/remove category setting */
-
-    public function categoryusersettingsAction() {
-        $catarr = array(
-            '1' => 'food',
-            '2' => 'cloth',
-            '3' => 'services',
-            '4' => 'car',
-            '5' => 'drinks',
-            '6' => 'transportation',
-            '7' => 'accomidation',
-            '8' => 'devices',
-            '9' => 'baby',
-            '10' => 'other',
-            '11' => 'food',
-            '12' => 'cloth',
-            '13' => 'services',
-            '14' => 'car',
-            '15' => 'drinks',
-            '16' => 'food',
-            '17' => 'cloth',
-            '18' => 'services',
-            '19' => 'car',
-            '20' => 'drinks',
-            '21' => 'food',
-            '22' => 'cloth',
-            '23' => 'services',
-            '24' => 'car',
-            '25' => 'drinks',
-        );
-        return $this->render('SiteSavalizeBundle:Customer:categoryusersettings.html.twig', array('categories' => $catarr));
+    
+    /* user change-password settings */
+    public function passwordusersettingsAction(){
+        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig');
+    }
+    /* user linked-account settings */
+    public function linkedusersettingsAction(){
+        return $this->render('SiteSavalizeBundle:Customer:linkedusersettings.html.twig');
     }
 
 }

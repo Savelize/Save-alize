@@ -3,6 +3,8 @@
 $(document).ready(function(){
     var price = new Array();
     var products = new Array();
+    price[0] = 0;
+    
     
     function aButtonPressed(){
 
@@ -15,18 +17,16 @@ $(document).ready(function(){
                 endDate: 2013-06-30
             },
             success: function(response) {
-               // alert(JSON.parse(response));
+                alert(JSON.parse(response));
                 plots = JSON.parse(response);
                 console.log(plots);
-                for(var i in plots){
-                    
-                    price[i] = plots[i].productPrice;
-                    products[i] = plots[i].productName;
+                for(var i in plots){    
+                    price[i] = parseInt(plots[i].price);
+                    products[i] = plots[i].name;
                     console.log(price[i]);
                 }
-                //                    price[i] = plots[i].price;
-                //                    prodcuts[i] = plots[i].product;
-              //  alert(plots[3].productPrice);
+                price.push(2000);
+                
                 var ctx = document.getElementById("myChart").getContext("2d");
 
                 var data = {
