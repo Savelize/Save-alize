@@ -197,7 +197,7 @@ class CustomerController extends Controller {
 
 
         $result = $repository->getRepository('SiteSavalizeBundle:History')->getMonthlyPurchases($start, $end);
-        $resultArr = [];
+        $resultArr = array();
         for ($i = 0; $i < count($result); $i++) {
             $myrepository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
             $x = $result[$i]->getProductBrand()->getId();
