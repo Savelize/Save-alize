@@ -12,7 +12,27 @@ use Doctrine\ORM\EntityRepository;
  */
 class HistoryRepository extends EntityRepository {
 
-    public function getMonthlyPurchases($date) {
+    public function getMonthlyPurchases($start, $end) {
+
+        $q = $this->createQueryBuilder('p');
+        $q->select('p')
+                ->where('p.baughtAt >= :start')
+                ->andWhere('p.baughtAt <= :end')
+//                ->groupBy('p.baughtAt')
+//       $q = $this->getEntityManager()->createQuery('
+//            SELECT sum(p.price) as price
+//            FROM SiteSavalizeBundle:History p
+//            WHERE p.baughtAt BETWEEN :start AND :end
+//            GROUP BY p.baughtAt
+//            ')
+                ->setParameter('start', $start)
+                ->setParameter('end', $end);
+        $result = $q->getQuery()->getResult();
+
+        return $result;
+    }
+
+    public function getMonth($date) {
         $ndate = new \DateTime($date);
         $ndate = $ndate->format("Y-m-d");
         $date = explode("-", $ndate);
@@ -20,23 +40,6 @@ class HistoryRepository extends EntityRepository {
         $month = $date[1];
         $day = $date[2];
 
-        $q = $this->createQueryBuilder('p');
-        $q->select('p')
-                ->where('p.baughtAt LIKE :date')
-                ->setParameter('date', '%-' . $month . '-%');
-        $result = $q->getQuery()->getResult();
-       
-        return $result;
-    }
-    
-    public function getMonth($date){
-        $ndate = new \DateTime($date);
-        $ndate = $ndate->format("Y-m-d");
-        $date = explode("-", $ndate);
-        $year = $date[0];
-        $month = $date[1];
-        $day = $date[2];
-        
         return $month;
     }
 
@@ -48,15 +51,18 @@ class HistoryRepository extends EntityRepository {
         $endDate = new \DateTime($endDate);
         $endDate = $endDate->format("Y-m-d");
         // g stands for graph
-        $q = $this->createQueryBuilder('g');
-//        $q->select('sum('p') as price')
-//                ->where('g.baughtAt >= :startDate')
-//                ->andWhere('g.baughtAt <= :endDate')
-//                ->groupBy('p')
-//                ->setParameter('startDate', $startDates )
-//                ->setParameter('endDate', $endDate);
-       
-        $result = $q->getQuery()->getResult();
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , p.name as name 
+            FROM SiteSavalizeBundle:History h
+            JOIN SiteSavalizeBundle:Product p
+            WHERE p.id = h.productBrand 
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY h.productBrand
+')
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
 
 
 //        $users2 = Doctrine_Query::create()
