@@ -276,14 +276,9 @@ class CustomerController extends Controller {
 //                'productPrice' => $result[$i]->getPrice()];
 //        }
 
-<<<<<<< HEAD
-        return new Response(json_encode($result));
-     
-=======
-
 
         return new Response(json_encode($resultArr));
->>>>>>> e473d0b52364b71d0ad9500ec7506090353f2f70
+
     }
 
     public function displayEnteryChartPageAction() {
