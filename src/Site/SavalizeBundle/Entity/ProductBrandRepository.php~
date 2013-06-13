@@ -29,7 +29,7 @@ class ProductBrandRepository extends EntityRepository
 			select pb
 			from SiteSavalizeBundle:ProductBrand pb
 			where pb.category = :catId
-			')->setParameter('catId', $catId);
+			')->setParameter('catId', $catId)
 		try
 		{return $query->getResult();}
 		catch(\Doctrine\ORM\NoResultException $e)

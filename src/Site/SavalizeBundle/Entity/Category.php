@@ -43,9 +43,9 @@ class Category
     private $isDeleted;
 
     /**
-    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\Product", mappedBy="category")
+    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\ProductBrand", mappedBy="category")
     **/
-    private $products;
+    private $productBrands;
 
     /**
      * Get id
@@ -164,5 +164,38 @@ class Category
     public function getProducts()
     {
         return $this->products;
+    }
+
+    /**
+     * Add productBrands
+     *
+     * @param \Site\SavalizeBundle\Entity\ProductBrand $productBrands
+     * @return Category
+     */
+    public function addProductBrand(\Site\SavalizeBundle\Entity\ProductBrand $productBrands)
+    {
+        $this->productBrands[] = $productBrands;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productBrands
+     *
+     * @param \Site\SavalizeBundle\Entity\ProductBrand $productBrands
+     */
+    public function removeProductBrand(\Site\SavalizeBundle\Entity\ProductBrand $productBrands)
+    {
+        $this->productBrands->removeElement($productBrands);
+    }
+
+    /**
+     * Get productBrands
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProductBrands()
+    {
+        return $this->productBrands;
     }
 }

@@ -1,0 +1,52 @@
+<?php
+
+namespace Site\SavalizeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * CommentOnProducts
+ *
+ * @ORM\Table(name="comment_on_products")
+ * @ORM\Entity
+ */
+class CommentOnProducts
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="text", nullable=false)
+     */
+    private $comment;
+
+    /**
+     * @var \ProductBrand
+     *
+     * @ORM\ManyToOne(targetEntity="ProductBrand")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_brand_id", referencedColumnName="id")
+     * })
+     */
+    private $productBrand;
+
+    /**
+     * @var \UserAccount
+     *
+     * @ORM\ManyToOne(targetEntity="UserAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+
+}

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Product
+ *
  * @ORM\Table(name="product")
  * @ORM\Entity(repositoryClass="Site\SavalizeBundle\Entity\ProductRepository")
  */
@@ -41,11 +42,7 @@ class Product
      */
     private $isDeleted;
 
-    /**
-     *@ORM\ManyToOne(targetEntity="\Site\SavalizeBundle\Entity\Category", inversedBy="products")
-     *@ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete = "CASCADE")
-     */
-    private $category;
+    
     
     /**
     *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\ProductBrand", mappedBy="product")
@@ -66,15 +63,8 @@ class Product
     /**
      * Set name
      *
-<<<<<<< HEAD
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="category")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="category_id", referencedColumnName="id")
-     * })
-=======
      * @param string $name
      * @return Product
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
      */
     public function setName($name)
     {
@@ -83,13 +73,6 @@ class Product
         return $this;
     }
 
-     /**
-     @var \History
-     *
-     * @ORM\OneToMany(targetEntity="History" , mappedBy="history")
-     */
-    private $history;
-    
     /**
      * Get name
      *
@@ -110,64 +93,13 @@ class Product
     {
         $this->confirmed = $confirmed;
     
-<<<<<<< HEAD
-
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     * @return Product
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string 
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set confirmed
-     *
-     * @param string $confirmed
-     * @return Product
-     */
-    public function setConfirmed($confirmed)
-    {
-        $this->confirmed = $confirmed;
-    
-=======
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this;
     }
 
     /**
      * Get confirmed
      *
-<<<<<<< HEAD
-     * @return string 
-=======
      * @return integer 
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
      */
     public function getConfirmed()
     {
@@ -177,11 +109,7 @@ class Product
     /**
      * Set isDeleted
      *
-<<<<<<< HEAD
-     * @param string $isDeleted
-=======
      * @param boolean $isDeleted
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
      * @return Product
      */
     public function setIsDeleted($isDeleted)
@@ -194,11 +122,7 @@ class Product
     /**
      * Get isDeleted
      *
-<<<<<<< HEAD
-     * @return string 
-=======
      * @return boolean 
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
      */
     public function getIsDeleted()
     {
@@ -206,42 +130,6 @@ class Product
     }
 
     /**
-<<<<<<< HEAD
-     * Add brand
-     *
-     * @param \Site\SavalizeBundle\Entity\Brand $brand
-     * @return Product
-     */
-    public function addBrand(\Site\SavalizeBundle\Entity\Brand $brand)
-    {
-        $this->brand[] = $brand;
-    
-        return $this;
-    }
-
-    /**
-     * Remove brand
-     *
-     * @param \Site\SavalizeBundle\Entity\Brand $brand
-     */
-    public function removeBrand(\Site\SavalizeBundle\Entity\Brand $brand)
-    {
-        $this->brand->removeElement($brand);
-    }
-
-    /**
-     * Get brand
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getBrand()
-    {
-        return $this->brand;
-    }
-
-    /**
-=======
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
      * Set category
      *
      * @param \Site\SavalizeBundle\Entity\Category $category
@@ -263,41 +151,44 @@ class Product
     {
         return $this->category;
     }
-<<<<<<< HEAD
-
     /**
-     * Add history
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->productBrands = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add productBrands
      *
-     * @param \Site\SavalizeBundle\Entity\History $history
+     * @param \Site\SavalizeBundle\Entity\ProductBrand $productBrands
      * @return Product
      */
-    public function addHistory(\Site\SavalizeBundle\Entity\History $history)
+    public function addProductBrand(\Site\SavalizeBundle\Entity\ProductBrand $productBrands)
     {
-        $this->history[] = $history;
+        $this->productBrands[] = $productBrands;
     
         return $this;
     }
 
     /**
-     * Remove history
+     * Remove productBrands
      *
-     * @param \Site\SavalizeBundle\Entity\History $history
+     * @param \Site\SavalizeBundle\Entity\ProductBrand $productBrands
      */
-    public function removeHistory(\Site\SavalizeBundle\Entity\History $history)
+    public function removeProductBrand(\Site\SavalizeBundle\Entity\ProductBrand $productBrands)
     {
-        $this->history->removeElement($history);
+        $this->productBrands->removeElement($productBrands);
     }
 
     /**
-     * Get history
+     * Get productBrands
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getHistory()
+    public function getProductBrands()
     {
-        return $this->history;
+        return $this->productBrands;
     }
 }
-=======
-}
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
