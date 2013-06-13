@@ -16,6 +16,11 @@
         <![endif]-->
     </head>
     <body>
+        <div class="content" style="text-align: right">
+            <a href="{{ path('user_signOut') }}" class="btn" style="float: right;">Log out</a>
+            <p style="font-size: 20px;padding-top: 7px;text-align: right">Welcome {{app.session.get('userName')}}  </p>  
+                
+            </div>
         {% block body %}{% endblock %}
 
         

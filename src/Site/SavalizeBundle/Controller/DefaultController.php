@@ -8,16 +8,91 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Site\SavalizeBundle\Entity\Customer;
 use Site\SavalizeBundle\Entity\Company;
 use Site\SavalizeBundle\Entity\User;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class DefaultController extends Controller
 {
+    public function getUserIDByUserName($username)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $userRep = $em->getRepository("SiteSavalizeBundle:User");
+        $user=$userRep->findOneByUsername($username);
+        if($user)
+        {
+            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+            $customer=$customerRep->findOneByUser($user);
+            if($customer)
+            {
+                return $customer->getId();
+            }
+            $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
+            $admin=$adminRep->findOneByUser($user);
+            if($admin)
+            {
+                return $admin->getId();
+            }
+        }
+        $CompanyRep = $em->getRepository("SiteSavalizeBundle:Company");
+        $company=$CompanyRep->findOneByUsername($username);
+        if($company)
+        {
+            return $company->getId();
+        }
+        return null;
+    }
+    
+    public function getUserTypeByUserName($username)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $userRep = $em->getRepository("SiteSavalizeBundle:User");
+        $user=$userRep->findOneByUsername($username);
+        if($user)
+        {
+            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+            $customer=$customerRep->findOneByUser($user);
+            if($customer)
+            {
+                return "customer";
+            }
+            $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
+            $admin=$adminRep->findOneByUser($user);
+            if($admin)
+            {
+                return "admin";
+            }
+        }
+        $CompanyRep = $em->getRepository("SiteSavalizeBundle:Company");
+        $company=$CompanyRep->findOneByUsername($username);
+        if($company)
+        {
+            return "company";
+        }
+        return null;
+    }
     public function indexAction()
     {
+        //echo $this->getUserIDByUserName("admin");
+        //exit();
+        $session = $this->getRequest()->getSession();
+        
+        if($session->get('userName')!=null)
+        {
+            $userType=$this->getUserTypeByUserName($session->get('userName'));
+            if($userType=="customer")
+                return $this->redirect($this->generateUrl('user_addProduct'));
+            else if($userType=="company")
+                return $this->redirect($this->generateUrl('site_personal_company_settings'));
+            elseif ($userType=="admin")
+                return $this->redirect($this->generateUrl('site_personal_admin_settings'));
+        }
+            
+         
+        
         $userType=array("User","Company");
         $collectionConstraint = new Collection(array(
             'User_Name' => new NotBlank(),
             'Name' => new NotBlank(),
-            'Email' => array(new NotBlank()),
+            'Email' => array(new NotBlank(),new Email()),
             'Password' => new NotBlank(),
             'Confirm_Password' => new NotBlank(),
             'User_Type' => new NotBlank()
@@ -76,8 +151,8 @@ class DefaultController extends Controller
             $data = $SignInform->getData();
             $em = $this->getDoctrine()->getEntityManager();
             
-            $customerRep = $em->getRepository("SiteSavalizeBundle:User");
-            $user=$customerRep->findOneByUsername($data['User_Name']);
+            $userRep = $em->getRepository("SiteSavalizeBundle:User");
+            $user=$userRep->findOneByUsername($data['User_Name']);
             $companyrRep = $em->getRepository("SiteSavalizeBundle:Company");
             $Company=$companyrRep->findOneByUsername($data['User_Name']);
             if($user)
@@ -86,8 +161,15 @@ class DefaultController extends Controller
                 $pass=$data['Password'];
                 if ($pass_crypt == \crypt($pass, $pass_crypt))
                 {
-                    echo "Success! Valid password";
-                    exit();
+                    $session = $this->getRequest()->getSession();
+                    $session->set('userName',$data['User_Name']);
+                    $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
+                    $admin=$adminRep->findOneByUser($user);
+                    if($admin)
+                        return $this->redirect($this->generateUrl('site_personal_admin_settings'));
+                    else
+                        return $this->redirect($this->generateUrl('user_addProduct'));
+                    
                 }
                 else
                 {
@@ -97,31 +179,50 @@ class DefaultController extends Controller
             }
             else if($Company)
             {
-                $msg="Username already exist";
-                return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>$msg));
+                $pass_crypt =$Company->getPassword();
+                $pass=$data['Password'];
+                echo \crypt($pass, $pass_crypt)."</br>";
+                echo "$pass_crypt";
+                if ($pass_crypt == \crypt($pass, $pass_crypt))
+                {
+                    $session = $this->getRequest()->getSession();
+                    $session->set('userName',$data['User_Name']);
+                    return $this->redirect($this->generateUrl('site_personal_company_settings'));
+                }
+                else
+                {
+                    $msg="Username or Password is wroung company";
+                    return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>$msg));
+                }
             }
             else
             {
-                $msg="Username or Password is wroung ";
+                $msg="Username or Password is wroung not all";
                 return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>$msg));                
             }
         }
         else
         {
-            print_r($SignInform->getErrors());
-            exit();
             return $this->redirect($this->generateUrl('site_savalize_homepage'));
         }
     }
     
-    public function signUpAction()
+    public function signOutAction()
+    {
+        $session = $this->getRequest()->getSession();
+        $session->clear();
+        $session->remove("userName");
+        return $this->redirect($this->generateUrl('site_savalize_homepage'));
+    }
+
+        public function signUpAction()
     {
      $userType=array("User","Company");
         $request = $this->getRequest();
         $collectionConstraint = new Collection(array(
             'User_Name' => new NotBlank(),
             'Name' => new NotBlank(),
-            'Email' => array(new NotBlank()),
+            'Email' => array(new NotBlank(),new Email()),
             'Password' => new NotBlank(),
             'Confirm_Password' => new NotBlank(),
             'User_Type' => new NotBlank()
@@ -186,8 +287,9 @@ class DefaultController extends Controller
                                 $customer->setUser($user);
                                 $em->persist($customer);
                                 $em->flush($customer);
-                                $msg="Sign up succesfully";
-                    return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>$msg));
+                                $session = $this->getRequest()->getSession();
+                                $session->set('userName',$data['User_Name']);
+                                return $this->redirect($this->generateUrl('site_personal_user_settings'));
                         }
                         else
                         {
@@ -196,11 +298,12 @@ class DefaultController extends Controller
                                 $company->setUsername($data['User_Name']);
                                 $company->setEmail($data['Email']);
                                 $pass_crypt = \crypt($data['Password']);
-                                $user->setPassword($pass_crypt);
+                                $company->setPassword($pass_crypt);
                                 $em->persist($company);
                                 $em->flush($company);
-                                $msg="Sign up succesfully";
-                                return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>$msg));
+                                $session = $this->getRequest()->getSession();
+                                $session->set('userName',$data['User_Name']);
+                                return $this->redirect($this->generateUrl('site_personal_company_settings'));
                      }
                 }
             }else {

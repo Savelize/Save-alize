@@ -81,3 +81,11 @@ user_signUp:
     defaults: { _controller: "SiteSavalizeBundle:Default:signUp" }
     requirements: { _method: post }
 
+user_signOut:
+    pattern:  /signUp
+    defaults: { _controller: "SiteSavalizeBundle:Default:signOut" }
+    
+user_addProduct:
+    pattern:  /addProduct
+    defaults: { _controller: "SiteSavalizeBundle:Customer:addProduct" }
+

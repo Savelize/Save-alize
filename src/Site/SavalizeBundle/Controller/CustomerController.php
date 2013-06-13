@@ -25,6 +25,40 @@ class CustomerController extends Controller {
      * Lists all UserAccount entities.
      *
      */
+    public function addProductAction(){
+        $session = $this->getRequest()->getSession();
+        $username=$session->get('userName');
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $userRep = $em->getRepository("SiteSavalizeBundle:User");
+        $user=$userRep->findOneByUsername($username);
+        if($user)
+        {
+            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+            $customer=$customerRep->findOneByUser($user);
+            if($customer)
+            {
+                $collectionConstraint = new Collection(array(
+                    'User_Name' => new NotBlank(),
+                    'Password' => new NotBlank()
+                ));
+                
+                $data = array();
+                //create the form
+
+                $formBuilder = $this->createFormBuilder($data, array(
+                            'validation_constraint' => $collectionConstraint,
+                        ))
+                        ->add('User_Name', null, array('required' => true,'attr' => array('class' => 'span2','placeholder' => 'user name')))
+                        ->add('Password', "password", array('required' => true,'attr' => array('class' => 'span2','placeholder' => 'password')))
+                ;
+                $SignInform = $formBuilder->getForm();
+                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig');
+            }   
+        }
+            return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>"you are not authorized"));
+    }
+    
     public function indexAction() {
         $em = $this->getDoctrine()->getManager();
 
