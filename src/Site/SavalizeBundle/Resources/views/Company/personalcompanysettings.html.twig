@@ -1,5 +1,5 @@
 {% extends '::base.html.twig' %}
-{% block title %}User Settings{% endblock %}
+{% block title %}Company Settings{% endblock %}
 {% block body %}
 <div class="container-fluid" >
 <nav class="navbar">
@@ -13,11 +13,8 @@
 
         <div class="nav-collapse">
             <ul class="nav" style="font-weight:normal">
-                <li><a href="#">New Purchases</a> </li>
-                <li><a href="#">My Alerts</a></li>
-                <li><a href="#">History</a></li>
-                <li><a href="#">Product Reviews</a></li>
-                <li><a href="#">Reports</a></li>
+                <li><a href="#">New Product</a></li>
+                <li><a href="#">Products Reviews</a></li>
                 <li class="active"><a href="#">Settings</a></li>
                 <li><a href="#">Contact Us</a></li>
             </ul>
@@ -30,22 +27,16 @@
                 <li><a href="#"><h5>Personal Settings</h5></a></li>
                 <li class="divider"></li>
                 <li><a href="#"><h5>Change Password</h5></a></li>
-                <li class="divider"></li>
-                <li><a href="#"><h5>Link to an Account</h5></a></li>
-                <li class="divider"></li>
-                <li><a href="#"><h5> Manage Favourites</h5></a></li>
-                <li class="divider"></li>
-                <li><a href="#"><h5> My Circles</h5></a></li>
             </ul>
         </div>
         <div class="span8" style="padding-left: 5px">
-            <form action="#" method="post" {{ form_enctype(form) }} >
-                <h3>Personal settings:</h3><br>
+            <form action="#" method="post" {{ form_enctype(form) }}>
+                 <h3>Personal settings:</h3><br>
                 {{ form_errors(form) }}
 
-                {{ form_label(form.First_Name) }}
-                {{ form_widget(form.First_Name) }}
-                {{ form_errors(form.First_Name) }}
+                {{ form_label(form.Name) }}
+                {{ form_widget(form.Name) }}
+                {{ form_errors(form.Name) }}
 
                 {{ form_rest(form) }}
                     <br>

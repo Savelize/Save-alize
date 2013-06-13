@@ -1,0 +1,39 @@
+{% extends '::base.html.twig' %}
+{% block title %}Socialize - History{% endblock %}
+{% block body %}
+        <nav class="navbar">
+            <div class="navbar-inner">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="#">Save and Socialize</a>
+
+                <div class="nav-collapse">
+                    <ul class="nav" style="font-weight:normal">
+                        <li ><a href="#">New Product</a> </li>
+                        <li><a href="#">Product Reviews</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li class="active"><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid" >
+            <div class="span12 content">
+                <h2>Contact Us</h2>
+        <form action="{{ path('contact_us_company') }}" method="post" {{ form_enctype(form) }}>
+    {{ form_errors(form) }}
+      
+    {{ form_label(form.name) }}
+    {{ form_widget(form.name) }}
+    {{ form_errors(form.name) }}
+
+    {{ form_rest(form) }}
+    <input type="submit" value="submit" class="btn btn-primary"/>
+</form>
+                </div> 
+            </div>
+          
+{% endblock %}

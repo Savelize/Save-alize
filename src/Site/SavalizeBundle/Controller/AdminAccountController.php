@@ -8,6 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Site\SavalizeBundle\Entity\AdminAccount;
 use Site\SavalizeBundle\Form\AdminAccountType;
 
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Collection;
+
 /**
  * AdminAccount controller.
  *
@@ -182,5 +186,48 @@ class AdminAccountController extends Controller
             ->add('id', 'hidden')
             ->getForm()
         ;
+    }
+    
+    /* admin personal settings */
+    public function personaladminsettingsAction(){
+        $request = $this->getRequest();
+        $collectionConstraint = new Collection(array(
+            'First_Name' => new NotBlank(),
+            'Last_Name' => new NotBlank(),
+            'Username' => new NotBlank(),
+            'Password' => new NotBlank(),
+            'Confirm_password' => new NotBlank(),
+            'Email' => array(new Email(), new NotBlank()),
+            'upload_your_photo' => array()
+        ));
+        $data = array();
+        $formBuilder = $this->createFormBuilder($data, array(
+                    'validation_constraint' => $collectionConstraint,
+                ))
+                ->add('First_Name')
+                ->add('Last_Name')
+                ->add('Username')
+                ->add('Password', 'password')
+                ->add('Confirm_password', 'password')
+                ->add('Email', 'email', array('attr' => array('class' => 'email')))
+                ->add('upload_your_photo','file', array('required' => false))
+        ;
+        $form = $formBuilder->getForm();
+        //check if this is the user posted his data
+        if ($request->getMethod() == 'POST') {
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    //$fdata = $form->getData();
+                    return $this->redirect($this->generateUrl('site_savalize_homepage'));
+                }
+            }
+        return $this->render('SiteSavalizeBundle:AdminAccount:personaladminsettings.html.twig', array('form' => $form->createView()));
+    }
+    
+    /* admin change-password settings */
+    public function passwordadminsettingsAction(){
+        return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig');
     }
 }
