@@ -44,8 +44,13 @@ class Customer
 
     /**
      * @var integer
+<<<<<<< HEAD
      *
      * @ORM\Column(name="age", type="integer",nullable=true)
+=======
+     * 
+     * @ORM\Column(name="age", type="integer")
+>>>>>>> 6cdd28917bc5e7a4c01884382199be990b3391e6
      */
     private $age;
 
