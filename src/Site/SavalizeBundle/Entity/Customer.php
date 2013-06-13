@@ -75,8 +75,6 @@ class Customer
       */
     private $user;
     
-      
-
     /**
      * @var integer
      *

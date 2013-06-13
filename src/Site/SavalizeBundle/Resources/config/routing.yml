@@ -18,8 +18,8 @@ site_company_page10:
 
 
 site_savalize_viewNotifications:
-    pattern: /show/{id}/{page}
-    defaults: { _controller: SiteSavalizeBundle:Customer:shownotification }
+    pattern: /show/{page}
+    defaults: { _controller: SiteSavalizeBundle:Customer:shownotification , page:1}
     requirements:
         page: \d+
         
@@ -51,3 +51,6 @@ site_category_user_settings:
     pattern: /categoryusersettings
     defaults: { _controller: SiteSavalizeBundle:Customer:categoryusersettings }
 
+site_savalize_insert_seen_notification:
+    pattern: /seen
+    defaults: { _controller: SiteSavalizeBundle:Customer:insertSeenNotification }

@@ -218,25 +218,52 @@ class CustomerController extends Controller {
         // return new Response
     }
 
-    public function shownotificationAction(Request $request, $id, $page) {
+    public function shownotificationAction( $page ) {
         $maxResults = 2;
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('SiteSavalizeBundle:UserNotification');
-        $count = $repo->count($id);
+        $count = $repo->count(1);
         $notfCount = $count['0']['notfCount'];
-        //  echo $notfCount;
+
         // calculate the last page number
         $lastPageNumber = (int) ($notfCount / $maxResults);
         if (($notfCount % $maxResults) > 0) {
             $lastPageNumber++;
         }
-        $notifications = $repo->showNotifications($id, $page, $maxResults);
+        $notifications = $repo->showNotifications(1,$page, $maxResults);
         if (!$em) {
             throw $this->createNotFoundException('Unable to find Customer entity.');
         }
         return $this->render('SiteSavalizeBundle:Customer:notification.html.twig', array(
-                    'notifications' => $notifications));
+                    'notifications' => $notifications,
+                    'page' => $page,
+                    'lastPageNumber' => $lastPageNumber));
     }
+
+    public function insertUserNotificationAction($title,$content,$user_id){
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $notification = new UserNotification();
+        $notification->setTitle($title);
+        $notification->setContent($content);
+        $notification->setReleasedAt(new \DateTime());
+        $em->persist($notification);
+        $em->flush();
+        exit;
+    }
+
+    // public function insertSeenNotificationAction($notf_id){
+
+    //     $em = $this->getDoctrine()->getEntityManager();
+    //     $customer = $em->getRepository('SiteSavalizeBundle:Customer')->find(1);
+    //     $notification = $em->getRepository('SiteSavalizeBundle:UserNotification')->find($notf_id);
+    //     $seenNotf = new UserNotificationSeen();
+    //     $seenNotf->setCustomer($customer);
+    //     $seenNotf->setUserNotification();
+    //     $em->persist($seenNotf);
+    //     $em->flush();
+    //     exit;        
+    // }
 
     public function displayDummyChartAction() {
         $startDate = "2013-06-07";
@@ -249,19 +276,8 @@ class CustomerController extends Controller {
                 'productPrice' => $result[$i]->getPrice()];
         }
 
-
-        // print_r($resultArr);
-        //-----------------
-//        $query = $this->getEntityManager()
-//        ->createQuery('
-//            SELECT g.price, p.name FROM SiteSavalizeBundle:Product p, SiteSavalizeBundle:History g
-//            WHERE p.id = g.product'
-//        )->getResult();
-        //$result = $query->fetchArray();
-
-
         return new Response(json_encode($resultArr));
-        // return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig');
+        
     }
 
     public function displayEnteryChartPageAction() {

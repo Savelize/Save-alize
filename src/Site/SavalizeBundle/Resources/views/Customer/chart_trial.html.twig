@@ -4,13 +4,10 @@
 
 {% block stylesheets %}
 <link href="{{asset('css/fullcalendar.css')}}" rel="stylesheet" type="text/css">
-
 {% endblock %}
 
 
-
 {% block body %}
-
 <nav class="navbar">
     <div class="navbar-inner">
         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -62,11 +59,9 @@
         </ul>
             </div>
           <input type="button" id="generateReport" value="Generate Report"/>
-            <canvas id="myChart" width="400" height="400"></canvas>
-        
-          
-
+            <canvas id="myChart" width="400" height="400"></canvas>    
 {% endblock %}
+
 {% block javascripts %}
             <script src="{{asset('js/fullcalendar.js')}}"></script>
             <script> var path = "{{ path('site_savalize_ajaxtoshowchart') }}" </script>
