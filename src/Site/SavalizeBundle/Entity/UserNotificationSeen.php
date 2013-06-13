@@ -73,7 +73,6 @@ class UserNotificationSeen
     {
         return $this->seen;
     }
-
     /**
      * Set customer
      *

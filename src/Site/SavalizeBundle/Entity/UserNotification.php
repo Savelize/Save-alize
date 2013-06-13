@@ -216,3 +216,4 @@ class UserNotification
         return $this->userNotificationsSeen;
     }
 }
+

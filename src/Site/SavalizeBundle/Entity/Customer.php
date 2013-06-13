@@ -24,70 +24,68 @@ class Customer
     /**
      * @var string
      *
-     * @ORM\Column(name="country", type="string", length=30)
+     * @ORM\Column(name="country", type="string", length=30,nullable=true)
      */
     private $country;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", length=30)
+     * @ORM\Column(name="city", type="string", length=30,nullable=true)
      */
     private $city;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="region", type="string", length=30)
+     * @ORM\Column(name="region", type="string", length=30,nullable=true)
      */
     private $region;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="age", type="integer")
+     * @ORM\Column(name="age", type="integer",nullable=true)
      */
     private $age;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="marital_status", type="string", length=6)
+     * @ORM\Column(name="marital_status", type="string", length=6,nullable=true)
      */
     private $maritalStatus;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="car", type="boolean")
+     * @ORM\Column(name="car", type="boolean",nullable=true)
      */
     private $car;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="salary", type="integer")
+     * @ORM\Column(name="salary", type="integer",nullable=true)
      */
     private $salary;
      /**
       * @ORM\OneToOne(targetEntity="\Site\SavalizeBundle\Entity\User")
-      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
       */
     private $user;
     
-      
-
     /**
      * @var integer
      *
-     * @ORM\Column(name="linked_to", type="integer")
+     * @ORM\Column(name="linked_to", type="integer",nullable=true)
      */
     private $linkedTo;
 
     /**
-    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\UserNotificationSeen", mappedBy="customer")
+    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\UserNotification", mappedBy="customer")
     **/
-    private $userNotificationsSeen;
+    private $notifications;
     
     /**
     *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\History", mappedBy="customer")
@@ -484,38 +482,5 @@ class Customer
     public function getProductComments()
     {
         return $this->productComments;
-    }
-
-    /**
-     * Add userNotificationsSeen
-     *
-     * @param \Site\SavalizeBundle\Entity\UserNotificationSeen $userNotificationsSeen
-     * @return Customer
-     */
-    public function addUserNotificationsSeen(\Site\SavalizeBundle\Entity\UserNotificationSeen $userNotificationsSeen)
-    {
-        $this->userNotificationsSeen[] = $userNotificationsSeen;
-    
-        return $this;
-    }
-
-    /**
-     * Remove userNotificationsSeen
-     *
-     * @param \Site\SavalizeBundle\Entity\UserNotificationSeen $userNotificationsSeen
-     */
-    public function removeUserNotificationsSeen(\Site\SavalizeBundle\Entity\UserNotificationSeen $userNotificationsSeen)
-    {
-        $this->userNotificationsSeen->removeElement($userNotificationsSeen);
-    }
-
-    /**
-     * Get userNotificationsSeen
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getUserNotificationsSeen()
-    {
-        return $this->userNotificationsSeen;
     }
 }
