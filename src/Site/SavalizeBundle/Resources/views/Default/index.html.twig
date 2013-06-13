@@ -21,7 +21,7 @@
   <div class="navbar-inner">
     <a class="brand" href="#">Save and Socialize</a>
     <ul class="nav pull-right">
-   <form action="{{ path('site_savalize_homepage') }}" method="post" {{ form_enctype(SignInform) }} class="navbar-form form-inline">
+   <form action="{{ path('user_signIn') }}" method="post" {{ form_enctype(SignInform) }} class="navbar-form form-inline">
         {{ form_widget(SignInform.User_Name) }}
         {{ form_widget(SignInform.Password) }}
            {{ form_rest(SignInform) }}
@@ -72,8 +72,22 @@
     {{ form_errors(signUpform.User_Name) }}
 
     {{ form_rest(signUpform) }}
+            
+  <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Licence Agremment</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button type="submit" class="btn btn-primary">Accept</button>
+  </div>
+</div>
             </div>
-                            <input type="submit" value="Sign Up" class="btn btn-success btn-large">
+                            <input href="#myModal" data-toggle="modal" role="button" value="Sign Up" class="btn btn-success btn-large">
                       
                     </form>
        </div> 
