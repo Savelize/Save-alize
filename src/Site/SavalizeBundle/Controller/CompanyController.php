@@ -11,10 +11,6 @@ use Symfony\Component\Validator\Constraints\Collection;
 use Site\SavalizeBundle\Entity\Company;
 use Site\SavalizeBundle\Form\CompanyType;
 
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Collection;
-
 /**
  * Company controller.
  *
@@ -240,6 +236,10 @@ class CompanyController extends Controller
         return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView()));
     }
     
+    /* company change-password settings */
+    public function passwordcompanysettingsAction(){
+        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig');
+    }
     public function contactAction() {
         //get the request object
         $request = $this->getRequest();

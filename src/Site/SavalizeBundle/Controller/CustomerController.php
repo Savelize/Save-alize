@@ -340,40 +340,11 @@ class CustomerController extends Controller {
         $form = $formBuilder->getForm();
         return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView()));
     }
-
-    /* user add/remove category setting */
-
-    public function categoryusersettingsAction() {
-        $catarr = array(
-            '1' => 'food',
-            '2' => 'cloth',
-            '3' => 'services',
-            '4' => 'car',
-            '5' => 'drinks',
-            '6' => 'transportation',
-            '7' => 'accomidation',
-            '8' => 'devices',
-            '9' => 'baby',
-            '10' => 'other',
-            '11' => 'food',
-            '12' => 'cloth',
-            '13' => 'services',
-            '14' => 'car',
-            '15' => 'drinks',
-            '16' => 'food',
-            '17' => 'cloth',
-            '18' => 'services',
-            '19' => 'car',
-            '20' => 'drinks',
-            '21' => 'food',
-            '22' => 'cloth',
-            '23' => 'services',
-            '24' => 'car',
-            '25' => 'drinks',
-        );
-        return $this->render('SiteSavalizeBundle:Customer:categoryusersettings.html.twig', array('categories' => $catarr));
-    }
     
+    /* user change-password settings */
+    public function passwordusersettingsAction(){
+        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig');
+    }
     /* user linked-account settings */
     public function linkedusersettingsAction(){
         return $this->render('SiteSavalizeBundle:Customer:linkedusersettings.html.twig');

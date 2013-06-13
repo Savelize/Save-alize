@@ -23,7 +23,7 @@ class Customer
 
     /**
      * @var string
-     *
+     * 
      * @ORM\Column(name="country", type="string", length=30)
      */
     private $country;
@@ -44,7 +44,7 @@ class Customer
 
     /**
      * @var integer
-     *
+     * 
      * @ORM\Column(name="age", type="integer")
      */
     private $age;

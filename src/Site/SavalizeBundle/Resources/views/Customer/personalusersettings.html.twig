@@ -29,13 +29,9 @@
             <ul class="nav nav-list" >
                 <li><a href="#"><h5>Personal Settings</h5></a></li>
                 <li class="divider"></li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><h5>Account Settings</h5><b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#"><h6>Add/Remove Category</h6></a></li>
-                        <li><a href="#"><h6>Linked Accounts</h6></a></li>
-                    </ul>
-                </li>
+                <li><a href="#"><h5>Change Password</h5></a></li>
+                <li class="divider"></li>
+                <li><a href="#"><h5>Link to an Account</h5></a></li>
                 <li class="divider"></li>
                 <li><a href="#"><h5> Manage Favourites</h5></a></li>
                 <li class="divider"></li>
@@ -44,6 +40,7 @@
         </div>
         <div class="span8" style="padding-left: 5px">
             <form action="#" method="post" {{ form_enctype(form) }} >
+                <h3>Personal settings:</h3><br>
                 {{ form_errors(form) }}
 
                 {{ form_label(form.First_Name) }}

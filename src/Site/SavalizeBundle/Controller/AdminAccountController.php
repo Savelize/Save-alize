@@ -225,4 +225,9 @@ class AdminAccountController extends Controller
             }
         return $this->render('SiteSavalizeBundle:AdminAccount:personaladminsettings.html.twig', array('form' => $form->createView()));
     }
+    
+    /* admin change-password settings */
+    public function passwordadminsettingsAction(){
+        return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig');
+    }
 }
