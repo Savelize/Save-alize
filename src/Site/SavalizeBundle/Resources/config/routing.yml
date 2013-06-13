@@ -85,4 +85,9 @@ user_signUp:
     defaults: { _controller: "SiteSavalizeBundle:Default:signUp" }
     requirements: { _method: post }
 
+user_report_fromCategory:
+    pattern: /fromCategory
+    defaults: { _controller: "SiteSavalizeBundle:Customer:fromCategory" }
+
+
 

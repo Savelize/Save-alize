@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table()
+ * @ORM\Table(name = "user")
  * @ORM\Entity(repositoryClass="Site\SavalizeBundle\Entity\UserRepository")
  */
 class User
@@ -34,7 +34,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="lname", type="string", length=30,nullable=true)
+     * @ORM\Column(name="lname", type="string", length=30)
      */
     private $lname;
 
@@ -49,7 +49,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=255)
+     * @ORM\Column(name="password", type="string", length=20)
      */
     private $password;
 
@@ -59,6 +59,13 @@ class User
      * @ORM\Column(name="email", type="string", length=50)
      */
     private $email;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="picture", type="string", length=100)
+     */
+    private $picture;
 
     /**
      * @var \DateTime
@@ -252,5 +259,28 @@ class User
     public function getLname()
     {
         return $this->lname;
+    }
+
+    /**
+     * Set picture
+     *
+     * @param string $picture
+     * @return User
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+    
+        return $this;
+    }
+
+    /**
+     * Get picture
+     *
+     * @return string 
+     */
+    public function getPicture()
+    {
+        return $this->picture;
     }
 }

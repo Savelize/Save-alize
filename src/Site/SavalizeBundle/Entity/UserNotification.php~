@@ -20,6 +20,13 @@ class UserNotification
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=100)
+     */
+    private $title;
 
     /**
      * @var string
@@ -27,14 +34,22 @@ class UserNotification
      * @ORM\Column(name="content", type="text")
      */
     private $content;
+    
+    
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="released_at", type="datetime")
+     */
+    private $releasedAt;
 
     /**
-
-     *@ORM\ManyToOne(targetEntity="\Site\SavalizeBundle\Entity\Customer", inversedBy="notifications")
-     *@ORM\JoinColumn(name="customer_id", referencedColumnName="id", onDelete = "CASCADE")
-
-     */
-    private $customer;
+    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\UserNotificationSeen", mappedBy="userNotification")
+    **/
+    private $userNotificationsSeen;
+    
+    
 
     /**
      * Get id
@@ -90,5 +105,74 @@ class UserNotification
     public function getCustomer()
     {
         return $this->customer;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return UserNotification
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set releasedAt
+     *
+     * @param \DateTime $releasedAt
+     * @return UserNotification
+     */
+    public function setReleasedAt($releasedAt)
+    {
+        $this->releasedAt = $releasedAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get releasedAt
+     *
+     * @return \DateTime 
+     */
+    public function getReleasedAt()
+    {
+        return $this->releasedAt;
+    }
+
+    /**
+     * Set seen
+     *
+     * @param boolean $seen
+     * @return UserNotification
+     */
+    public function setSeen($seen)
+    {
+        $this->seen = $seen;
+    
+        return $this;
+    }
+
+    /**
+     * Get seen
+     *
+     * @return boolean 
+     */
+    public function getSeen()
+    {
+        return $this->seen;
     }
 }

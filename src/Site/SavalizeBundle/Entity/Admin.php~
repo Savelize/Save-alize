@@ -36,4 +36,27 @@ class Admin
     {
         return $this->id;
     }
+
+    /**
+     * Set user
+     *
+     * @param \Site\SavalizeBundle\Entity\User $user
+     * @return Admin
+     */
+    public function setUser(\Site\SavalizeBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Site\SavalizeBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 }

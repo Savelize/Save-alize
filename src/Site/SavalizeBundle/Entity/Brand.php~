@@ -110,13 +110,6 @@ class Brand
         return $this->confirmed;
     }
 
-     /**
-     * @var \History
-     *
-     * @ORM\OneToMany(targetEntity="History" , mappedBy="history")
-     */
-    private $history;
-    
     /**
      * Set isDeleted
      *
@@ -150,157 +143,10 @@ class Brand
     {
         $this->company = $company;
     
-<<<<<<< HEAD
-
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     * @return Brand
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    
         return $this;
     }
 
     /**
-     * Get name
-     *
-     * @return string 
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set confirmed
-     *
-     * @param string $confirmed
-     * @return Brand
-     */
-    public function setConfirmed($confirmed)
-    {
-        $this->confirmed = $confirmed;
-    
-=======
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
-        return $this;
-    }
-
-    /**
-<<<<<<< HEAD
-     * Get confirmed
-     *
-     * @return string 
-     */
-    public function getConfirmed()
-    {
-        return $this->confirmed;
-    }
-
-    /**
-     * Set isDeleted
-     *
-     * @param string $isDeleted
-     * @return Brand
-     */
-    public function setIsDeleted($isDeleted)
-    {
-        $this->isDeleted = $isDeleted;
-    
-        return $this;
-    }
-
-    /**
-     * Get isDeleted
-     *
-     * @return string 
-     */
-    public function getIsDeleted()
-    {
-        return $this->isDeleted;
-    }
-
-    /**
-     * Add product
-     *
-     * @param \Site\SavalizeBundle\Entity\Product $product
-     * @return Brand
-     */
-    public function addProduct(\Site\SavalizeBundle\Entity\Product $product)
-    {
-        $this->product[] = $product;
-    
-        return $this;
-    }
-
-    /**
-     * Remove product
-     *
-     * @param \Site\SavalizeBundle\Entity\Product $product
-     */
-    public function removeProduct(\Site\SavalizeBundle\Entity\Product $product)
-    {
-        $this->product->removeElement($product);
-    }
-
-    /**
-     * Get product
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProduct()
-    {
-        return $this->product;
-    }
-
-    /**
-     * Add history
-     *
-     * @param \Site\SavalizeBundle\Entity\History $history
-     * @return Brand
-     */
-    public function addHistory(\Site\SavalizeBundle\Entity\History $history)
-    {
-        $this->history[] = $history;
-    
-        return $this;
-    }
-
-    /**
-     * Remove history
-     *
-     * @param \Site\SavalizeBundle\Entity\History $history
-     */
-    public function removeHistory(\Site\SavalizeBundle\Entity\History $history)
-    {
-        $this->history->removeElement($history);
-    }
-
-    /**
-     * Get history
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getHistory()
-    {
-        return $this->history;
-    }
-}
-=======
      * Get company
      *
      * @return \Site\SavalizeBundle\Entity\Company 
@@ -309,5 +155,44 @@ class Brand
     {
         return $this->company;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->productBrands = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add productBrands
+     *
+     * @param \Site\SavalizeBundle\Entity\ProductBrand $productBrands
+     * @return Brand
+     */
+    public function addProductBrand(\Site\SavalizeBundle\Entity\ProductBrand $productBrands)
+    {
+        $this->productBrands[] = $productBrands;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productBrands
+     *
+     * @param \Site\SavalizeBundle\Entity\ProductBrand $productBrands
+     */
+    public function removeProductBrand(\Site\SavalizeBundle\Entity\ProductBrand $productBrands)
+    {
+        $this->productBrands->removeElement($productBrands);
+    }
+
+    /**
+     * Get productBrands
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProductBrands()
+    {
+        return $this->productBrands;
+    }
 }
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6

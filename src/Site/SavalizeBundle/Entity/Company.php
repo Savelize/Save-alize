@@ -27,6 +27,13 @@ class Company
      * @ORM\Column(name="name", type="string", length=50)
      */
     private $name;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="picture", type="string", length=100)
+     */
+    private $picture;
 
     /**
      * @var string
@@ -45,35 +52,35 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\Column(name="email", type="string", length=50)
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="telephone", type="string", length=11,nullable=true)
+     * @ORM\Column(name="telephone", type="string", length=11)
      */
     private $telephone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="country", type="string", length=30,nullable=true)
+     * @ORM\Column(name="country", type="string", length=30)
      */
     private $country;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", length=30,nullable=true)
+     * @ORM\Column(name="city", type="string", length=30)
      */
     private $city;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="region", type="string", length=30,nullable=true)
+     * @ORM\Column(name="region", type="string", length=30)
      */
     private $region;
 
@@ -314,5 +321,28 @@ class Company
     public function getBrands()
     {
         return $this->brands;
+    }
+
+    /**
+     * Set picture
+     *
+     * @param string $picture
+     * @return Company
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+    
+        return $this;
+    }
+
+    /**
+     * Get picture
+     *
+     * @return string 
+     */
+    public function getPicture()
+    {
+        return $this->picture;
     }
 }

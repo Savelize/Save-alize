@@ -250,12 +250,14 @@ class CustomerController extends Controller {
 //        }
 
         return new Response(json_encode($result));
-        // return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig');
+     
     }
 
     public function displayEnteryChartPageAction() {
 
-        return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Category');
+        $result = $repository->categoryAutocomplete();
+        return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig', array('categories' => json_encode($result)));
     }
 
     public function contactAction() {

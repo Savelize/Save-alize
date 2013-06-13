@@ -38,15 +38,11 @@ class Product
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_deleted", type="boolean")
+     * @ORM\Column(name="isDeleted", type="boolean")
      */
     private $isDeleted;
 
-    /**
-     *@ORM\ManyToOne(targetEntity="\Site\SavalizeBundle\Entity\Category", inversedBy="products")
-     *@ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete = "CASCADE")
-     */
-    private $category;
+    
     
     /**
     *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\ProductBrand", mappedBy="product")
