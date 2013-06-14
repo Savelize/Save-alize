@@ -92,3 +92,7 @@ user_report_fromCategory:
 site_savalize_insert_seen_notification:
     pattern: /seen
     defaults: { _controller: SiteSavalizeBundle:Customer:insertSeenNotification }
+    
+user_chart_datesOnly:
+    pattern:  /usr/renderreportdatesonly
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesOnly }

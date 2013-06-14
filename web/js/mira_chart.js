@@ -64,7 +64,7 @@ $(document).ready(function(){
                 for(var b in pb.products){    
                     products[b] = pb.products[b];
                 }
-                alert(brands);
+//                alert(brands);
                 $("#brandIP").autocomplete({
                     source: brands
                 });
@@ -75,6 +75,45 @@ $(document).ready(function(){
         });
     });
      
+    
+    function reportViaDatesOnly(){
+        $.ajax({
+            type: 'POST',
+            url: datesOnlypath,
+            datatype: 'json',
+            data: {
+                startDate: userChartStartDate, 
+                endDate: userChartEndDate,
+                pbID: pbID
+            },
+            success: function(response) {
+                plots = JSON.parse(response);
+                console.log(plots);
+                for(var i in plots){    
+                    alert(price[i] = parseInt(plots[i].price));
+                    chartproducts[i] = plots[i].products;
+                  //  console.log(price[i]);
+                }
+                
+                var ctx = document.getElementById("myChart").getContext("2d");
+
+                var data = {
+                    labels : chartproducts,
+                    datasets : [
+                    {
+                        fillColor : "rgba(220,220,220,0.5)",
+                        strokeColor : "rgba(220,220,220,1)",
+                        pointColor : "rgba(220,220,220,1)",
+                        pointStrokeColor : "#fff",
+                        data : price
+                    }
+                    ]
+                }
+                var myNewChart = new Chart(ctx).Line(data);
+            }
+        });
+    }
+    
     
     function aButtonPressed(){
 
@@ -91,11 +130,14 @@ $(document).ready(function(){
               //  alert(JSON.parse(response));
                 plots = JSON.parse(response);
                 console.log(plots);
-                for(var i in plots){    
-                    alert(price[i] = parseInt(plots[i].price));
-                    chartproducts[i] = plots[i].products;
-                  //  console.log(price[i]);
-                }
+//                for(var i in plots){    
+//                    alert(price[i] = parseInt(plots[i].price));
+//                    chartproducts[i] = plots[i].products;
+//                  //  console.log(price[i]);
+//                }
+                alert(parseInt(plots.price));
+                price = parseInt(plots.price);
+                chartproducts = plots.products;
                 //                price.push(2000);
                 
                 var ctx = document.getElementById("myChart").getContext("2d");
