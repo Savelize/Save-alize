@@ -340,7 +340,7 @@ class DefaultController extends Controller
     	$request = $this->container->get('request');
     	$catId = $request->get('catId');
     	$em=$this->getDoctrine()->getEntityManager();
-    	$brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getProductBrandsOfCategory($catId);
+    	$brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getBrandsOfCategory($catId);
     	$brands=array();
 	for($i=0; $i<count($brandsOfCategory); $i++)
 	{

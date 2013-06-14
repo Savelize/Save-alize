@@ -88,16 +88,16 @@ class ProductBrand
     {
         return $this->picture;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->histories = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->productRatings = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->productComments = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
+//    /**
+//     * Constructor
+//     */
+//    public function __construct()
+//    {
+//        $this->histories = new \Doctrine\Common\Collections\ArrayCollection();
+//        $this->productRatings = new \Doctrine\Common\Collections\ArrayCollection();
+//        $this->productComments = new \Doctrine\Common\Collections\ArrayCollection();
+//    }
+//    
     /**
      * Set brand
      *
