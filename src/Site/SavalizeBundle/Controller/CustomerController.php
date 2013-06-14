@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\Type;
 use Site\SavalizeBundle\Entity\Customer;
 use Site\SavalizeBundle\Entity\History;
 use Site\SavalizeBundle\Entity\UserNotification;
@@ -25,6 +27,23 @@ class CustomerController extends Controller {
      * Lists all UserAccount entities.
      *
      */
+    public function getProductAction()
+    {
+        $data=array();
+        $request = $this->getRequest();
+        $catId=$request->get("catId");
+        if($catId==1)
+        {
+            $data[]="ahmed";
+            $data[]="mohamed";
+        }
+        else
+        {
+            $data[]="mohsen";
+            $data[]="khaled";
+        }
+        return new Response(json_encode($data));
+    }
     public function addProductAction(){
         $session = $this->getRequest()->getSession();
         $username=$session->get('userName');
@@ -38,22 +57,55 @@ class CustomerController extends Controller {
             $customer=$customerRep->findOneByUser($user);
             if($customer)
             {
+                $CategoryRep = $em->getRepository("SiteSavalizeBundle:Category");
+                $categories=$CategoryRep->findAll();
+                $catSelectTag=array();
+                foreach ($categories as $cat)
+                {
+                    $catSelectTag[$cat->getId()]=$cat->getName();
+                }
                 $collectionConstraint = new Collection(array(
-                    'User_Name' => new NotBlank(),
-                    'Password' => new NotBlank()
+                    'Categories' => new NotBlank(),
+                    'Product' => new NotBlank(),
+                    'Brand' => new NotBlank(),
+                    'Price' => array(new NotBlank(),new Type("integer")),
+                    'Quantity' => array(new NotBlank(),new Type("integer")),
+                    'Date' => array(new NotBlank(),new Date()),
                 ));
                 
-                $data = array();
+                $data = array(
+                    'Date' => new \DateTime()
+                );
                 //create the form
 
                 $formBuilder = $this->createFormBuilder($data, array(
                             'validation_constraint' => $collectionConstraint,
                         ))
-                        ->add('User_Name', null, array('required' => true,'attr' => array('class' => 'span2','placeholder' => 'user name')))
-                        ->add('Password', "password", array('required' => true,'attr' => array('class' => 'span2','placeholder' => 'password')))
+                        ->add('Categories', 'choice',array('choices'=>$catSelectTag,'attr' => array('class' => 'input-large')))
+                        ->add('Product',null, array('required' => true,'attr' => array('class' => 'input-large','id'=>'product')))
+                        ->add('Brand',null, array('required' => true,'attr' => array('class' => 'input-large')))
+                        ->add('Price',"integer", array('required' => true,'attr' => array('class' => 'input-large')))
+                        ->add('Quantity', "integer", array('required' => true,'attr' => array('class' => 'input-large')))
+                        ->add('Date',"date", array('required' => true,'attr' => array('class' => '')))
+                        
                 ;
-                $SignInform = $formBuilder->getForm();
-                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig');
+                $addproductForm = $formBuilder->getForm();
+                $request = $this->getRequest();
+                 if ($request->getMethod() == 'POST')
+                {
+                    //fill the form data from the request
+                     
+                     $addproductForm->bindRequest($request);
+                     if ($addproductForm->isValid())
+                     {
+                         return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg"=>"form is valid"));
+                     }
+                     else
+                     {
+                         return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg"=>"form is not valid"));
+                     }
+                 }
+                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView()));
             }   
         }
             return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>"you are not authorized"));
