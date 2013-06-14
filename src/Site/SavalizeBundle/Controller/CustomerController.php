@@ -7,6 +7,7 @@ namespace Site\SavalizeBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -27,6 +28,40 @@ class CustomerController extends Controller {
      * Lists all UserAccount entities.
      *
      */
+    public function addProductAction(){
+        $session = $this->getRequest()->getSession();
+        $username=$session->get('userName');
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $userRep = $em->getRepository("SiteSavalizeBundle:User");
+        $user=$userRep->findOneByUsername($username);
+        if($user)
+        {
+            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+            $customer=$customerRep->findOneByUser($user);
+            if($customer)
+            {
+                $collectionConstraint = new Collection(array(
+                    'User_Name' => new NotBlank(),
+                    'Password' => new NotBlank()
+                ));
+                
+                $data = array();
+                //create the form
+
+                $formBuilder = $this->createFormBuilder($data, array(
+                            'validation_constraint' => $collectionConstraint,
+                        ))
+                        ->add('User_Name', null, array('required' => true,'attr' => array('class' => 'span2','placeholder' => 'user name')))
+                        ->add('Password', "password", array('required' => true,'attr' => array('class' => 'span2','placeholder' => 'password')))
+                ;
+                $SignInform = $formBuilder->getForm();
+                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig');
+            }   
+        }
+            return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>"you are not authorized"));
+    }
+    
     public function indexAction() {
         $em = $this->getDoctrine()->getManager();
 
@@ -253,6 +288,7 @@ class CustomerController extends Controller {
         exit;
     }
 
+
     // public function insertSeenNotificationAction($notf_id){
     //     $em = $this->getDoctrine()->getEntityManager();
     //     $customer = $em->getRepository('SiteSavalizeBundle:Customer')->find(1);
@@ -264,6 +300,16 @@ class CustomerController extends Controller {
     //     $em->flush();
     //     exit;        
     // }
+
+    public function showNewProductDetailsAction($notf_id){
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $result = $em->getRepository('SiteSavalizeBundle:UserNotification')->updateSeen($notf_id);
+        if($result){
+            // return new Response("hello");
+        }        
+    }
+
 
     public function displayUserChartAction() {
         $request = $this->container->get('request');
@@ -349,13 +395,18 @@ class CustomerController extends Controller {
     /* user personal settings */
 
     public function personalusersettingsAction() {
-        //$request = $this->getRequest();
+        $request = $this->getRequest();
+        $data = array();
+        //$session = $request->getSession();
+        //$id = $session->get('id');
+        $id = 2;
+        $em = $this->getDoctrine()->getEntityManager();
+        $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);;
+        
         $collectionConstraint = new Collection(array(
                     'First_Name' => new NotBlank(),
                     'Last_Name' => new NotBlank(),
                     'Username' => new NotBlank(),
-                    'Password' => new NotBlank(),
-                    'Confirm_password' => new NotBlank(),
                     'Email' => array(new Email(), new NotBlank()),
                     'Country' => new NotBlank(),
                     'City' => new NotBlank(),
@@ -363,15 +414,22 @@ class CustomerController extends Controller {
                     'Age' => new NotBlank(),
                     'Salary' => new NotBlank()
                 ));
-        $data = array();
+        $uid = $obj->getUser()->getId();
+        $data['First_Name']= $obj->getUser()->getFname();
+        $data['Last_Name']= $obj->getUser()->getLname();
+        $data['Username']= $obj->getUser()->getUsername();
+        $data['Email']= $obj->getUser()->getEmail();
+        $data['Country']= $obj->getCountry();
+        $data['City']= $obj->getCity();
+        $data['Region']= $obj->getRegion();
+        $data['Age']= $obj->getAge();
+        $data['Salary']= $obj->getSalary();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
                 ->add('First_Name')
                 ->add('Last_Name')
                 ->add('Username')
-                ->add('Password', 'password')
-                ->add('Confirm_password', 'password')
                 ->add('Email', 'email', array('attr' => array('class' => 'email')))
                 ->add('Country')
                 ->add('City')
@@ -380,19 +438,103 @@ class CustomerController extends Controller {
                 ->add('Salary')
         ;
         $form = $formBuilder->getForm();
+        if ($request->getMethod() == 'POST') {
+           
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    $postdata = $form->getData();
+                    $em->getRepository('SiteSavalizeBundle:User')->updateFirstName($uid,$postdata['First_Name']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateLastName($uid,$postdata['Last_Name']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateUsername($uid,$postdata['Username']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateEmail($uid,$postdata['Email']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateCountry($id,$postdata['Country']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateCity($id,$postdata['City']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateRegion($id,$postdata['Region']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateAge($id,$postdata['Age']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateSalary($id,$postdata['Salary']);
+                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                }
+            }
+          
         return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView()));
     }
 
     /* user change-password settings */
 
-    public function passwordusersettingsAction() {
-        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig');
+    public function passwordusersettingsAction(){
+        $request = $this->getRequest();
+        $data = array();
+        $em = $this->getDoctrine()->getEntityManager();
+        $collectionConstraint = new Collection(array(
+                    'Old_password' => new NotBlank(),
+                    'New_password' => new NotBlank(),
+                    'Confirm_password' => new NotBlank()
+                ));
+        $formBuilder = $this->createFormBuilder($data, array(
+                    'validation_constraint' => $collectionConstraint,
+                ))
+                ->add('Old_password','password')
+                ->add('New_password','password')
+                ->add('Confirm_password','password')
+        ;
+        $form = $formBuilder->getForm();
+        /*
+        if ($request->getMethod() == 'POST') {
+           
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    $postdata = $form->getData();
+                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                }
+            }
+         * 
+         */
+        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig', array('form' => $form->createView()));
+
     }
 
     /* user linked-account settings */
 
-    public function linkedusersettingsAction() {
-        return $this->render('SiteSavalizeBundle:Customer:linkedusersettings.html.twig');
+
+    
+  
+
+    public function linkedusersettingsAction(){
+        $request = $this->getRequest();
+        $data = array();
+        $em = $this->getDoctrine()->getEntityManager();
+        $collectionConstraint = new Collection(array(
+                    'Choose_a_user' => new NotBlank(),
+                    'Message' => array()
+                ));
+        $data['Choose_a_user']= 'By username';
+        $data['Message']= 'to be send to the user (optional)';
+        $formBuilder = $this->createFormBuilder($data, array(
+                    'validation_constraint' => $collectionConstraint,
+                ))
+                ->add('Choose_a_user')
+                ->add('Message','textarea',array('required' => false,'attr' => array('cols' => '100','rows'=>'10','style'=>'resize:none')))
+        ;
+        $form = $formBuilder->getForm();
+        /*
+        if ($request->getMethod() == 'POST') {
+           
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    $postdata = $form->getData();
+                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                }
+            }
+         * 
+         */
+        return $this->render('SiteSavalizeBundle:Customer:linkedusersettings.html.twig', array('form' => $form->createView()));
+
     }
 
 }

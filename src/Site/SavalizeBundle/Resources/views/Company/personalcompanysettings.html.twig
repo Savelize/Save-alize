@@ -24,13 +24,13 @@
 <div class="row-fluid content"> 
         <div class="span3" >
             <ul class="nav nav-list" >
-                <li><a href="#"><h5>Personal Settings</h5></a></li>
+                <li><a href="{{path('site_personal_company_settings')}}"><h5>Personal Settings</h5></a></li>
                 <li class="divider"></li>
-                <li><a href="#"><h5>Change Password</h5></a></li>
+                <li><a href="{{path('site_password_company_settings')}}"><h5>Change Password</h5></a></li>
             </ul>
         </div>
         <div class="span8" style="padding-left: 5px">
-            <form action="#" method="post" {{ form_enctype(form) }}>
+            <form action="{{path('site_personal_company_settings')}}" method="post" {{ form_enctype(form) }}>
                  <h3>Personal settings:</h3><br>
                 {{ form_errors(form) }}
 

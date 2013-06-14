@@ -12,4 +12,98 @@ use Doctrine\ORM\EntityRepository;
  */
 class CompanyRepository extends EntityRepository
 {
+    function updateName($id,$Name){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Company c
+                            SET c.name = :Name 
+                            WHERE c.id = :id"
+                        )->setParameters(array('id'=>$id,'Name'=>$Name));
+        $query->execute();
+    }
+    
+    function updateUsername($id,$Username){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Company c
+                            SET c.username = :Username 
+                            WHERE c.id = :id"
+                        )->setParameters(array('id'=>$id,'Username'=>$Username));
+        $query->execute();
+    }
+    
+    function updateEmail($id,$Email){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Company c
+                            SET c.email = :Email 
+                            WHERE c.id = :id"
+                        )->setParameters(array('id'=>$id,'Email'=>$Email));
+        $query->execute();
+    }
+    
+    function updateTelephone($id,$Telephone){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Company c
+                            SET c.telephone = :Telephone 
+                            WHERE c.id = :id"
+                        )->setParameters(array('id'=>$id,'Telephone'=>$Telephone));
+        $query->execute();
+    }
+    
+    function updateCountry($id,$Country){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Company c
+                            SET c.country = :Country 
+                            WHERE c.id = :id"
+                        )->setParameters(array('id'=>$id,'Country'=>$Country));
+        $query->execute();
+    }
+    
+    function updateCity($id,$City){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Company c
+                            SET c.city = :City 
+                            WHERE c.id = :id"
+                        )->setParameters(array('id'=>$id,'City'=>$City));
+        $query->execute();
+    }
+    
+    function updateRegion($id,$Region){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Company c
+                            SET c.region = :Region 
+                            WHERE c.id = :id"
+                        )->setParameters(array('id'=>$id,'Region'=>$Region));
+        $query->execute();
+    }
 }
+
+// $qb = $request->createQueryBuilder('C');
+//     $query = $qb 
+//         ->select('C.name, I.id')
+//         ->innerJoin('C.items', 'I')
+//         ->getQuery();
+
+// SELECT b.name, p.name
+//             FROM SiteSavalizeBundle:Brand b
+//             JOIN SiteSavalizeBundle:ProductBrand pb
+//             JOIN SiteSavalizeBundle:Product p
+//             WHERE b.id = pb.brand
+//             and p.id = pb.product
+//             and b.company = :company_id
+
+
+
+
+
+
+
+
+
+
+

@@ -12,4 +12,53 @@ use Doctrine\ORM\EntityRepository;
  */
 class CustomerRepository extends EntityRepository
 {
+    function updateCountry($id,$country){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Customer c
+                            SET c.country = :country 
+                            WHERE c.id = :cid"
+                        )->setParameters(array('cid'=>$id,'country'=>$country));
+        $query->execute();
+    }
+    
+    function updateCity($id,$city){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Customer c
+                            SET c.city = :city 
+                            WHERE c.id = :cid"
+                        )->setParameters(array('cid'=>$id,'city'=>$city));
+        $query->execute();
+    }
+    
+    function updateRegion($id,$region){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Customer c
+                            SET c.region = :region 
+                            WHERE c.id = :cid"
+                        )->setParameters(array('cid'=>$id,'region'=>$region));
+        $query->execute();
+    }
+    
+    function updateAge($id,$age){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Customer c
+                            SET c.age = :age 
+                            WHERE c.id = :cid"
+                        )->setParameters(array('cid'=>$id,'age'=>$age));
+        $query->execute();
+    }
+    
+    function updateSalary($id,$salary){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Customer c
+                            SET c.salary = :salary 
+                            WHERE c.id = :cid"
+                        )->setParameters(array('cid'=>$id,'salary'=>$salary));
+        $query->execute();
+    }
 }

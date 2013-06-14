@@ -1,0 +1,41 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+<div>
+	
+<img src="{{ asset('img/11.jpg') }}" width="300px" height="300px"><br>
+
+<div>
+
+<label  >Your rating:</label><label></label>
+<label >Like:</label><label></label>
+</div>
+
+<div >
+<label >Overall rating:</label><label></label>
+<label >Overall likes:</label><label></label>
+</div>
+
+
+
+<div >
+<br>
+<span>Add comment:</span>
+<br>
+<br>
+<textarea rows="4" cols="150">
+</textarea>
+<br>
+
+<span >Previous comments:</span>
+
+{#{% for comment in comments %}#}
+ <span></span>
+{#{% endfor %}#}
+<br>
+<br>
+
+
+</div>
+
+{% endblock %}

@@ -38,14 +38,14 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=20)
+     * @ORM\Column(name="password", type="string", length=255)
      */
     private $password;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\Column(name="email", type="string", length=50)
      */
     private $email;
 
@@ -76,6 +76,14 @@ class Company
      * @ORM\Column(name="region", type="string", length=30,nullable=true)
      */
     private $region;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="picture", type="string", length=50,nullable=true)
+     */
+    private $picture;
+
 
     /**
     *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\Brand", mappedBy="Company")
