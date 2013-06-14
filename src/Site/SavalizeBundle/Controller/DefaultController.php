@@ -14,63 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
-    public function getUserIDByUserName($username)
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-        $userRep = $em->getRepository("SiteSavalizeBundle:User");
-        $user=$userRep->findOneByUsername($username);
-        if($user)
-        {
-            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
-            $customer=$customerRep->findOneByUser($user);
-            if($customer)
-            {
-                return $customer->getId();
-            }
-            $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
-            $admin=$adminRep->findOneByUser($user);
-            if($admin)
-            {
-                return $admin->getId();
-            }
-        }
-        $CompanyRep = $em->getRepository("SiteSavalizeBundle:Company");
-        $company=$CompanyRep->findOneByUsername($username);
-        if($company)
-        {
-            return $company->getId();
-        }
-        return null;
-    }
-    
-    public function getUserTypeByUserName($username)
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-        $userRep = $em->getRepository("SiteSavalizeBundle:User");
-        $user=$userRep->findOneByUsername($username);
-        if($user)
-        {
-            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
-            $customer=$customerRep->findOneByUser($user);
-            if($customer)
-            {
-                return "customer";
-            }
-            $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
-            $admin=$adminRep->findOneByUser($user);
-            if($admin)
-            {
-                return "admin";
-            }
-        }
-        $CompanyRep = $em->getRepository("SiteSavalizeBundle:Company");
-        $company=$CompanyRep->findOneByUsername($username);
-        if($company)
-        {
-            return "company";
-        }
-        return null;
-    }
     public function indexAction()
     {
         //echo $this->getUserIDByUserName("admin");
@@ -167,11 +110,20 @@ class DefaultController extends Controller
                     $session->set('userName',$data['User_Name']);
                     $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
                     $admin=$adminRep->findOneByUser($user);
+                    $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+                    $customer=$customerRep->findOneByUser($user);
                     if($admin)
+                    {
+                        $session->set('id',$admin->getId());
+                        $session->set('role',"admin");
                         return $this->redirect($this->generateUrl('site_personal_admin_settings'));
-                    else
+                    }
+                    else if($customer)
+                    {
+                        $session->set('id',$customer->getId());
+                        $session->set('role',"customer");
                         return $this->redirect($this->generateUrl('user_addProduct'));
-                    
+                    }
                 }
                 else
                 {
@@ -183,12 +135,12 @@ class DefaultController extends Controller
             {
                 $pass_crypt =$Company->getPassword();
                 $pass=$data['Password'];
-                echo \crypt($pass, $pass_crypt)."</br>";
-                echo "$pass_crypt";
                 if ($pass_crypt == \crypt($pass, $pass_crypt))
                 {
                     $session = $this->getRequest()->getSession();
                     $session->set('userName',$data['User_Name']);
+                    $session->set('id',$Company->getId());
+                    $session->set('role',"company");
                     return $this->redirect($this->generateUrl('site_personal_company_settings'));
                 }
                 else
