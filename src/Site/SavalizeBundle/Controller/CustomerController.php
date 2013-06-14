@@ -275,7 +275,7 @@ class CustomerController extends Controller {
     }
 
     /* user history page 4 */
-
+/* for calendar from calendar*/
     public function historyDateSelectionAction() {
         $request = $this->container->get('request');
         $start = $request->get('start');
@@ -285,8 +285,6 @@ class CustomerController extends Controller {
         $end = gmdate("Y-m-d H:i:s", $end);
 
         $repository = $this->getDoctrine()->getEntityManager();
-
-
         $result = $repository->getRepository('SiteSavalizeBundle:History')->getMonthlyPurchases($start, $end);
         $resultArr = array();
         for ($i = 0; $i < count($result); $i++) {
@@ -302,7 +300,7 @@ class CustomerController extends Controller {
 
         return new Response(json_encode($resultArr), 200, array('Content-Type: application/json'));
     }
-
+/*calls the action and renders the twig*/
     public function usrhistoryAction() {
         $resultArr = $this->historyDateSelectionAction();
         return $this->render('SiteSavalizeBundle:Customer:page4.html.twig', array('monthlydata' => $resultArr));
@@ -367,39 +365,39 @@ class CustomerController extends Controller {
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
-        $productbrand = $request->get('pbID');
+//        $productbrand = $request->get('pbID');
         $categoryID = $request->get('categoryID');
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
 //        $result = $repository->dateRangeData($startDate, $endDate);
-        $result = $repository->userChartFiltersPrice($startDate, $endDate, $productbrand);
-        $products = $repository->userChartFilters($startDate, $endDate, $categoryID);
+        $result = $repository->userChartFilters($startDate, $endDate, $categoryID);
+//        $products = $repository->userChartFilters($startDate, $endDate, $categoryID);
 //        $brand = $repository->userChartFilters($startDate, $endDate, $productbrand)->getBrand()->getName();
         for ($i = 0; $i < count($result); $i++) {
-            $pb['price'][$i] = $result[$i]['price'];
+            $pb[$i]['price'] = $result[$i]['price'];
 //            $pb['products'][$i] = $products[$i]->getProduct()->getName();
-            $pb['products'][$i] = $result[$i]['name'];
+            $pb[$i]['products'] = $result[$i]['name'];
         }
 //            $productBrandObject = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand')
 //                    ->find($productbrand)->getProduct()->getName();
 //           // $pb['brands'][$i] = $result[$i]->getBrand()->getName();
 //            $pb['products'] =  $productBrandObject;
 //        }
-        return new Response(json_encode($pb));
+        return new Response(json_encode($result));
     }
-
+/*autocomplete of brands and products in user report*/
     public function fromCategoryAction() {
         $request = $this->container->get('request');
         $categoryID = $request->get('categoryID');
         $em = $this->getDoctrine()->getEntityManager();
         $brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID);
         $productsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID);
-        $pbID = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productbrandID($categoryID);
+//        $pbID = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productbrandID($categoryID);
         $pb = array();
         for ($i = 0; $i < count($brandsOfCategory); $i++) {
             $pb['brands'][$i] = $brandsOfCategory[$i]->getBrand()->getName();
-            $pb['products'][$i] = $productsOfCategory[$i]->getProduct()->getName();
+            $pb['products'][$i] = $brandsOfCategory[$i]->getProduct()->getName();
         }
-        $pb['pbID'] = $pbID;
+//        $pb['pbID'] = $pbID;
         return new Response(json_encode($pb));
     }
 

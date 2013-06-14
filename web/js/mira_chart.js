@@ -8,7 +8,7 @@ $(document).ready(function(){
     var categoryID;
     var userChartStartDate;
     var userChartEndDate;
-    var pbID;
+//    var pbID;
     for(i = 0; i < hiddenCategory.length; i++){
         categorySources[i] = hiddenCategory[i].name;
     }
@@ -54,9 +54,9 @@ $(document).ready(function(){
                 var products = new Array();
                 var brands = new Array();
                 var pb = JSON.parse(response);
-                for(var b in pb.pbID){    
-                    pbID = (pb.pbID[b].id);
-                }
+//                for(var b in pb.pbID){    
+//                    pbID = (pb.pbID[b].id);
+//                }
                 //                alert(pb.pbID['id']);
                 for(var b in pb.brands){    
                     brands[b] = pb.brands[b];
@@ -107,7 +107,7 @@ $(document).ready(function(){
                     }
                     ]
                 }
-                var myNewChart = new Chart(ctx).Line(data);
+                var myNewChart = new Chart(ctx).Bar(data);
             }
         });
     }
@@ -122,21 +122,22 @@ $(document).ready(function(){
             data: {
                 startDate: userChartStartDate, 
                 endDate: userChartEndDate,
-                pbID: pbID,
+//                pbID: pbID,
                 categoryID: categoryID
             },
             success: function(response) {
               //  alert(JSON.parse(response));
                 plots = JSON.parse(response);
                 console.log(plots);
-//                for(var i in plots){    
-//                    alert(price[i] = parseInt(plots[i].price));
-//                    chartproducts[i] = plots[i].products;
-//                  //  console.log(price[i]);
-//                }
-                alert(parseInt(plots.price));
-                price = parseInt(plots.price);
-                chartproducts = plots.products;
+                for(var i in plots){    
+                    
+                    price[i] = parseInt(plots[i].price);
+                    chartproducts[i] = plots[i].products;
+                  //  console.log(price[i]);
+                }
+//                alert(parseInt(plots.price));
+//                price = parseInt(plots.price);
+//                chartproducts = plots.products;
                 //                price.push(2000);
                 
                 var ctx = document.getElementById("myChart").getContext("2d");
@@ -153,7 +154,7 @@ $(document).ready(function(){
                     }
                     ]
                 }
-                var myNewChart = new Chart(ctx).Line(data);
+                var myNewChart = new Chart(ctx).Bar(data);
             }
         });
     }
