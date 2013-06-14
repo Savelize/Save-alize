@@ -59,6 +59,12 @@ class User
      * @ORM\Column(name="email", type="string", length=50)
      */
     private $email;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="region", type="string", length=50,nullable=true)
+     */
+    private $picture;
 
     /**
      * @var \DateTime

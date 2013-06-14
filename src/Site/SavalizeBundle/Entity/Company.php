@@ -76,6 +76,14 @@ class Company
      * @ORM\Column(name="region", type="string", length=30,nullable=true)
      */
     private $region;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="region", type="string", length=50,nullable=true)
+     */
+    private $picture;
+
 
     /**
     *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\Brand", mappedBy="Company")
