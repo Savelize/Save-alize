@@ -361,27 +361,17 @@ class CustomerController extends Controller {
         }
     }
 
-    public function displayUserChartAction() {
+    public function displayUserChartDatesCategoryAction() {
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
-//        $productbrand = $request->get('pbID');
         $categoryID = $request->get('categoryID');
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
-//        $result = $repository->dateRangeData($startDate, $endDate);
         $result = $repository->userChartFilters($startDate, $endDate, $categoryID);
-//        $products = $repository->userChartFilters($startDate, $endDate, $categoryID);
-//        $brand = $repository->userChartFilters($startDate, $endDate, $productbrand)->getBrand()->getName();
         for ($i = 0; $i < count($result); $i++) {
             $pb[$i]['price'] = $result[$i]['price'];
-//            $pb['products'][$i] = $products[$i]->getProduct()->getName();
             $pb[$i]['products'] = $result[$i]['name'];
         }
-//            $productBrandObject = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand')
-//                    ->find($productbrand)->getProduct()->getName();
-//           // $pb['brands'][$i] = $result[$i]->getBrand()->getName();
-//            $pb['products'] =  $productBrandObject;
-//        }
         return new Response(json_encode($result));
     }
 /*autocomplete of brands and products in user report*/
@@ -391,13 +381,11 @@ class CustomerController extends Controller {
         $em = $this->getDoctrine()->getEntityManager();
         $brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID);
         $productsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID);
-//        $pbID = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productbrandID($categoryID);
         $pb = array();
         for ($i = 0; $i < count($brandsOfCategory); $i++) {
             $pb['brands'][$i] = $brandsOfCategory[$i]->getBrand()->getName();
             $pb['products'][$i] = $brandsOfCategory[$i]->getProduct()->getName();
         }
-//        $pb['pbID'] = $pbID;
         return new Response(json_encode($pb));
     }
 
