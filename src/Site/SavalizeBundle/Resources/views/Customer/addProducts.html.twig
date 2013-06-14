@@ -25,7 +25,49 @@
 </nav>
 <div class="container-fluid" >
     <div class="span12 content">
-        <h2>Add New Product</h2>                          
+        <h2>Add New Product</h2>
+        <form action="{{ path('user_addProduct') }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
+            <div class="control-group">
+    {{ form_errors(form) }}
+      
+    {{ form_label(form.Categories) }}
+    {{ form_widget(form.Categories) }}
+    {{ form_errors(form.Categories) }}
+
+    {{ form_rest(form) }}
+                    </div>
+    <input type="submit" value="submit" class="btn btn-primary"/>
+            </form>
         </div>
     </div>
+<script src="{{asset('js/jquery.js')}}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            products=new Array();
+            
+            $("#form_Categories").on('change',function(){
+                $.ajax
+                    ({
+                        type: 'POST',
+                        url: '{{ url('user_getProducts')}}',
+                        data:
+                        {
+                            catId: $("#form_Categories").val()
+                        },
+                        success: function(resp)
+                        {
+                            allBrands = JSON.parse(resp);
+                            products=new Array()
+                            for(var i=0;i<allBrands.length;i++)
+                            {
+                                products[i] = allBrands[i]; 
+                            }
+                            $('#form_Product').autocomplete({source: products});
+                        }
+                    });
+            });
+                $("#form_Categories").trigger('change');
+        });
+    </script>
 {% endblock %}

@@ -1,16 +1,16 @@
-$(document).ready(
 var allBrands = JSON.parse($("#allBrands").val());
 var completeItems = new Array();
 for(i=0;i<allBrands.length;i++){
 //alert (allBrands[i]);
 	completeItems[i] = allBrands[i]; 
 }
-$("#autocomplete").autocomplete({
-		source: completeItems
+$( "#autocomplete" ).autocomplete({
+		source: completeItems,
 	});
 var brandArr = [];	
 
 $("#categorySelect").on('change',function(){
+	alert("here");
 	$.ajax({
 		type: 'POST',
 		url: path,
@@ -21,19 +21,18 @@ $("#categorySelect").on('change',function(){
 		success: function(resp)
 		{
 			var allBrands = JSON.parse(resp);
-			
-			completeItems=[];
-			
 			for(i=0;i<allBrands.length;i++)
 			{
+				alert (allBrands[i]);
 				completeItems[i] = allBrands[i]; 
 			}
-			$("#autocomplete").autocomplete({
-				source: completeItems
-			}); 
+			alert(completeItems);
+			$( "#autocomplete" ).autocomplete({
+				source: completeItems,
+			});
 		}
 	});
-}));
+});
 
 	
 
