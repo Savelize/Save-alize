@@ -464,14 +464,13 @@ class CustomerController extends Controller {
 
     public function personalusersettingsAction() {
         $request = $this->getRequest();
+        $successMessage = false;
         $data = array();
         //$session = $request->getSession();
         //$id = $session->get('id');
         $id = 2;
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
-        ;
-
         $collectionConstraint = new Collection(array(
                     'First_Name' => new NotBlank(),
                     'Last_Name' => new NotBlank(),
@@ -508,34 +507,43 @@ class CustomerController extends Controller {
         ;
         $form = $formBuilder->getForm();
         if ($request->getMethod() == 'POST') {
-
-            //fill the form data from the request
-            $form->bindRequest($request);
-            //check if the form values are correct
-            if ($form->isValid()) {
-                $postdata = $form->getData();
-                $em->getRepository('SiteSavalizeBundle:User')->updateFirstName($uid, $postdata['First_Name']);
-                $em->getRepository('SiteSavalizeBundle:User')->updateLastName($uid, $postdata['Last_Name']);
-                $em->getRepository('SiteSavalizeBundle:User')->updateUsername($uid, $postdata['Username']);
-                $em->getRepository('SiteSavalizeBundle:User')->updateEmail($uid, $postdata['Email']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateCountry($id, $postdata['Country']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateCity($id, $postdata['City']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateRegion($id, $postdata['Region']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateAge($id, $postdata['Age']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateSalary($id, $postdata['Salary']);
-                //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    $postdata = $form->getData();
+                    $em->getRepository('SiteSavalizeBundle:User')->updateFirstName($uid,$postdata['First_Name']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateLastName($uid,$postdata['Last_Name']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateUsername($uid,$postdata['Username']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateEmail($uid,$postdata['Email']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateCountry($id,$postdata['Country']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateCity($id,$postdata['City']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateRegion($id,$postdata['Region']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateAge($id,$postdata['Age']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateSalary($id,$postdata['Salary']);
+                    $successMessage = true;
+                    //$request->getSession()->getFlashBag()->add('successMessage', true);
+                }
             }
-        }
-
-        return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView()));
+          
+        return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
     }
 
     /* user change-password settings */
 
     public function passwordusersettingsAction() {
         $request = $this->getRequest();
+        $successMessage = false;
+        $diffpasswd = false;
+        $wrongpasswd = false;
         $data = array();
+        //$session = $request->getSession();
+        //$id = $session->get('id');
+        $id = 3;
         $em = $this->getDoctrine()->getEntityManager();
+        $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
+        $uid = $obj->getUser()->getId();
+        $passwd= $obj->getUser()->getPassword();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -549,22 +557,31 @@ class CustomerController extends Controller {
                 ->add('Confirm_password', 'password')
         ;
         $form = $formBuilder->getForm();
-        /*
-          if ($request->getMethod() == 'POST') {
-
-          //fill the form data from the request
-          $form->bindRequest($request);
-          //check if the form values are correct
-          if ($form->isValid()) {
-          $postdata = $form->getData();
-          //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
-          }
-          }
-         * 
-         */
-        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig', array('form' => $form->createView()));
+        if ($request->getMethod() == 'POST') {
+           
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    $postdata = $form->getData();
+                    
+                    if($postdata['New_password'] == $postdata['Confirm_password']){
+                        if ($passwd == \crypt($postdata['Old_password'],$passwd)){
+                            $hashpasswd = \crypt($postdata['New_password']);
+                            $em->getRepository('SiteSavalizeBundle:User')->updatePassword($uid,$hashpasswd);
+                            $successMessage = true;
+                        }
+                        else {
+                            $wrongpasswd = true;
+                        }
+                    }
+                    else {
+                        $diffpasswd = true;
+                    }
+                }
+            }
+        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
-
     /* user linked-account settings */
 
     public function linkedusersettingsAction() {

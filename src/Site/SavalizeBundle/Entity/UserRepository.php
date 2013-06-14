@@ -42,6 +42,16 @@ class UserRepository extends EntityRepository
         $query->execute();
     }
     
+    function updatePassword($id,$Password){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:User u
+                            SET u.password = :Password 
+                            WHERE u.id = :uid"
+                        )->setParameters(array('uid'=>$id,'Password'=>$Password));
+        $query->execute();
+    }
+    
     function updateEmail($id,$Email){
         $query = $this->getEntityManager()
                         ->createQuery("

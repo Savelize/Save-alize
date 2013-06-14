@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Site\SavalizeBundle\Entity\Company;
+use Site\SavalizeBundle\Entity\Category;
 use Site\SavalizeBundle\Form\CompanyType;
 
 /**
@@ -195,6 +196,7 @@ class CompanyController extends Controller
     /* company personal settings */
     public function personalcompanysettingsAction(){
         $request = $this->getRequest();
+        $successMessage = false;
         $data = array();
         //$session = $request->getSession();
         //$id = $session->get('id');
@@ -219,6 +221,7 @@ class CompanyController extends Controller
         $data['Country']= $obj->getCountry();
         $data['City']= $obj->getCity();
         $data['Region']= $obj->getRegion();
+        $picturename= "anonymous.jpg";//$obj->getPicture();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
@@ -246,17 +249,33 @@ class CompanyController extends Controller
                     $em->getRepository('SiteSavalizeBundle:Company')->updateCountry($id,$postdata['Country']);
                     $em->getRepository('SiteSavalizeBundle:Company')->updateCity($id,$postdata['City']);
                     $em->getRepository('SiteSavalizeBundle:Company')->updateRegion($id,$postdata['Region']);
+                    if($postdata['upload_your_photo']){
+                        $imgext = $postdata['upload_your_photo']->guessExtension();
+                        $picturename = $postdata['Username'].".".$imgext;
+                        $path = '/opt/lampp/htdocs/Save-alize/web/img/usersimgs';
+                        $postdata['upload_your_photo']->move($path,$picturename);
+                        $em->getRepository('SiteSavalizeBundle:Company')->updatePicture($id,$picturename);
+                    }
+                    $successMessage = true;
                     //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
-        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView()));
+        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'pic' => $picturename));
     }
     
     /* company change-password settings */
     public function passwordcompanysettingsAction(){
         $request = $this->getRequest();
+        $successMessage = false;
+        $diffpasswd = false;
+        $wrongpasswd = false;
         $data = array();
+        //$session = $request->getSession();
+        //$id = $session->get('id');
+        $id = 1;
         $em = $this->getDoctrine()->getEntityManager();
+        $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
+        $passwd= $obj->getPassword();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -270,7 +289,6 @@ class CompanyController extends Controller
                 ->add('Confirm_password','password')
         ;
         $form = $formBuilder->getForm();
-        /*
         if ($request->getMethod() == 'POST') {
            
                 //fill the form data from the request
@@ -278,12 +296,23 @@ class CompanyController extends Controller
                 //check if the form values are correct
                 if ($form->isValid()) {
                     $postdata = $form->getData();
-                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                    
+                    if($postdata['New_password'] == $postdata['Confirm_password']){
+                        if ($passwd == \crypt($postdata['Old_password'],$passwd)){
+                            $hashpasswd = \crypt($postdata['New_password']);
+                            $em->getRepository('SiteSavalizeBundle:Company')->updatePassword($id,$hashpasswd);
+                            $successMessage = true;
+                        }
+                        else {
+                            $wrongpasswd = true;
+                        }
+                    }
+                    else {
+                        $diffpasswd = true;
+                    }
                 }
             }
-         * 
-         */
-        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView()));
+        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
     public function contactAction() {
         //get the request object
@@ -329,6 +358,55 @@ class CompanyController extends Controller
                 $products['Brands'][$i] = $productsBrands[$i]->getBrand()->getName();
                 $products['Products'][$i] = $productsBrands[$i]->getProduct()->getName();
             }
-        return $this->render('SiteSavalizeBundle:Company:newproduct.html.twig' , array('products' =>  $products));
+
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Category');
+        $categories = $repository->categoryAutocomplete();
+        return $this->render('SiteSavalizeBundle:Company:newproduct.html.twig' , array('products' =>  $products,
+                                                                                        'categories' => $categories));
+    }
+
+    public function displayDataByAjaxAction(){
+        $request = $this->container->get('request');
+        $category_id = $request->get('category_id');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand');
+        $result = $repository->displayCategoryData(1,$category_id);
+        $pb = array();
+        for($i=0; $i<count($result); $i++)
+        {
+            $pb['brands'][$i] = $result[$i]->getBrand()->getName();
+            $pb['products'][$i] = $result[$i]->getProduct()->getName();
+        }
+        return new Response(json_encode($pb));
+    }
+
+    public function insertNewProductAction(){
+        $request = $this->container->get('request');
+        $brand = $request->get('brand');
+        $product = $request->get('product');
+        $em = $this->getDoctrine()->getEntityManager();
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Brand');
+        $brandDB = $repository->findBy( array('name' => $brand));
+        if(!$brandDB){
+            $brandDB = new Brand();
+            $brandDB->setName($brandDB);
+            $em->persist($brandDB);    
+        }
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
+        $productDB = $repository->findBy( array('name' => $product));
+        if(!$productDB){
+            $productDB = new Product();
+            $productDB->setName($productDB);
+            $em->persist($productDB);
+        }
+        $product_brand = new ProductBrand();
+        $product_brand->setProduct($productDB);
+        $product_brand->setBrand($brandDB);
+        $product_brand->setPicture();
+        $em->persist($product_brand);
+        $em->flush();
+        exit;
+
     }
 }
+
+
