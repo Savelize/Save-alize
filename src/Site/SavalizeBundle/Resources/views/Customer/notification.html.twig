@@ -1,5 +1,5 @@
 {% extends '::base.html.twig' %}
-{% block title %}Socialize - History{% endblock %}
+{% block title %}Notifications{% endblock %}
 {% block body %}
 
 <nav class="navbar">
@@ -13,11 +13,10 @@
         <div class="nav-collapse">
             <ul class="nav" style="font-weight:normal">
                 <li><a href="#">New Purchases</a> </li>
-                <li><a href="#">My Alerts</a></li>
+                <li class="active"><a href="#">My Alerts</a></li>
                 <li><a href="#">History</a></li>
                 <li><a href="#">Product Reviews</a></li>
                 <li><a href="#">Reports</a></li>
-                <li class="active"><a href="#">Notifications</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="#">Contact Us</a></li>
             </ul>
@@ -26,14 +25,41 @@
 </nav>
 <div class="container-fluid" >
     <div class="span12 content">
-    	<h2>your notification</h2><br><br>
-	<table class="table">
- 		{% for notification in notifications %}
-		<tr class="success">
-			<td>{{ notification.content }}</td>
-		</tr>
-		{% endfor %}
-</table>
+        <h2>Your Notifications</h2><br><br>
+        
+                    <div class="pagination pagination-centered">
+                         {% if lastPageNumber > 1 %}
+                <ul>
+                    {% if page > 1 %}
+                    <li><a href="{{ url('site_savalize_viewNotifications' , {'page': 1}) }}">First</a></li>
+                    <li><a href="{{ url('site_savalize_viewNotifications', { 'page': page - 1}) }}">Prev</a></li>
+                    {% endif %}
+
+        {% for numberOfPage in 1..lastPageNumber %}
+        {% if numberOfPage > page - 3 and numberOfPage < page + 3 %}<!-- display 3 numbers before page and three after page number -->
+            {% if page == numberOfPage %}<li class="active"><a href="#">{{ numberOfPage }}</a></li>{% else %}<li><a href="{{ url('site_savalize_viewNotifications', {'page': numberOfPage}) }}">{{ numberOfPage }}</a></li>{%endif%}
+        {% endif %}
+        {% endfor %}
+
+                    {% if page < lastPageNumber %}
+                <li><a href="{{ url('site_savalize_viewNotifications', {'page': page + 1}) }}">Next</a></li>
+                <li><a href="{{ url('site_savalize_viewNotifications', {'page': lastPageNumber}) }}">Last</a></li>                    
+                    {% endif %}
+                </ul>
+                {% endif %}
+                    </div>
+    <table class="table">
+        {% for notification in notifications %}
+        {% if notification.seen == 0 %}<tr class="success" >{% else %}<tr>
+        {% endif %}
+            <td><a href="{{ url('show_new_product_details' , {'notf_id': notification.id }) }}">{{ notification.title }}</a></td>
+            <td>{{ notification.content }}</td>
+            <td>{{ notification.releasedAt | date('Y-m-d') }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
 </div>
 
     <script src="{{asset('js/jquery.js')}}"></script>

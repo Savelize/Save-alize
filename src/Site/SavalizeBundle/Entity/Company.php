@@ -38,7 +38,7 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=20)
+     * @ORM\Column(name="password", type="string", length=255)
      */
     private $password;
 
@@ -52,28 +52,28 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(name="telephone", type="string", length=11)
+     * @ORM\Column(name="telephone", type="string", length=11,nullable=true)
      */
     private $telephone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="country", type="string", length=30)
+     * @ORM\Column(name="country", type="string", length=30,nullable=true)
      */
     private $country;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", length=30)
+     * @ORM\Column(name="city", type="string", length=30,nullable=true)
      */
     private $city;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="region", type="string", length=30)
+     * @ORM\Column(name="region", type="string", length=30,nullable=true)
      */
     private $region;
 

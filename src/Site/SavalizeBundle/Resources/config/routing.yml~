@@ -2,42 +2,38 @@ site_savalize_homepage:
     pattern:  /
     defaults: { _controller: SiteSavalizeBundle:Default:index }
 
-#site_ajax_get_date:
-#    pattern: /usrhistory/{date}
-#    defaults: { controller: SiteSavalizeBundle:UserAccount:historyDateSelection }
-#    requirements:
-#      date: \d+
-
 site_user_page4:
     pattern: /usrhistory
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:historyDateSelection }
+    defaults: { _controller: SiteSavalizeBundle:Customer:historyDateSelection }
     
 site_company_page10:
     pattern: /page10
     defaults: { _controller: SiteSavalizeBundle:Company:page10 }
 
-<<<<<<< HEAD
+
 site_savalize_viewNotifications:
-    pattern: /show/{id}/{page}
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:shownotification }
+    pattern: /show/{page}
+    defaults: { _controller: SiteSavalizeBundle:Customer:shownotification , page:1}
     requirements:
         page: \d+
         
 site_savalize_displayDummyChart:
     pattern: /displayChart
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:displayEnteryChartPage }
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayEnteryChartPage }
     
 site_savalize_ajaxtoshowchart:
   pattern:  /usr/renderreport
-  defaults: { _controller: SiteSavalizeBundle:UserAccount:displayDummyChart }
-=======
-SiteSavalizeBundle_reviews:
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
+
+SiteSavalizeBundle_one_review:
+    pattern:  /review/show
+    defaults: { _controller: SiteSavalizeBundle:Default:showOneReview }
+SiteSavalizeBundle_all_reviews:
     pattern:  /reviews/show
-    defaults: { _controller: SiteSavalizeBundle:Default:showReviews }
-    
+    defaults: { _controller: SiteSavalizeBundle:Default:showAllReviews }
 contact_us:
   pattern:  /user/contact
-  defaults: { _controller: SiteSavalizeBundle:UserAccount:contact }
+  defaults: { _controller: SiteSavalizeBundle:Customer:contact }
   
 contact_us_company:
   pattern:  /company/contact
@@ -45,9 +41,66 @@ contact_us_company:
 
 site_personal_user_settings:
     pattern: /personalusersettings
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:personalusersettings }
+    defaults: { _controller: SiteSavalizeBundle:Customer:personalusersettings }
+
+site_linked_user_settings:
+    pattern: /linkedusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:linkedusersettings }
     
+site_password_user_settings:
+    pattern: /passwordusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:passwordusersettings }
+    
+site_personal_admin_settings:
+    pattern: /personaladminsettings
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:personaladminsettings }
+    
+site_password_admin_settings:
+    pattern: /passwordadminsettings
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:passwordadminsettings }
+    
+site_personal_company_settings:
+    pattern: /personalcompanysettings
+    defaults: { _controller: SiteSavalizeBundle:Company:personalcompanysettings }
+
+site_password_company_settings:
+    pattern: /passwordcompanysettings
+    defaults: { _controller: SiteSavalizeBundle:Company:passwordcompanysettings }
+
+user_signIn:
+    pattern:  /signIn
+    defaults: { _controller: "SiteSavalizeBundle:Default:signIn" }
+    
+    
+
 site_category_user_settings:
     pattern: /categoryusersettings
-    defaults: { _controller: SiteSavalizeBundle:UserAccount:categoryusersettings }
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
+    defaults: { _controller: SiteSavalizeBundle:Customer:categoryusersettings }
+    
+site_ajax_get_calendar:
+    pattern: /calendar
+    defaults: { _controller: SiteSavalizeBundle:Customer:usrhistory }
+
+
+user_signUp:
+    pattern:  /signUp
+    defaults: { _controller: "SiteSavalizeBundle:Default:signUp" }
+    requirements: { _method: post }
+
+user_signOut:
+    pattern:  /signUp
+    defaults: { _controller: "SiteSavalizeBundle:Default:signOut" }
+    
+user_addProduct:
+    pattern:  /addProduct
+    defaults: { _controller: "SiteSavalizeBundle:Customer:addProduct" }
+    
+user_report_fromCategory:
+    pattern: /fromCategory
+    defaults: { _controller: "SiteSavalizeBundle:Customer:fromCategory" }
+
+
+
+site_savalize_insert_seen_notification:
+    pattern: /seen
+    defaults: { _controller: SiteSavalizeBundle:Customer:insertSeenNotification }

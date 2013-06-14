@@ -311,10 +311,24 @@ class CompanyController extends Controller
             //check if the form values are correct
             if ($form->isValid()) {
                 $data = $form->getData();
-                //return $this->redirect($this->generateUrl('contact_success',array('name' => $data['name'])));
                 return $this->render('SiteSavalizeBundle:Company:msgToUser.html.twig', array('msg' =>"Thank u ".$data['name']." for contacting us"));
             }
         
         return $this->render('SiteSavalizeBundle:Company:contact.html.twig', array('form' => $form->createView()));
+    }
+
+/*
+    when company adds new product
+*/
+    public function viewProductAction(){
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $productsBrands = $em->getRepository('SiteSavalizeBundle:ProductBrand')->displayCompanyProducts(1);
+            for($i=0; $i<count($productsBrands); $i++)
+            {
+                $products['Brands'][$i] = $productsBrands[$i]->getBrand()->getName();
+                $products['Products'][$i] = $productsBrands[$i]->getProduct()->getName();
+            }
+        return $this->render('SiteSavalizeBundle:Company:newproduct.html.twig' , array('products' =>  $products));
     }
 }

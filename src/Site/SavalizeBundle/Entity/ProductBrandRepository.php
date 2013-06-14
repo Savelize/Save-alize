@@ -12,4 +12,40 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductBrandRepository extends EntityRepository
 {
+
+	public function displayCompanyProducts($company_id){
+		$query = $this->getEntityManager()->createQuery('
+			SELECT pb
+			FROM SiteSavalizeBundle:ProductBrand pb
+            JOIN SiteSavalizeBundle:Brand b
+            WHERE b.id = pb.brand
+            AND b.company = :company_id
+            ')->setParameter('company_id', $company_id);
+        return $query->getResult();
+    }
+
+	public function getFirstPBfromCategory($catId){
+		 $query= $this->getEntityManager()->createQuery('
+			select pb
+			from SiteSavalizeBundle:ProductBrand pb
+			where pb.category = :catId
+			')->setParameter('catId', $catId)->setMaxResults(3);
+		try
+		{return $query->getResult();}
+		catch(\Doctrine\ORM\NoResultException $e)
+        	{return null;}
+	}
+	public function getBrandsOfCategory($catId)
+	{
+		$query= $this->getEntityManager()->createQuery('
+			select pb
+			from SiteSavalizeBundle:ProductBrand pb
+			where pb.category = :catId
+			')->setParameter('catId', $catId);
+		try
+		{return $query->getResult();}
+		catch(\Doctrine\ORM\NoResultException $e)
+        	{return null;}
+
+	}
 }
