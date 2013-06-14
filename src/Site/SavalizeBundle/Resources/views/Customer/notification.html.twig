@@ -13,11 +13,10 @@
         <div class="nav-collapse">
             <ul class="nav" style="font-weight:normal">
                 <li><a href="#">New Purchases</a> </li>
-                <li><a href="#">My Alerts</a></li>
+                <li class="active"><a href="#">My Alerts</a></li>
                 <li><a href="#">History</a></li>
                 <li><a href="#">Product Reviews</a></li>
                 <li><a href="#">Reports</a></li>
-                <li class="active"><a href="#">Notifications</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="#">Contact Us</a></li>
             </ul>
@@ -53,12 +52,12 @@
         {% for notification in notifications %}
         {% if notification.seen == 0 %}<tr class="success" >{% else %}<tr>
         {% endif %}
-            <td><a href="">{{ notification.title }}</a></td>
+            <td><a href="{{ url('show_new_product_details' , {'notf_id': notification.id }) }}">{{ notification.title }}</a></td>
             <td>{{ notification.content }}</td>
             <td>{{ notification.releasedAt | date('Y-m-d') }}</td>
         </tr>
         {% endfor %}
-</table>
+    </table>
 
 </div>
 </div>

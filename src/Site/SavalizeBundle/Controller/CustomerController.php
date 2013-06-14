@@ -251,18 +251,14 @@ class CustomerController extends Controller {
         exit;
     }
 
-    // public function insertSeenNotificationAction($notf_id){
+    public function showNewProductDetailsAction($notf_id){
 
-    //     $em = $this->getDoctrine()->getEntityManager();
-    //     $customer = $em->getRepository('SiteSavalizeBundle:Customer')->find(1);
-    //     $notification = $em->getRepository('SiteSavalizeBundle:UserNotification')->find($notf_id);
-    //     $seenNotf = new UserNotificationSeen();
-    //     $seenNotf->setCustomer($customer);
-    //     $seenNotf->setUserNotification();
-    //     $em->persist($seenNotf);
-    //     $em->flush();
-    //     exit;        
-    // }
+        $em = $this->getDoctrine()->getEntityManager();
+        $result = $em->getRepository('SiteSavalizeBundle:UserNotification')->updateSeen($notf_id);
+        if($result){
+            // return new Response("hello");
+        }        
+    }
 
     public function displayDummyChartAction() {
         $startDate = "2013-06-01";

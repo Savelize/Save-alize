@@ -12,4 +12,30 @@ use Doctrine\ORM\EntityRepository;
  */
 class CompanyRepository extends EntityRepository
 {
+
 }
+
+// $qb = $request->createQueryBuilder('C');
+//     $query = $qb 
+//         ->select('C.name, I.id')
+//         ->innerJoin('C.items', 'I')
+//         ->getQuery();
+
+// SELECT b.name, p.name
+//             FROM SiteSavalizeBundle:Brand b
+//             JOIN SiteSavalizeBundle:ProductBrand pb
+//             JOIN SiteSavalizeBundle:Product p
+//             WHERE b.id = pb.brand
+//             and p.id = pb.product
+//             and b.company = :company_id
+
+
+
+
+
+
+
+
+
+
+

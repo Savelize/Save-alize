@@ -86,6 +86,14 @@ user_signUp:
     requirements: { _method: post }
 
 
-site_savalize_insert_seen_notification:
-    pattern: /seen
-    defaults: { _controller: SiteSavalizeBundle:Customer:insertSeenNotification }
+show_new_product_details:
+    pattern: /showproduct/{notf_id}
+    defaults: { _controller: SiteSavalizeBundle:Customer:showNewProductDetails }
+
+company_view_product:
+    pattern: /company/newproduct/{id}
+    defaults: { _controller: SiteSavalizeBundle:Company:inserNewProduct }
+
+company_add_newproduct:
+    pattern: /company/products/{id}
+    defaults: { _controller: SiteSavalizeBundle:Company:viewProduct }
