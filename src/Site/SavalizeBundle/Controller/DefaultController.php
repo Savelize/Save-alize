@@ -22,7 +22,7 @@ class DefaultController extends Controller
         
         if($session->get('userName')!=null)
         {
-            $userType=$this->getUserTypeByUserName($session->get('userName'));
+            $userType=$session->get("role");
             if($userType=="customer")
                 return $this->redirect($this->generateUrl('user_addProduct'));
             else if($userType=="company")
