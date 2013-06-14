@@ -23,7 +23,7 @@ site_savalize_displayDummyChart:
     
 site_savalize_ajaxtoshowchart:
   pattern:  /usr/renderreport
-  defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChart }
 
 SiteSavalizeBundle_one_review:
     pattern:  /review/show
@@ -70,7 +70,7 @@ site_password_company_settings:
 user_signIn:
     pattern:  /signIn
     defaults: { _controller: "SiteSavalizeBundle:Default:signIn" }
-    
+    requirements: { _method: post }
     
 
 site_category_user_settings:
@@ -100,7 +100,31 @@ user_report_fromCategory:
     defaults: { _controller: "SiteSavalizeBundle:Customer:fromCategory" }
 
 
-
 site_savalize_insert_seen_notification:
     pattern: /seen
     defaults: { _controller: SiteSavalizeBundle:Customer:insertSeenNotification }
+    
+user_chart_datesOnly:
+    pattern:  /usr/renderreportdatesonly
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesOnly }
+
+
+
+show_new_product_details:
+    pattern: /showproduct/{notf_id}
+    defaults: { _controller: SiteSavalizeBundle:Customer:showNewProductDetails }
+
+company_view_product:
+    pattern: /company/newproduct/{id}
+    defaults: { _controller: SiteSavalizeBundle:Company:inserNewProduct }
+
+company_add_newproduct:
+    pattern: /company/products/{id}
+    defaults: { _controller: SiteSavalizeBundle:Company:viewProduct }
+<<<<<<< HEAD
+site_brands_cat:
+    pattern: /categories
+    defaults: { _controller: SiteSavalizeBundle:Default:getBrandsOfCategory }
+=======
+
+>>>>>>> e7e7d94dd6d1cc824bd57e021359123c89c774ad

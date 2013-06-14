@@ -9,7 +9,7 @@
 		{% endfor %}
 	</select>
 	<h2>Search for a specific brand:</h2>
-	<input id="autocomplete" autocomplete="off">
+	<input id="autocomplete">
 	<button >Go</button>
 	
 	<br>

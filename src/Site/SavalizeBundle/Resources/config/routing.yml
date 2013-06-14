@@ -126,4 +126,6 @@ company_view_product:
 company_add_newproduct:
     pattern: /company/products/{id}
     defaults: { _controller: SiteSavalizeBundle:Company:viewProduct }
-
+site_brands_cat:
+    pattern: /categories
+    defaults: { _controller: SiteSavalizeBundle:Default:getBrandsOfCategory }

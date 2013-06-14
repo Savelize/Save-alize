@@ -28,29 +28,37 @@ class ProductBrandRepository extends EntityRepository
 	public function getFirstPBfromCategory($catId){
 		 $query= $this->getEntityManager()->createQuery('
 			select pb
-			from SiteSavalizeBundle:ProductBrand pb
-			where pb.category = :catId
+			from SiteSavalizeBundle:ProductBrand pb join pb.product p join p.category c where c.id = :catId
 			')->setParameter('catId', $catId)->setMaxResults(3);
+		return $query->getResult();
+	}
+	public function getProductBrandsOfCategory($catId)
+	{
+		/*$query= $this->getEntityManager()->createQuery('
+
         try {
             return $query->getResult();
         } catch (\Doctrine\ORM\NoResultException $e) {
             return null;
-        }
+        }*/
     }
 
     public function getBrandsOfCategory($catId) {
-        $query = $this->getEntityManager()->createQuery('
+        /*$query = $this->getEntityManager()->createQuery('
+
 			select pb
 			from SiteSavalizeBundle:ProductBrand pb
 			where pb.category = :catId
 			')->setParameter('catId', $catId);
 
-        try {
-            return $query->getResult();
-        } catch (\Doctrine\ORM\NoResultException $e) {
-            return null;
-        }
-    }
+		return $query->getResult();*/
+		$query= $this->getEntityManager()->createQuery('
+			select b from SiteSavalizeBundle:Brand b join 
+			b.productBrands pb join pb.product p join p.category c where c.id = :catId 
+		')->setParameter('catId', $catId);
+		return $query->getResult();
+	}
+	
 
     public function productsandbrands($categoryID) {
 

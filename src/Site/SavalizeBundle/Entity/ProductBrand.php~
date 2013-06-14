@@ -247,4 +247,27 @@ class ProductBrand
     {
         return $this->productComments;
     }
+
+    /**
+     * Set category
+     *
+     * @param \Site\SavalizeBundle\Entity\Category $category
+     * @return ProductBrand
+     */
+    public function setCategory(\Site\SavalizeBundle\Entity\Category $category = null)
+    {
+        $this->category = $category;
+    
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \Site\SavalizeBundle\Entity\Category 
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
 }
