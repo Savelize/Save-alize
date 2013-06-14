@@ -25,10 +25,12 @@ site_savalize_ajaxtoshowchart:
   pattern:  /usr/renderreport
   defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
 
-SiteSavalizeBundle_reviews:
+SiteSavalizeBundle_one_review:
+    pattern:  /review/show
+    defaults: { _controller: SiteSavalizeBundle:Default:showOneReview }
+SiteSavalizeBundle_all_reviews:
     pattern:  /reviews/show
-    defaults: { _controller: SiteSavalizeBundle:Default:showReviews }
-    
+    defaults: { _controller: SiteSavalizeBundle:Default:showAllReviews }
 contact_us:
   pattern:  /user/contact
   defaults: { _controller: SiteSavalizeBundle:Customer:contact }
