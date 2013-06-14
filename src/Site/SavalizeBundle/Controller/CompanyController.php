@@ -195,6 +195,7 @@ class CompanyController extends Controller
     /* company personal settings */
     public function personalcompanysettingsAction(){
         $request = $this->getRequest();
+        $successMessage = false;
         $data = array();
         //$session = $request->getSession();
         //$id = $session->get('id');
@@ -219,6 +220,7 @@ class CompanyController extends Controller
         $data['Country']= $obj->getCountry();
         $data['City']= $obj->getCity();
         $data['Region']= $obj->getRegion();
+        $picturename= "anonymous.jpg";//$obj->getPicture();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
@@ -246,17 +248,33 @@ class CompanyController extends Controller
                     $em->getRepository('SiteSavalizeBundle:Company')->updateCountry($id,$postdata['Country']);
                     $em->getRepository('SiteSavalizeBundle:Company')->updateCity($id,$postdata['City']);
                     $em->getRepository('SiteSavalizeBundle:Company')->updateRegion($id,$postdata['Region']);
+                    if($postdata['upload_your_photo']){
+                        $imgext = $postdata['upload_your_photo']->guessExtension();
+                        $picturename = $postdata['Username'].".".$imgext;
+                        $path = '/opt/lampp/htdocs/Save-alize/web/img/usersimgs';
+                        $postdata['upload_your_photo']->move($path,$picturename);
+                        $em->getRepository('SiteSavalizeBundle:Company')->updatePicture($id,$picturename);
+                    }
+                    $successMessage = true;
                     //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
-        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView()));
+        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'pic' => $picturename));
     }
     
     /* company change-password settings */
     public function passwordcompanysettingsAction(){
         $request = $this->getRequest();
+        $successMessage = false;
+        $diffpasswd = false;
+        $wrongpasswd = false;
         $data = array();
+        //$session = $request->getSession();
+        //$id = $session->get('id');
+        $id = 1;
         $em = $this->getDoctrine()->getEntityManager();
+        $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
+        $passwd= $obj->getPassword();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -270,7 +288,6 @@ class CompanyController extends Controller
                 ->add('Confirm_password','password')
         ;
         $form = $formBuilder->getForm();
-        /*
         if ($request->getMethod() == 'POST') {
            
                 //fill the form data from the request
@@ -278,12 +295,23 @@ class CompanyController extends Controller
                 //check if the form values are correct
                 if ($form->isValid()) {
                     $postdata = $form->getData();
-                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                    
+                    if($postdata['New_password'] == $postdata['Confirm_password']){
+                        if ($passwd == \crypt($postdata['Old_password'],$passwd)){
+                            $hashpasswd = \crypt($postdata['New_password']);
+                            $em->getRepository('SiteSavalizeBundle:Company')->updatePassword($id,$hashpasswd);
+                            $successMessage = true;
+                        }
+                        else {
+                            $wrongpasswd = true;
+                        }
+                    }
+                    else {
+                        $diffpasswd = true;
+                    }
                 }
             }
-         * 
-         */
-        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView()));
+        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
     public function contactAction() {
         //get the request object

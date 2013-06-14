@@ -32,6 +32,16 @@ class CompanyRepository extends EntityRepository
         $query->execute();
     }
     
+    function updatePicture($id,$Picture){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:Company c
+                            SET c.picture = :Picture 
+                            WHERE c.id = :id"
+                        )->setParameters(array('id'=>$id,'Picture'=>$Picture));
+        $query->execute();
+    }
+    
     function updateEmail($id,$Email){
         $query = $this->getEntityManager()
                         ->createQuery("

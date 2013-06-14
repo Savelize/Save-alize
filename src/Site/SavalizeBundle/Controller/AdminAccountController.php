@@ -192,6 +192,7 @@ class AdminAccountController extends Controller
     /* admin personal settings */
     public function personaladminsettingsAction(){
         $request = $this->getRequest();
+        $successMessage = false;
         $data = array();
         //$session = $request->getSession();
         //$id = $session->get('id');
@@ -230,17 +231,27 @@ class AdminAccountController extends Controller
                     $em->getRepository('SiteSavalizeBundle:User')->updateLastName($uid,$postdata['Last_Name']);
                     $em->getRepository('SiteSavalizeBundle:User')->updateUsername($uid,$postdata['Username']);
                     $em->getRepository('SiteSavalizeBundle:User')->updateEmail($uid,$postdata['Email']);
+                    $successMessage = true;
                     //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
-        return $this->render('SiteSavalizeBundle:AdminAccount:personaladminsettings.html.twig', array('form' => $form->createView()));
+        return $this->render('SiteSavalizeBundle:AdminAccount:personaladminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
     }
     
     /* admin change-password settings */
     public function passwordadminsettingsAction(){
         $request = $this->getRequest();
+        $successMessage = false;
+        $diffpasswd = false;
+        $wrongpasswd = false;
         $data = array();
+        //$session = $request->getSession();
+        //$id = $session->get('id');
+        $id = 3;
         $em = $this->getDoctrine()->getEntityManager();
+        $obj = $em->getRepository('SiteSavalizeBundle:Admin')->find($id);
+        $uid = $obj->getUser()->getId();
+        $passwd= $obj->getUser()->getPassword();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -254,7 +265,6 @@ class AdminAccountController extends Controller
                 ->add('Confirm_password','password')
         ;
         $form = $formBuilder->getForm();
-        /*
         if ($request->getMethod() == 'POST') {
            
                 //fill the form data from the request
@@ -262,11 +272,22 @@ class AdminAccountController extends Controller
                 //check if the form values are correct
                 if ($form->isValid()) {
                     $postdata = $form->getData();
-                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                    
+                    if($postdata['New_password'] == $postdata['Confirm_password']){
+                        if ($passwd == \crypt($postdata['Old_password'],$passwd)){
+                            $hashpasswd = \crypt($postdata['New_password']);
+                            $em->getRepository('SiteSavalizeBundle:User')->updatePassword($uid,$hashpasswd);
+                            $successMessage = true;
+                        }
+                        else {
+                            $wrongpasswd = true;
+                        }
+                    }
+                    else {
+                        $diffpasswd = true;
+                    }
                 }
             }
-         * 
-         */
-        return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig', array('form' => $form->createView()));
+        return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
 }
