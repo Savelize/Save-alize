@@ -5,6 +5,7 @@ namespace Site\SavalizeBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -194,11 +195,15 @@ class CompanyController extends Controller
     /* company personal settings */
     public function personalcompanysettingsAction(){
         $request = $this->getRequest();
+        $data = array();
+        //$session = $request->getSession();
+        //$id = $session->get('id');
+        $id = 1;
+        $em = $this->getDoctrine()->getEntityManager();
+        $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
         $collectionConstraint = new Collection(array(
             'Name' => new NotBlank(),
             'Username' => new NotBlank(),
-            'Password' => new NotBlank(),
-            'Confirm_password' => new NotBlank(),
             'Email' => array(new Email(), new NotBlank()),
             'Telephone' => array(),
             'Country' => array(),
@@ -207,14 +212,18 @@ class CompanyController extends Controller
             'upload_your_photo' => array()
             
         ));
-        $data = array();
+        $data['Name']= $obj->getName();
+        $data['Username']= $obj->getUsername();
+        $data['Email']= $obj->getEmail();
+        $data['Telephone']= $obj->getTelephone();
+        $data['Country']= $obj->getCountry();
+        $data['City']= $obj->getCity();
+        $data['Region']= $obj->getRegion();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
                 ->add('Name')
                 ->add('Username')
-                ->add('Password', 'password')
-                ->add('Confirm_password', 'password')
                 ->add('Email', 'email', array('attr' => array('class' => 'email')))
                 ->add('Telephone','text',array('required' => false))
                 ->add('Country','text',array('required' => false))
@@ -222,15 +231,22 @@ class CompanyController extends Controller
                 ->add('Region','text',array('required' => false))
                 ->add('upload_your_photo','file', array('required' => false))
                         ;
-        $form = $formBuilder->getForm();
-        //check if this is the user posted his data
+       $form = $formBuilder->getForm();
         if ($request->getMethod() == 'POST') {
+           
                 //fill the form data from the request
                 $form->bindRequest($request);
                 //check if the form values are correct
                 if ($form->isValid()) {
-                    //$fdata = $form->getData();
-                    return $this->redirect($this->generateUrl('site_savalize_homepage'));
+                    $postdata = $form->getData();
+                    $em->getRepository('SiteSavalizeBundle:Company')->updateName($id,$postdata['Name']);
+                    $em->getRepository('SiteSavalizeBundle:Company')->updateUsername($id,$postdata['Username']);
+                    $em->getRepository('SiteSavalizeBundle:Company')->updateEmail($id,$postdata['Email']);
+                    $em->getRepository('SiteSavalizeBundle:Company')->updateTelephone($id,$postdata['Telephone']);
+                    $em->getRepository('SiteSavalizeBundle:Company')->updateCountry($id,$postdata['Country']);
+                    $em->getRepository('SiteSavalizeBundle:Company')->updateCity($id,$postdata['City']);
+                    $em->getRepository('SiteSavalizeBundle:Company')->updateRegion($id,$postdata['Region']);
+                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
         return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView()));
@@ -238,7 +254,36 @@ class CompanyController extends Controller
     
     /* company change-password settings */
     public function passwordcompanysettingsAction(){
-        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig');
+        $request = $this->getRequest();
+        $data = array();
+        $em = $this->getDoctrine()->getEntityManager();
+        $collectionConstraint = new Collection(array(
+                    'Old_password' => new NotBlank(),
+                    'New_password' => new NotBlank(),
+                    'Confirm_password' => new NotBlank()
+                ));
+        $formBuilder = $this->createFormBuilder($data, array(
+                    'validation_constraint' => $collectionConstraint,
+                ))
+                ->add('Old_password','password')
+                ->add('New_password','password')
+                ->add('Confirm_password','password')
+        ;
+        $form = $formBuilder->getForm();
+        /*
+        if ($request->getMethod() == 'POST') {
+           
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    $postdata = $form->getData();
+                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                }
+            }
+         * 
+         */
+        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView()));
     }
     public function contactAction() {
         //get the request object
@@ -266,10 +311,24 @@ class CompanyController extends Controller
             //check if the form values are correct
             if ($form->isValid()) {
                 $data = $form->getData();
-                //return $this->redirect($this->generateUrl('contact_success',array('name' => $data['name'])));
                 return $this->render('SiteSavalizeBundle:Company:msgToUser.html.twig', array('msg' =>"Thank u ".$data['name']." for contacting us"));
             }
         
         return $this->render('SiteSavalizeBundle:Company:contact.html.twig', array('form' => $form->createView()));
+    }
+
+/*
+    when company adds new product
+*/
+    public function viewProductAction(){
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $productsBrands = $em->getRepository('SiteSavalizeBundle:ProductBrand')->displayCompanyProducts(1);
+            for($i=0; $i<count($productsBrands); $i++)
+            {
+                $products['Brands'][$i] = $productsBrands[$i]->getBrand()->getName();
+                $products['Products'][$i] = $productsBrands[$i]->getProduct()->getName();
+            }
+        return $this->render('SiteSavalizeBundle:Company:newproduct.html.twig' , array('products' =>  $products));
     }
 }

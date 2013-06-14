@@ -4,9 +4,15 @@ namespace Site\SavalizeBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Site\SavalizeBundle\Entity\Category;
-use Site\SavalizeBundle\Form\CategoryType;
+use Symfony\Component\HttpFoundation\Response;
 
+use Site\SavalizeBundle\Form\CategoryType;
+use Site\SavalizeBundle\Entity\Customer;
+use Site\SavalizeBundle\Entity\History;
+use Site\SavalizeBundle\Entity\UserNotification;
+use Site\SavalizeBundle\Entity\Product;
+use Site\SavalizeBundle\Entity\ProductBrand;
+use Site\SavalizeBundle\Entity\Brand;
 /**
  * Category controller.
  *
@@ -175,24 +181,6 @@ class CategoryController extends Controller {
         ;
     }
 
-    public function fromCategoryAction() {
-        $request = $this->container->get('request');
-        $categoryID = $request->get('categoryID');
-
-        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand');
-        $result = $repository->createQuery('
-            SELECT SUM(h.price) as price , p.name as name 
-            FROM SiteSavalizeBundle:History h
-            JOIN SiteSavalizeBundle:Product p
-            WHERE p.id = h.productBrand 
-            AND h.baughtAt BETWEEN :start AND :end
-            GROUP BY h.productBrand
-')
-                ->setParameter('start', $startDates)
-                ->setParameter('end', $endDate);
-
-        $result = $q->getResult();
-        return $result;
-    }
+ 
 
 }

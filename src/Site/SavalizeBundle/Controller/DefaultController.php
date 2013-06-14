@@ -9,6 +9,8 @@ use Site\SavalizeBundle\Entity\Customer;
 use Site\SavalizeBundle\Entity\Company;
 use Site\SavalizeBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -266,10 +268,28 @@ class DefaultController extends Controller
     {
     	return $this->render('SiteSavalizeBundle:Default:oneReview.html.twig', array());
     }
-    public function showAllReviews()
+    public function showAllReviewsAction()
     {
     	 $em=$this->getDoctrine()->getEntityManager();
     	 $categories = $em->getRepository('SiteSavalizeBundle:Category')->findAll();
-    	 return $this->render('SiteSavalizeBundle:Default:allReviews.html.twig', array('cats' => $categories));
+    	 for($i=0; $i<count($categories); $i++){
+    	 	$catID = $categories[$i]->getId();
+    	 	$pbs[$i] = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getFirstPBfromCategory($catID);	
+    	 }    	 
+    	 $result = $this->getBrandsOfCategoryAction();
+    	 return $this->render('SiteSavalizeBundle:Default:allReviews.html.twig', array('categories' => $categories, 'pbs'=> $pbs, 'brands'=>$result));
+    }
+    public function getBrandsOfCategoryAction()
+    {
+    	$request = $this->container->get('request');
+    	$catId = $request->get('catId');
+    	$em=$this->getDoctrine()->getEntityManager();
+    	$brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getBrandsOfCategory($catId);
+    	$brands=array();
+	for($i=0; $i<count($brandsOfCategory); $i++)
+	{
+		$brands[$i] = $brandsOfCategory[$i]->getBrand()->getName();
+	}
+	return new Response (json_encode($brands));
     }
 }

@@ -1,0 +1,30 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<div>
+	<h2>Select a category</h2>
+	<select id = "categorySelect" name="categorySelect">
+		<option value="select">-- Select a category --</option>
+		{% for category in categories %}
+			<option value="{{ category.id }}">{{ category.name }}</option>
+		{% endfor %}
+	</select>
+	<h2>Search for a specific brand:</h2>
+	<input id="autocomplete">
+	<button >Go</button>
+	
+	<br>
+	<br>
+	<input type="hidden" id="hiddenBrands" value="{{ brands }}">
+	{% for pb in pbs %}
+		{% for pb1 in pb %}
+			<img src="{{asset('img/')}}{{ pb1.picture }}" width="200" height="200"/>
+		{% endfor %}
+		
+	{% endfor %}
+</div>
+	{% block javascripts %}
+		<script src="{{asset('js/reviewsPages.js')}}"></script>
+		<script> var path = "{{ path('site_brands_cat') }}" </script>
+	{% endblock %}
+{% endblock %}
+

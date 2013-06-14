@@ -29,7 +29,7 @@ class UserNotificationRepository extends EntityRepository
         $page--;   // to start from zero
 
         $query = $this->getEntityManager()->createQuery('
-        SELECT u.title, u.content , u.releasedAt , N.seen
+        SELECT u.id, u.title, u.content , u.releasedAt , N.seen
         FROM SiteSavalizeBundle:UserNotificationSeen N
         JOIN SiteSavalizeBundle:UserNotification u
         where N.customer = :id
@@ -43,5 +43,16 @@ class UserNotificationRepository extends EntityRepository
         }
         $query->setParameter('id', $id);
         return $query->getResult();
+    }
+
+        public function updateSeen($notf_id) {
+        $query = $this->getEntityManager()->createQuery('
+            UPDATE SiteSavalizeBundle:UserNotificationSeen n
+            SET n.seen = 1
+            where n.userNotification = :notf_id
+            ');
+        $query->setParameter('notf_id', $notf_id);
+        $result = $query->execute();
+        return $result;
     }
 }
