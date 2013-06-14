@@ -64,12 +64,48 @@ class HistoryRepository extends EntityRepository {
 
         $result = $q->getResult();
 
+        return $result;
+    }
 
-//        $users2 = Doctrine_Query::create()
-//                ->select('g.price, p.name')
-//                ->from('History g')
-//                ->orderby('u.id');
-//        $tmp2 = $users2->fetchArray();
+    public function userChartFiltersPrice($startDate, $endDate, $productbrand) {
+        $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price 
+            FROM SiteSavalizeBundle:History h
+            WHERE h.productBrand = :productbrand
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY h.productBrand
+')
+                ->setParameter('productbrand', $productbrand)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+
+    public function userChartFilters($startDate, $endDate, $productbrand) {
+        $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        $q = $this->getEntityManager()->createQuery('
+            SELECT pb.id
+            FROM SiteSavalizeBundle:History h
+            JOIN SiteSavalizeBundle:ProductBrand pb
+            WHERE pb.id = h.productBrand 
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY h.productBrand
+')  ->setParameter('productbrand', $productbrand)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
 
         return $result;
     }

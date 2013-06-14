@@ -23,7 +23,7 @@ site_savalize_displayDummyChart:
     
 site_savalize_ajaxtoshowchart:
   pattern:  /usr/renderreport
-  defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChart }
 
 SiteSavalizeBundle_reviews:
     pattern:  /reviews/show
@@ -88,8 +88,6 @@ user_signUp:
 user_report_fromCategory:
     pattern: /fromCategory
     defaults: { _controller: "SiteSavalizeBundle:Customer:fromCategory" }
-
-
 
 site_savalize_insert_seen_notification:
     pattern: /seen

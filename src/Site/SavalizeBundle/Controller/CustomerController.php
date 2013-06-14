@@ -1,5 +1,7 @@
 <?php
 
+//
+
 namespace Site\SavalizeBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -217,7 +219,7 @@ class CustomerController extends Controller {
         return $this->render('SiteSavalizeBundle:Customer:page4.html.twig', array('monthlydata' => $resultArr));
     }
 
-    public function shownotificationAction( $page ) {
+    public function shownotificationAction($page) {
         $maxResults = 2;
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('SiteSavalizeBundle:UserNotification');
@@ -229,7 +231,7 @@ class CustomerController extends Controller {
         if (($notfCount % $maxResults) > 0) {
             $lastPageNumber++;
         }
-        $notifications = $repo->showNotifications(1,$page, $maxResults);
+        $notifications = $repo->showNotifications(1, $page, $maxResults);
         if (!$em) {
             throw $this->createNotFoundException('Unable to find Customer entity.');
         }
@@ -239,8 +241,8 @@ class CustomerController extends Controller {
                     'lastPageNumber' => $lastPageNumber));
     }
 
-    public function insertUserNotificationAction($title,$content,$user_id){
-        
+    public function insertUserNotificationAction($title, $content, $user_id) {
+
         $em = $this->getDoctrine()->getEntityManager();
         $notification = new UserNotification();
         $notification->setTitle($title);
@@ -252,7 +254,6 @@ class CustomerController extends Controller {
     }
 
     // public function insertSeenNotificationAction($notf_id){
-
     //     $em = $this->getDoctrine()->getEntityManager();
     //     $customer = $em->getRepository('SiteSavalizeBundle:Customer')->find(1);
     //     $notification = $em->getRepository('SiteSavalizeBundle:UserNotification')->find($notf_id);
@@ -264,21 +265,43 @@ class CustomerController extends Controller {
     //     exit;        
     // }
 
-    public function displayDummyChartAction() {
-        $startDate = "2013-06-01";
-        $endDate = "2013-06-30";
-
+    public function displayUserChartAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $productbrand = $request->get('pbID');
+ 
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
-        $result = $repository->dateRangeData($startDate, $endDate);
-//
-//        for ($i = 0; $i < count($result); $i++) {
-//            $resultArr[$i] = ['productName' => $result[$i]->getName(),
-//                'productPrice' => $result[$i]->getPrice()];
+//        $result = $repository->dateRangeData($startDate, $endDate);
+        $result = $repository->userChartFiltersPrice($startDate, $endDate, $productbrand);
+//        $products = $repository->userChartFilters($startDate, $endDate, $productbrand)->getProduct()->getName();
+//        $brand = $repository->userChartFilters($startDate, $endDate, $productbrand)->getBrand()->getName();
+        for ($i = 0; $i < count($result); $i++) {
+            $pb['price'] = $result[$i]['price'];
+        }
+            $productBrandObject = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand')
+                    ->find($productbrand)->getProduct()->getName();
+           // $pb['brands'][$i] = $result[$i]->getBrand()->getName();
+            $pb['products'] =  $productBrandObject;
 //        }
+        return new Response(json_encode($pb));
+        
+    }
 
-
-        return new Response(json_encode($resultArr));
-
+    public function fromCategoryAction() {
+        $request = $this->container->get('request');
+        $categoryID = $request->get('categoryID');
+        $em = $this->getDoctrine()->getEntityManager();
+        $brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID);
+        $productsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID);
+        $pbID = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productbrandID($categoryID);
+        $pb = array();
+        for ($i = 0; $i < count($brandsOfCategory); $i++) {
+            $pb['brands'][$i] = $brandsOfCategory[$i]->getBrand()->getName();
+            $pb['products'][$i] = $productsOfCategory[$i]->getProduct()->getName();
+        }
+        $pb['pbID'] = $pbID;
+        return new Response(json_encode($pb));
     }
 
     public function displayEnteryChartPageAction() {
@@ -359,13 +382,16 @@ class CustomerController extends Controller {
         $form = $formBuilder->getForm();
         return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView()));
     }
-    
+
     /* user change-password settings */
-    public function passwordusersettingsAction(){
+
+    public function passwordusersettingsAction() {
         return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig');
     }
+
     /* user linked-account settings */
-    public function linkedusersettingsAction(){
+
+    public function linkedusersettingsAction() {
         return $this->render('SiteSavalizeBundle:Customer:linkedusersettings.html.twig');
     }
 
