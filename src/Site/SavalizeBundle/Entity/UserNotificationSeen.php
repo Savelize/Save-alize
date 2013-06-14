@@ -73,4 +73,49 @@ class UserNotificationSeen
     {
         return $this->seen;
     }
+    /**
+     * Set customer
+     *
+     * @param \Site\SavalizeBundle\Entity\Customer $customer
+     * @return UserNotificationSeen
+     */
+    public function setCustomer(\Site\SavalizeBundle\Entity\Customer $customer = null)
+    {
+        $this->customer = $customer;
+    
+        return $this;
+    }
+
+    /**
+     * Get customer
+     *
+     * @return \Site\SavalizeBundle\Entity\Customer 
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * Set userNotification
+     *
+     * @param \Site\SavalizeBundle\Entity\UserNotification $userNotification
+     * @return UserNotificationSeen
+     */
+    public function setUserNotification(\Site\SavalizeBundle\Entity\UserNotification $userNotification = null)
+    {
+        $this->userNotification = $userNotification;
+    
+        return $this;
+    }
+
+    /**
+     * Get userNotification
+     *
+     * @return \Site\SavalizeBundle\Entity\UserNotification 
+     */
+    public function getUserNotification()
+    {
+        return $this->userNotification;
+    }
 }

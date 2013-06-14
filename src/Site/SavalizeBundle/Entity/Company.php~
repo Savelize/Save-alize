@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="company")
  * @ORM\Entity(repositoryClass="Site\SavalizeBundle\Entity\CompanyRepository")
  */
-class Company {
-
+class Company
+{
     /**
      * @var integer
      *
@@ -27,6 +27,13 @@ class Company {
      * @ORM\Column(name="name", type="string", length=50)
      */
     private $name;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="picture", type="string", length=100)
+     */
+    private $picture;
 
     /**
      * @var string
@@ -78,29 +85,17 @@ class Company {
     private $region;
 
     /**
-<<<<<<< HEAD
-     * @var \History
-     *
-     * @ORM\OneToMany(targetEntity="History" , mappedBy="history")
-     */
-    private $history;
-=======
     *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\Brand", mappedBy="Company")
     **/
     private $brands;
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
 
     /**
      * Get id
      *
      * @return integer 
      */
-<<<<<<< HEAD
-    public function getId() {
-=======
     public function getId()
     {
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this->id;
     }
 
@@ -110,16 +105,10 @@ class Company {
      * @param string $name
      * @return Company
      */
-<<<<<<< HEAD
-    public function setName($name) {
-        $this->name = $name;
-
-=======
     public function setName($name)
     {
         $this->name = $name;
     
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this;
     }
 
@@ -128,12 +117,8 @@ class Company {
      *
      * @return string 
      */
-<<<<<<< HEAD
-    public function getName() {
-=======
     public function getName()
     {
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this->name;
     }
 
@@ -143,41 +128,6 @@ class Company {
      * @param string $username
      * @return Company
      */
-<<<<<<< HEAD
-    public function setUsername($username) {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Get username
-     *
-     * @return string 
-     */
-    public function getUsername() {
-        return $this->username;
-    }
-
-    /**
-     * Set password
-     *
-     * @param integer $password
-     * @return Company
-     */
-    public function setPassword($password) {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * Get password
-     *
-     * @return integer 
-     */
-    public function getPassword() {
-=======
     public function setUsername($username)
     {
         $this->username = $username;
@@ -215,7 +165,6 @@ class Company {
      */
     public function getPassword()
     {
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this->password;
     }
 
@@ -225,16 +174,10 @@ class Company {
      * @param string $email
      * @return Company
      */
-<<<<<<< HEAD
-    public function setEmail($email) {
-        $this->email = $email;
-
-=======
     public function setEmail($email)
     {
         $this->email = $email;
     
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this;
     }
 
@@ -243,26 +186,12 @@ class Company {
      *
      * @return string 
      */
-<<<<<<< HEAD
-    public function getEmail() {
-=======
     public function getEmail()
     {
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this->email;
     }
 
     /**
-<<<<<<< HEAD
-     * Set telphone
-     *
-     * @param string $telphone
-     * @return Company
-     */
-    public function setTelphone($telphone) {
-        $this->telphone = $telphone;
-
-=======
      * Set telephone
      *
      * @param string $telephone
@@ -272,19 +201,10 @@ class Company {
     {
         $this->telephone = $telephone;
     
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this;
     }
 
     /**
-<<<<<<< HEAD
-     * Get telphone
-     *
-     * @return string 
-     */
-    public function getTelphone() {
-        return $this->telphone;
-=======
      * Get telephone
      *
      * @return string 
@@ -292,7 +212,6 @@ class Company {
     public function getTelephone()
     {
         return $this->telephone;
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
     }
 
     /**
@@ -301,16 +220,10 @@ class Company {
      * @param string $country
      * @return Company
      */
-<<<<<<< HEAD
-    public function setCountry($country) {
-        $this->country = $country;
-
-=======
     public function setCountry($country)
     {
         $this->country = $country;
     
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this;
     }
 
@@ -319,12 +232,8 @@ class Company {
      *
      * @return string 
      */
-<<<<<<< HEAD
-    public function getCountry() {
-=======
     public function getCountry()
     {
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this->country;
     }
 
@@ -334,16 +243,10 @@ class Company {
      * @param string $city
      * @return Company
      */
-<<<<<<< HEAD
-    public function setCity($city) {
-        $this->city = $city;
-
-=======
     public function setCity($city)
     {
         $this->city = $city;
     
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this;
     }
 
@@ -352,12 +255,8 @@ class Company {
      *
      * @return string 
      */
-<<<<<<< HEAD
-    public function getCity() {
-=======
     public function getCity()
     {
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this->city;
     }
 
@@ -367,16 +266,10 @@ class Company {
      * @param string $region
      * @return Company
      */
-<<<<<<< HEAD
-    public function setRegion($region) {
-        $this->region = $region;
-
-=======
     public function setRegion($region)
     {
         $this->region = $region;
     
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
         return $this;
     }
 
@@ -385,36 +278,15 @@ class Company {
      *
      * @return string 
      */
-<<<<<<< HEAD
-    public function getRegion() {
-        return $this->region;
-    }
-
-=======
     public function getRegion()
     {
         return $this->region;
     }
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
     /**
      * Constructor
      */
     public function __construct()
     {
-<<<<<<< HEAD
-        $this->history = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
-    /**
-     * Add history
-     *
-     * @param \Site\SavalizeBundle\Entity\History $history
-     * @return Company
-     */
-    public function addHistory(\Site\SavalizeBundle\Entity\History $history)
-    {
-        $this->history[] = $history;
-=======
         $this->brands = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
@@ -427,33 +299,11 @@ class Company {
     public function addBrand(\Site\SavalizeBundle\Entity\Brand $brands)
     {
         $this->brands[] = $brands;
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6
     
         return $this;
     }
 
     /**
-<<<<<<< HEAD
-     * Remove history
-     *
-     * @param \Site\SavalizeBundle\Entity\History $history
-     */
-    public function removeHistory(\Site\SavalizeBundle\Entity\History $history)
-    {
-        $this->history->removeElement($history);
-    }
-
-    /**
-     * Get history
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getHistory()
-    {
-        return $this->history;
-    }
-}
-=======
      * Remove brands
      *
      * @param \Site\SavalizeBundle\Entity\Brand $brands
@@ -472,5 +322,27 @@ class Company {
     {
         return $this->brands;
     }
+
+    /**
+     * Set picture
+     *
+     * @param string $picture
+     * @return Company
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+    
+        return $this;
+    }
+
+    /**
+     * Get picture
+     *
+     * @return string 
+     */
+    public function getPicture()
+    {
+        return $this->picture;
+    }
 }
->>>>>>> d1a447030e03cf700551546fedb9f196aae9e4d6

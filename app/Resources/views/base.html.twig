@@ -5,6 +5,7 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" href="{{asset('css/jquery-ui.css')}}"  type="text/css">
         <link href="{{asset('css/bootstrap.css')}}" rel="stylesheet" type="text/css">
         <link href="{{asset('css/bootstrap-responsive.css')}}" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="{{asset('font-awesome/css/font-awesome.min.css')}}">
@@ -16,10 +17,16 @@
         <![endif]-->
     </head>
     <body>
+        <div class="content" style="text-align: right">
+            <a href="{{ path('user_signOut') }}" class="btn" style="float: right;">Log out</a>
+            <p style="font-size: 20px;padding-top: 7px;text-align: right">Welcome {{app.session.get('userName')}}  </p>  
+                
+            </div>
         {% block body %}{% endblock %}
 
         
               <script src="{{asset('js/jquery.js')}}"></script>
+                <script src="{{asset('js/jquery-ui.js')}}"></script>
               <script src="{{asset('js/jquery-ui-1.10.2.custom.min.js')}}"></script>
             <script src="{{asset('js/bootstrap.min.js')}}"></script>
     {% block javascripts %}{% endblock %}

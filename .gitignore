@@ -13,3 +13,4 @@ app/config/parameters.ini
 app/config/parameters.yml
 /app/
 /nbproject/private/
+!/app/Resources/views/

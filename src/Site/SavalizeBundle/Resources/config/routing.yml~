@@ -3,7 +3,7 @@ site_savalize_homepage:
     defaults: { _controller: SiteSavalizeBundle:Default:index }
 
 site_user_page4:
-    pattern: /userhistory
+    pattern: /usrhistory
     defaults: { _controller: SiteSavalizeBundle:Customer:historyDateSelection }
     
 site_company_page10:
@@ -12,8 +12,8 @@ site_company_page10:
 
 
 site_savalize_viewNotifications:
-    pattern: /show/{id}/{page}
-    defaults: { _controller: SiteSavalizeBundle:Customer:shownotification }
+    pattern: /show/{page}
+    defaults: { _controller: SiteSavalizeBundle:Customer:shownotification , page:1}
     requirements:
         page: \d+
         
@@ -25,10 +25,12 @@ site_savalize_ajaxtoshowchart:
   pattern:  /usr/renderreport
   defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
 
-SiteSavalizeBundle_reviews:
+SiteSavalizeBundle_one_review:
+    pattern:  /review/show
+    defaults: { _controller: SiteSavalizeBundle:Default:showOneReview }
+SiteSavalizeBundle_all_reviews:
     pattern:  /reviews/show
-    defaults: { _controller: SiteSavalizeBundle:Default:showReviews }
-    
+    defaults: { _controller: SiteSavalizeBundle:Default:showAllReviews }
 contact_us:
   pattern:  /user/contact
   defaults: { _controller: SiteSavalizeBundle:Customer:contact }
@@ -40,7 +42,37 @@ contact_us_company:
 site_personal_user_settings:
     pattern: /personalusersettings
     defaults: { _controller: SiteSavalizeBundle:Customer:personalusersettings }
+
+site_linked_user_settings:
+    pattern: /linkedusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:linkedusersettings }
     
+site_password_user_settings:
+    pattern: /passwordusersettings
+    defaults: { _controller: SiteSavalizeBundle:Customer:passwordusersettings }
+    
+site_personal_admin_settings:
+    pattern: /personaladminsettings
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:personaladminsettings }
+    
+site_password_admin_settings:
+    pattern: /passwordadminsettings
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:passwordadminsettings }
+    
+site_personal_company_settings:
+    pattern: /personalcompanysettings
+    defaults: { _controller: SiteSavalizeBundle:Company:personalcompanysettings }
+
+site_password_company_settings:
+    pattern: /passwordcompanysettings
+    defaults: { _controller: SiteSavalizeBundle:Company:passwordcompanysettings }
+
+user_signIn:
+    pattern:  /signIn
+    defaults: { _controller: "SiteSavalizeBundle:Default:signIn" }
+    
+    
+
 site_category_user_settings:
     pattern: /categoryusersettings
     defaults: { _controller: SiteSavalizeBundle:Customer:categoryusersettings }
@@ -50,3 +82,25 @@ site_ajax_get_calendar:
     defaults: { _controller: SiteSavalizeBundle:Customer:usrhistory }
 
 
+user_signUp:
+    pattern:  /signUp
+    defaults: { _controller: "SiteSavalizeBundle:Default:signUp" }
+    requirements: { _method: post }
+
+user_signOut:
+    pattern:  /signUp
+    defaults: { _controller: "SiteSavalizeBundle:Default:signOut" }
+    
+user_addProduct:
+    pattern:  /addProduct
+    defaults: { _controller: "SiteSavalizeBundle:Customer:addProduct" }
+    
+user_report_fromCategory:
+    pattern: /fromCategory
+    defaults: { _controller: "SiteSavalizeBundle:Customer:fromCategory" }
+
+
+
+site_savalize_insert_seen_notification:
+    pattern: /seen
+    defaults: { _controller: SiteSavalizeBundle:Customer:insertSeenNotification }

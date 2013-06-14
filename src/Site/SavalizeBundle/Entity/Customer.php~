@@ -85,9 +85,9 @@ class Customer
     private $linkedTo;
 
     /**
-    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\UserNotification", mappedBy="customer")
+    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\UserNotificationSeen", mappedBy="customer")
     **/
-    private $notifications;
+    private $userNotificationsSeen;
     
     /**
     *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\History", mappedBy="customer")
@@ -319,5 +319,170 @@ class Customer
     public function getLinkedTo()
     {
         return $this->linkedTo;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->histories = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->productRatings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->productComments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Set user
+     *
+     * @param \Site\SavalizeBundle\Entity\User $user
+     * @return Customer
+     */
+    public function setUser(\Site\SavalizeBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Site\SavalizeBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Add notifications
+     *
+     * @param \Site\SavalizeBundle\Entity\UserNotification $notifications
+     * @return Customer
+     */
+    public function addNotification(\Site\SavalizeBundle\Entity\UserNotification $notifications)
+    {
+        $this->notifications[] = $notifications;
+    
+        return $this;
+    }
+
+    /**
+     * Remove notifications
+     *
+     * @param \Site\SavalizeBundle\Entity\UserNotification $notifications
+     */
+    public function removeNotification(\Site\SavalizeBundle\Entity\UserNotification $notifications)
+    {
+        $this->notifications->removeElement($notifications);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * Add histories
+     *
+     * @param \Site\SavalizeBundle\Entity\History $histories
+     * @return Customer
+     */
+    public function addHistorie(\Site\SavalizeBundle\Entity\History $histories)
+    {
+        $this->histories[] = $histories;
+    
+        return $this;
+    }
+
+    /**
+     * Remove histories
+     *
+     * @param \Site\SavalizeBundle\Entity\History $histories
+     */
+    public function removeHistorie(\Site\SavalizeBundle\Entity\History $histories)
+    {
+        $this->histories->removeElement($histories);
+    }
+
+    /**
+     * Get histories
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getHistories()
+    {
+        return $this->histories;
+    }
+
+    /**
+     * Add productRatings
+     *
+     * @param \Site\SavalizeBundle\Entity\ProductRating $productRatings
+     * @return Customer
+     */
+    public function addProductRating(\Site\SavalizeBundle\Entity\ProductRating $productRatings)
+    {
+        $this->productRatings[] = $productRatings;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productRatings
+     *
+     * @param \Site\SavalizeBundle\Entity\ProductRating $productRatings
+     */
+    public function removeProductRating(\Site\SavalizeBundle\Entity\ProductRating $productRatings)
+    {
+        $this->productRatings->removeElement($productRatings);
+    }
+
+    /**
+     * Get productRatings
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProductRatings()
+    {
+        return $this->productRatings;
+    }
+
+    /**
+     * Add productComments
+     *
+     * @param \Site\SavalizeBundle\Entity\ProductComment $productComments
+     * @return Customer
+     */
+    public function addProductComment(\Site\SavalizeBundle\Entity\ProductComment $productComments)
+    {
+        $this->productComments[] = $productComments;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productComments
+     *
+     * @param \Site\SavalizeBundle\Entity\ProductComment $productComments
+     */
+    public function removeProductComment(\Site\SavalizeBundle\Entity\ProductComment $productComments)
+    {
+        $this->productComments->removeElement($productComments);
+    }
+
+    /**
+     * Get productComments
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProductComments()
+    {
+        return $this->productComments;
     }
 }

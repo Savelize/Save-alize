@@ -38,33 +38,40 @@
         <ul class="inline row-fluid" style = "font-size: 20px">
             <div class="span12">
                 <li>
-                Start Date: <input type="date">
+                Start Date: <input type="date" id="startDate">
                 </li>
                 <li>
-            End Date: <input type="date">
+            End Date: <input type="date" id="endDate">
             </li>
                 <li>
             Chart: <select></select>
             </li>
             <li>
-            Category: <input type="text"> 
+                Category: <input type="text" id="categoryIP"> 
             </li>
             <li>
-            Brand: <input type="text">
+            Brand: <input type="text" id="brandIP">
             </li>
             <li>
-            Product: <input type="text">
+            Product: <input type="text" id="productIP">
             </li>
             </div>
         </ul>
             </div>
           <input type="button" id="generateReport" value="Generate Report"/>
-            <canvas id="myChart" width="400" height="400"></canvas>    
+
+            <canvas id="myChart" width="400" height="400"></canvas>
+        <input type="hidden" id="hiddenCategory" value="{{ categories }}"> 
+          
+
+
+
 {% endblock %}
 
 {% block javascripts %}
             <script src="{{asset('js/fullcalendar.js')}}"></script>
             <script> var path = "{{ path('site_savalize_ajaxtoshowchart') }}" </script>
+            <script> var fromCategoryPath = "{{ path('user_report_fromCategory') }}" </script>
             <script src="{{asset('js/mira_chart.js')}}"></script>
             <script src="{{asset('js/Chart.js')}}"></script>
 {% endblock %}

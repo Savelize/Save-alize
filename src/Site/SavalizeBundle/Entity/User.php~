@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table()
+ * @ORM\Table(name = "user")
  * @ORM\Entity(repositoryClass="Site\SavalizeBundle\Entity\UserRepository")
  */
 class User
@@ -59,6 +59,13 @@ class User
      * @ORM\Column(name="email", type="string", length=50)
      */
     private $email;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="picture", type="string", length=100)
+     */
+    private $picture;
 
     /**
      * @var \DateTime
@@ -206,5 +213,74 @@ class User
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Set fname
+     *
+     * @param string $fname
+     * @return User
+     */
+    public function setFname($fname)
+    {
+        $this->fname = $fname;
+    
+        return $this;
+    }
+
+    /**
+     * Get fname
+     *
+     * @return string 
+     */
+    public function getFname()
+    {
+        return $this->fname;
+    }
+
+    /**
+     * Set lname
+     *
+     * @param string $lname
+     * @return User
+     */
+    public function setLname($lname)
+    {
+        $this->lname = $lname;
+    
+        return $this;
+    }
+
+    /**
+     * Get lname
+     *
+     * @return string 
+     */
+    public function getLname()
+    {
+        return $this->lname;
+    }
+
+    /**
+     * Set picture
+     *
+     * @param string $picture
+     * @return User
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+    
+        return $this;
+    }
+
+    /**
+     * Get picture
+     *
+     * @return string 
+     */
+    public function getPicture()
+    {
+        return $this->picture;
     }
 }

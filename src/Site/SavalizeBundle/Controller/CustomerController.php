@@ -25,6 +25,40 @@ class CustomerController extends Controller {
      * Lists all UserAccount entities.
      *
      */
+    public function addProductAction(){
+        $session = $this->getRequest()->getSession();
+        $username=$session->get('userName');
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $userRep = $em->getRepository("SiteSavalizeBundle:User");
+        $user=$userRep->findOneByUsername($username);
+        if($user)
+        {
+            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+            $customer=$customerRep->findOneByUser($user);
+            if($customer)
+            {
+                $collectionConstraint = new Collection(array(
+                    'User_Name' => new NotBlank(),
+                    'Password' => new NotBlank()
+                ));
+                
+                $data = array();
+                //create the form
+
+                $formBuilder = $this->createFormBuilder($data, array(
+                            'validation_constraint' => $collectionConstraint,
+                        ))
+                        ->add('User_Name', null, array('required' => true,'attr' => array('class' => 'span2','placeholder' => 'user name')))
+                        ->add('Password', "password", array('required' => true,'attr' => array('class' => 'span2','placeholder' => 'password')))
+                ;
+                $SignInform = $formBuilder->getForm();
+                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig');
+            }   
+        }
+            return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>"you are not authorized"));
+    }
+    
     public function indexAction() {
         $em = $this->getDoctrine()->getManager();
 
@@ -197,7 +231,7 @@ class CustomerController extends Controller {
 
 
         $result = $repository->getRepository('SiteSavalizeBundle:History')->getMonthlyPurchases($start, $end);
-        $resultArr = [];
+        $resultArr = array();
         for ($i = 0; $i < count($result); $i++) {
             $myrepository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
             $x = $result[$i]->getProductBrand()->getId();
@@ -273,13 +307,15 @@ class CustomerController extends Controller {
 //        }
 
 
-
         return new Response(json_encode($resultArr));
+
     }
 
     public function displayEnteryChartPageAction() {
 
-        return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Category');
+        $result = $repository->categoryAutocomplete();
+        return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig', array('categories' => json_encode($result)));
     }
 
     public function contactAction() {

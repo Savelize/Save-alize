@@ -175,4 +175,45 @@ class UserNotification
     {
         return $this->seen;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->userNotificationsSeen = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add userNotificationsSeen
+     *
+     * @param \Site\SavalizeBundle\Entity\UserNotificationSeen $userNotificationsSeen
+     * @return UserNotification
+     */
+    public function addUserNotificationsSeen(\Site\SavalizeBundle\Entity\UserNotificationSeen $userNotificationsSeen)
+    {
+        $this->userNotificationsSeen[] = $userNotificationsSeen;
+    
+        return $this;
+    }
+
+    /**
+     * Remove userNotificationsSeen
+     *
+     * @param \Site\SavalizeBundle\Entity\UserNotificationSeen $userNotificationsSeen
+     */
+    public function removeUserNotificationsSeen(\Site\SavalizeBundle\Entity\UserNotificationSeen $userNotificationsSeen)
+    {
+        $this->userNotificationsSeen->removeElement($userNotificationsSeen);
+    }
+
+    /**
+     * Get userNotificationsSeen
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUserNotificationsSeen()
+    {
+        return $this->userNotificationsSeen;
+    }
 }
+

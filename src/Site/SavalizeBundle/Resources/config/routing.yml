@@ -25,10 +25,12 @@ site_savalize_ajaxtoshowchart:
   pattern:  /usr/renderreport
   defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
 
-SiteSavalizeBundle_reviews:
+SiteSavalizeBundle_one_review:
+    pattern:  /review/show
+    defaults: { _controller: SiteSavalizeBundle:Default:showOneReview }
+SiteSavalizeBundle_all_reviews:
     pattern:  /reviews/show
-    defaults: { _controller: SiteSavalizeBundle:Default:showReviews }
-    
+    defaults: { _controller: SiteSavalizeBundle:Default:showAllReviews }
 contact_us:
   pattern:  /user/contact
   defaults: { _controller: SiteSavalizeBundle:Customer:contact }
@@ -84,6 +86,19 @@ user_signUp:
     pattern:  /signUp
     defaults: { _controller: "SiteSavalizeBundle:Default:signUp" }
     requirements: { _method: post }
+
+user_signOut:
+    pattern:  /signUp
+    defaults: { _controller: "SiteSavalizeBundle:Default:signOut" }
+    
+user_addProduct:
+    pattern:  /addProduct
+    defaults: { _controller: "SiteSavalizeBundle:Customer:addProduct" }
+    
+user_report_fromCategory:
+    pattern: /fromCategory
+    defaults: { _controller: "SiteSavalizeBundle:Customer:fromCategory" }
+
 
 
 show_new_product_details:
