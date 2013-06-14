@@ -80,7 +80,7 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(name="region", type="string", length=50,nullable=true)
+     * @ORM\Column(name="picture", type="string", length=50,nullable=true)
      */
     private $picture;
 
