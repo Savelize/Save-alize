@@ -45,9 +45,7 @@ class HistoryRepository extends EntityRepository {
 
     public function dateRangeData($startDate, $endDate) {
         $startDated = new \DateTime($startDate);
-
         $startDates = $startDated->format("Y-m-d");
-        //echo $startDates;
         $endDate = new \DateTime($endDate);
         $endDate = $endDate->format("Y-m-d");
         // g stands for graph
@@ -64,12 +62,71 @@ class HistoryRepository extends EntityRepository {
 
         $result = $q->getResult();
 
+        return $result;
+    }
 
-//        $users2 = Doctrine_Query::create()
-//                ->select('g.price, p.name')
-//                ->from('History g')
-//                ->orderby('u.id');
-//        $tmp2 = $users2->fetchArray();
+    public function userChartFiltersPrice($startDate, $endDate, $productbrand) {
+        $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , p.name as name
+            FROM SiteSavalizeBundle:History h
+            JOIN SiteSavalizeBundle:Product p
+            JOIN SiteSavalizeBundle:ProductBrand pb
+            WHERE p.id = pb.product
+            AND pb.category = :category
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY pb.category
+')
+                ->setParameter('category', $productbrand)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+
+//    public function userChartFilters($startDate, $endDate, $productbrand) {
+//        $startDated = new \DateTime($startDate);
+//        $startDates = $startDated->format("Y-m-d");
+//        $endDate = new \DateTime($endDate);
+//        $endDate = $endDate->format("Y-m-d");
+//        $q = $this->getEntityManager()->createQuery('
+//            SELECT pb
+//            FROM SiteSavalizeBundle:History h
+//            JOIN SiteSavalizeBundle:ProductBrand pb
+//            WHERE pb.id = :productbrand
+//            AND h.baughtAt BETWEEN :start AND :end
+//            GROUP BY h.productBrand
+//')  ->setParameter('productbrand', $productbrand)
+//                ->setParameter('start', $startDates)
+//                ->setParameter('end', $endDate);
+//
+//        $result = $q->getResult();
+//
+//        return $result;
+//    }
+public function userChartFilters($startDate, $endDate, $category) {
+        $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        $q = $this->getEntityManager()->createQuery('
+            SELECT pb
+            FROM SiteSavalizeBundle:ProductBrand pb
+            JOIN SiteSavalizeBundle:History h
+            WHERE pb.category = :category
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY h.productBrand
+')  ->setParameter('category', $category)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
 
         return $result;
     }

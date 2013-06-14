@@ -23,7 +23,7 @@ site_savalize_displayDummyChart:
     
 site_savalize_ajaxtoshowchart:
   pattern:  /usr/renderreport
-  defaults: { _controller: SiteSavalizeBundle:Customer:displayDummyChart }
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChart }
 
 SiteSavalizeBundle_one_review:
     pattern:  /review/show
@@ -88,17 +88,30 @@ user_signUp:
     requirements: { _method: post }
 
 user_signOut:
-    pattern:  /signUp
+    pattern:  /signOut
     defaults: { _controller: "SiteSavalizeBundle:Default:signOut" }
     
 user_addProduct:
     pattern:  /addProduct
     defaults: { _controller: "SiteSavalizeBundle:Customer:addProduct" }
+
+user_getProducts:
+    pattern:  /getProduct
+    defaults: { _controller: "SiteSavalizeBundle:Customer:getProduct"}
+    requirements: { _method: post }
     
 user_report_fromCategory:
     pattern: /fromCategory
     defaults: { _controller: "SiteSavalizeBundle:Customer:fromCategory" }
 
+
+site_savalize_insert_seen_notification:
+    pattern: /seen
+    defaults: { _controller: SiteSavalizeBundle:Customer:insertSeenNotification }
+    
+user_chart_datesOnly:
+    pattern:  /usr/renderreportdatesonly
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesOnly }
 
 
 show_new_product_details:
@@ -106,9 +119,14 @@ show_new_product_details:
     defaults: { _controller: SiteSavalizeBundle:Customer:showNewProductDetails }
 
 company_view_product:
-    pattern: /company/newproduct/{id}
-    defaults: { _controller: SiteSavalizeBundle:Company:inserNewProduct }
-
-company_add_newproduct:
     pattern: /company/products/{id}
     defaults: { _controller: SiteSavalizeBundle:Company:viewProduct }
+
+company_add_newproduct:
+    pattern: /company/product
+    defaults: { _controller: SiteSavalizeBundle:Company:displayDataByAjax }
+
+site_brands_cat:
+    pattern: /categories
+    defaults: { _controller: SiteSavalizeBundle:Default:getBrandsOfCategory }
+
