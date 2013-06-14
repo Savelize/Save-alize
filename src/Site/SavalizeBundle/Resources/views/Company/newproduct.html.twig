@@ -25,15 +25,44 @@
     <div class="row-fluid content"> 
         <div class="span3">
             <h4> Your Products </h4>
-    <ul class="list-style">
-        {% for brands,products in products %}
-        <li><b>{{ brands }}</b></br></li>
-              {% for product in products %}
-                {{ product }} &nbsp
-              {% endfor %}
-        {% endfor %}
-    </ul>
+            <ul class="list-style">
+                {% for brands,products in products %}
+                <li><b>{{ brands }}</b></br></li>
+                      {% for product in products %}
+                        {{ product }} &nbsp
+                      {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="span6" style="text-align:right">
+            <h4>Add New Product</h4>
+        <div style="float: left" class="row-fluid">
+        <ul class="inline row-fluid" style = "font-size: 20px">
+            <div class="span12">
+            <li>
+                Category: <select  id="catIp">
+                <option value="0"></option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}"> {{ category.name }} </option>
+                    {% endfor %}
+                    </select> 
+            </li>
+            <li>
+            Brand: <input type="text" id="brandIp">
+            </li>
+            <li>
+            Product: <input type="text" id="productIp">
+            </li>
+            </div>
+        </ul>
+            </div>
+        <input type="button" id="addProduct" value="Add"/>
         </div>
     </div>
         </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{asset('js/company_newproduct.js')}}"></script>
+    <script> var catValue = "{{ path('company_add_newproduct') }}" </script>
 {% endblock %}

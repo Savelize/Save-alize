@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Site\SavalizeBundle\Entity\Company;
+use Site\SavalizeBundle\Entity\Category;
 use Site\SavalizeBundle\Form\CompanyType;
 
 /**
@@ -284,6 +285,55 @@ class CompanyController extends Controller
                 $products['Brands'][$i] = $productsBrands[$i]->getBrand()->getName();
                 $products['Products'][$i] = $productsBrands[$i]->getProduct()->getName();
             }
-        return $this->render('SiteSavalizeBundle:Company:newproduct.html.twig' , array('products' =>  $products));
+
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Category');
+        $categories = $repository->categoryAutocomplete();
+        return $this->render('SiteSavalizeBundle:Company:newproduct.html.twig' , array('products' =>  $products,
+                                                                                        'categories' => $categories));
+    }
+
+    public function displayDataByAjaxAction(){
+        $request = $this->container->get('request');
+        $category_id = $request->get('category_id');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand');
+        $result = $repository->displayCategoryData(1,$category_id);
+        $pb = array();
+        for($i=0; $i<count($result); $i++)
+        {
+            $pb['brands'][$i] = $result[$i]->getBrand()->getName();
+            $pb['products'][$i] = $result[$i]->getProduct()->getName();
+        }
+        return new Response(json_encode($pb));
+    }
+
+    public function insertNewProductAction(){
+        $request = $this->container->get('request');
+        $brand = $request->get('brand');
+        $product = $request->get('product');
+        $em = $this->getDoctrine()->getEntityManager();
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Brand');
+        $brandDB = $repository->findBy( array('name' => $brand));
+        if(!$brandDB){
+            $brandDB = new Brand();
+            $brandDB->setName($brandDB);
+            $em->persist($brandDB);    
+        }
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
+        $productDB = $repository->findBy( array('name' => $product));
+        if(!$productDB){
+            $productDB = new Product();
+            $productDB->setName($productDB);
+            $em->persist($productDB);
+        }
+        $product_brand = new ProductBrand();
+        $product_brand->setProduct($productDB);
+        $product_brand->setBrand($brandDB);
+        $product_brand->setPicture();
+        $em->persist($product_brand);
+        $em->flush();
+        exit;
+
     }
 }
+
+

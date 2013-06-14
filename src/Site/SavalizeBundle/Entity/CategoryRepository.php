@@ -12,4 +12,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class CategoryRepository extends EntityRepository
 {
+	public function categoryAutocomplete() {
+		$q = $this->getEntityManager()->createQuery('
+		SELECT c.name , c.id 
+		FROM SiteSavalizeBundle:Category c 
+		');
+		$result = $q->getResult();
+		return $result;
+	}
 }

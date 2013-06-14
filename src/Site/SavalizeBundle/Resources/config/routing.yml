@@ -99,16 +99,16 @@ user_report_fromCategory:
     pattern: /fromCategory
     defaults: { _controller: "SiteSavalizeBundle:Customer:fromCategory" }
 
-
-
 show_new_product_details:
     pattern: /showproduct/{notf_id}
     defaults: { _controller: SiteSavalizeBundle:Customer:showNewProductDetails }
 
 company_view_product:
-    pattern: /company/newproduct/{id}
-    defaults: { _controller: SiteSavalizeBundle:Company:inserNewProduct }
-
-company_add_newproduct:
     pattern: /company/products/{id}
     defaults: { _controller: SiteSavalizeBundle:Company:viewProduct }
+
+company_add_newproduct:
+    pattern: /company/product
+    defaults: { _controller: SiteSavalizeBundle:Company:displayDataByAjax }
+
+

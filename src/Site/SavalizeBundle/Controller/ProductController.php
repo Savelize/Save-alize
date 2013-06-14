@@ -93,6 +93,7 @@ class ProductController extends Controller
      * Displays a form to edit an existing Product entity.
      *
      */
+    
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
