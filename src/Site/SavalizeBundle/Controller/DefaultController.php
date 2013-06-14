@@ -325,19 +325,41 @@ class DefaultController extends Controller
     	 	$pbs[$i] = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getFirstPBfromCategory($catID);	
     	 }    	 
     	 $result = $this->getBrandsOfCategoryAction();
-    	 return $this->render('SiteSavalizeBundle:Default:allReviews.html.twig', array('categories' => $categories, 'pbs'=> $pbs, 'brands'=>$result));
+    	 $allBrands = $em->getRepository('SiteSavalizeBundle:Brand')->findAll();
+    	 
+    	 for($i=0; $i<count( $allBrands); $i++)
+    	 {
+    	 	$allBrandNames[$i] = $allBrands[$i]->getName();
+       	 }
+    	// print_r($allBrands);
+    	 return $this->render('SiteSavalizeBundle:Default:allReviews.html.twig', array('categories' => $categories, 'pbs'=> $pbs,
+    	 'allBrands'=>json_encode($allBrandNames), 'brands'=>$result));
     }
     public function getBrandsOfCategoryAction()
     {
     	$request = $this->container->get('request');
     	$catId = $request->get('catId');
     	$em=$this->getDoctrine()->getEntityManager();
-    	$brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getBrandsOfCategory($catId);
+    	$brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getProductBrandsOfCategory($catId);
     	$brands=array();
 	for($i=0; $i<count($brandsOfCategory); $i++)
 	{
-		$brands[$i] = $brandsOfCategory[$i]->getBrand()->getName();
+		$brands[$i] = $brandsOfCategory[$i]->getName();
 	}
+	/*for($i=0; $i<count($brands); $i++)
+	{
+		for($i=0; $i<count($brandsArr); $i++)
+		{
+			if($brands[$i]==$brandsArr[$j])
+			{
+				$flag = 1;
+			}
+			if($flag == 1)
+			{
+				$brandsArr[$j] = $brands[$i];
+			}
+		}
+	}*/
 	return new Response (json_encode($brands));
     }
 }

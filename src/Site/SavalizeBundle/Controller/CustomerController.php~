@@ -239,7 +239,7 @@ class CustomerController extends Controller {
             $productResult[$i] = $myrepository->find($x);
             $boughtAt[$i] = $result[$i]->getBaughtAt()->format('Y-m-d');
 
-            $resultArr[$i] = array('title' => $productResult[$i]->getName(), 'data' => array('product' => $productResult[$i]->getName(),
+            $resultArr[$i] = array'title' => $productResult[$i]->getName(), 'data' => array('product' => $productResult[$i]->getName(),
                     'price' => (string) $result[$i]->getPrice()),
                 'start' => $boughtAt[$i]);
         }
