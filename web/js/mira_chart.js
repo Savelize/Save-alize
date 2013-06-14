@@ -79,20 +79,18 @@ $(document).ready(function(){
     function reportViaDatesOnly(){
         $.ajax({
             type: 'POST',
-            url: datesOnlypath,
+            url: dateOnlypath,
             datatype: 'json',
             data: {
                 startDate: userChartStartDate, 
-                endDate: userChartEndDate,
-                pbID: pbID
+                endDate: userChartEndDate
             },
             success: function(response) {
                 plots = JSON.parse(response);
                 console.log(plots);
                 for(var i in plots){    
-                    alert(price[i] = parseInt(plots[i].price));
-                    chartproducts[i] = plots[i].products;
-                  //  console.log(price[i]);
+                   price[i] = parseInt(plots[i].price);
+                    chartproducts[i] = plots[i].name;
                 }
                 
                 var ctx = document.getElementById("myChart").getContext("2d");
@@ -124,7 +122,8 @@ $(document).ready(function(){
             data: {
                 startDate: userChartStartDate, 
                 endDate: userChartEndDate,
-                pbID: pbID
+                pbID: pbID,
+                categoryID: categoryID
             },
             success: function(response) {
               //  alert(JSON.parse(response));
@@ -163,4 +162,8 @@ $(document).ready(function(){
         aButtonPressed();
     });
     
+    
+    $('#reportViaDatesOnly').on('click', function(){
+        reportViaDatesOnly();
+    });
 });
