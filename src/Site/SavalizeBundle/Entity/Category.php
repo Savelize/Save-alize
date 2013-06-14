@@ -42,11 +42,12 @@ class Category
      */
     private $isDeleted;
 
-    /**
-    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\ProductBrand", mappedBy="category")
-    **/
-    private $productBrands;
+    
 
+    /**
+    *@ORM\OneToMany(targetEntity="\Site\SavalizeBundle\Entity\Product", mappedBy="category")
+    **/
+    private $products;
     /**
      * Get id
      *

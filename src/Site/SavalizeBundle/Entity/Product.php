@@ -27,6 +27,11 @@ class Product
      * @ORM\Column(name="name", type="string", length=30)
      */
     private $name;
+    /**
+     *@ORM\ManyToOne(targetEntity="\Site\SavalizeBundle\Entity\Category", inversedBy="products")
+     *@ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete = "CASCADE")
+     */
+    private $category;
 
     /**
      * @var integer

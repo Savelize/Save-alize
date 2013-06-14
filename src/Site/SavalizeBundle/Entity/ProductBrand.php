@@ -55,12 +55,7 @@ class ProductBrand
     **/
     private $productComments;
     
-    /**
-     *@ORM\ManyToOne(targetEntity="\Site\SavalizeBundle\Entity\Category", inversedBy="productBrands")
-     *@ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete = "CASCADE")
-     */
-    private $category;
-
+    
     /**
      * Get id
      *
