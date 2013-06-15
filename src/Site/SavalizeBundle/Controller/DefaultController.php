@@ -51,7 +51,7 @@ class DefaultController extends Controller
                 ->add('User_Name', null, array('required' => true,'attr' => array('class' => 'input-block-level')))
                 ->add('Name', null, array('required' => true,'attr' => array('class' => 'input-block-level')))
                 ->add('Email', "email", array('required' => true,'attr' => array('class' => 'input-block-level')))
-                ->add('Password',"password", array('required' => true,'attr' => array('class' => 'input-block-level')))
+                ->add('Password',"password", array('required' => true,'attr' => array('class' => 'input-block-level','oninput'=>'check(this)')))
                 ->add('Confirm_Password', "password", array('required' => true,'attr' => array('class' => 'input-block-level')))
                 ->add('User_Type', 'choice', array('required' => true,'choices'=>$userType,'attr' => array('class' => 'input-block-level')))
         ;

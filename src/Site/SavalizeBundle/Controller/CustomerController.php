@@ -33,21 +33,71 @@ class CustomerController extends Controller {
      */
     public function getProductAction()
     {
-        $data=array();
         $request = $this->getRequest();
+        $session = $request->getSession();
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        $customerId=$session->get('id');
         $catId=$request->get("catId");
-        if($catId==1)
-        {
-            $data[]="ahmed";
-            $data[]="mohamed";
+        $data=array();
+        
+        $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+        $customer=$customerRep->find($customerId);
+        
+        $historyRep = $em->getRepository("SiteSavalizeBundle:History");
+        $history=$historyRep->findByCustomer($customer);
+        
+        $catRep = $em->getRepository("SiteSavalizeBundle:Category");
+        $cat=$catRep->find($catId);
+        
+        foreach ($history as $row) {
+            $product=$row->getProductBrand()->getProduct();
+            if($product->getCategory()==$cat)
+            {
+                
+                $data[]=$product->getName();
+            }
         }
-        else
-        {
-            $data[]="mohsen";
-            $data[]="khaled";
+        
+        
+        $productRep = $em->getRepository("SiteSavalizeBundle:Product");
+        $products=$productRep->findBy(array('category'=>$cat,'confirmed'=>1));
+        foreach ($products as $product) {
+            $data[]=$product->getName();
         }
+        $data=\array_unique($data,SORT_STRING);
+        $data=\array_values($data);
         return new Response(json_encode($data));
     }
+    public function getBrandsAction()
+    {
+        $data=array();
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getEntityManager();
+        $session = $request->getSession();
+        
+        $customerId=$session->get('id');
+        $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+        $customer=$customerRep->find($customerId);
+        
+        $historyRep = $em->getRepository("SiteSavalizeBundle:History");
+        $history=$historyRep->findByCustomer($customer);
+        
+        foreach ($history as $row) {
+            $brand=$row->getProductBrand()->getBrand();                
+            $data[]=$brand->getName();
+        }
+        
+        $brandRep = $em->getRepository("SiteSavalizeBundle:Brand");
+        $brands=$brandRep->findBy(array('confirmed'=>1));
+        foreach ($brands as $brand) {
+            $data[]=$brand->getName();
+        }
+        $data=\array_unique($data,SORT_STRING);
+        $data=\array_values($data);
+        return new Response(json_encode($data));
+    }
+    
     public function addProductAction(){
         $session = $this->getRequest()->getSession();
         $username = $session->get('userName');
@@ -103,14 +153,61 @@ class CustomerController extends Controller {
                      $addproductForm->bindRequest($request);
                      if ($addproductForm->isValid())
                      {
-                         return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg"=>"form is valid"));
+                         $data=$addproductForm->getData();
+                         $productRep = $em->getRepository("SiteSavalizeBundle:Product");
+                         $product=$productRep->findOneByName($data['Product']);
+                         $catRep = $em->getRepository("SiteSavalizeBundle:Category");
+                         $cat=$catRep->find($data['Categories']);
+                         if(!$product)
+                         {
+                            $product=new Product();
+                            $product->setConfirmed(0);
+                            $product->setIsDeleted(0);
+                            $product->setName($data['Product']);
+                            $product->setCategory($cat);
+                            $em->persist($product);
+                            $em->flush($product);
+                        }
+                        $brandRep = $em->getRepository("SiteSavalizeBundle:Brand");
+                        $brand=$brandRep->findOneByName($data['Brand']);
+                        if(!$brand)
+                        {
+                            $brand=new Brand();
+                            $brand->setName($data['Brand']);
+                            $brand->setCompany(null);
+                            $brand->setConfirmed(0);
+                            $brand->setIsDeleted(0);
+                            $em->persist($brand);
+                            $em->flush($brand);
+                        }
+                        $ProductbrandRep = $em->getRepository("SiteSavalizeBundle:ProductBrand");
+                        $Productbrand=$ProductbrandRep->findOneBy(array("brand"=>$brand,"product"=>$product));
+                        if(!$Productbrand)
+                        {
+                            $Productbrand=new ProductBrand();
+                            $Productbrand->setBrand($brand);
+                            $Productbrand->setCategory($cat);
+                            $Productbrand->setPicture("anonymos.jpg");
+                            $Productbrand->setProduct($product);
+                            $em->persist($Productbrand);
+                            $em->flush($Productbrand);
+                        }
+                        $history=new History();
+                        $history->setBaughtAt($data['Date']);
+                        $history->setCustomer($customer);
+                        $history->setPrice($data['Price']);
+                        $history->setProductBrand($Productbrand);
+                        $history->setQuantity($data['Quantity']);
+                        $em->persist($history);
+                        $em->flush($history);
                      }
                      else
                      {
                          return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg"=>"form is not valid"));
                      }
+                     return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>true));
                  }
-                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView()));
+                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>false));
             }   
         }
         return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg" => "you are not authorized"));
@@ -445,6 +542,12 @@ class CustomerController extends Controller {
             if ($form->isValid()) {
                 $data = $form->getData();
                 //return $this->redirect($this->generateUrl('contact_success',array('name' => $data['name'])));
+                $to      = 'customerContact@savealize.com';
+                $subject = $data['subject'];
+                $message = $data['message'];
+                $headers = 'From: '.$data['email']. "\r\n";
+
+                mail($to, $subject, $message, $headers);
                 return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array('msg' => "Thank u " . $data['name'] . " for contacting us"));
             }
         }

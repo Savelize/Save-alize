@@ -1,4 +1,4 @@
-$(document).ready(
+$(document).ready(function(){
 var allBrands = JSON.parse($("#allBrands").val());
 var completeItems = new Array();
 for(i=0;i<allBrands.length;i++){
@@ -33,7 +33,7 @@ $("#categorySelect").on('change',function(){
 			}); 
 		}
 	});
-}));
-
+});
+});
 	
 

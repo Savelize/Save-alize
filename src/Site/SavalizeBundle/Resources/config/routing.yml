@@ -95,6 +95,11 @@ user_getProducts:
     pattern:  /getProduct
     defaults: { _controller: "SiteSavalizeBundle:Customer:getProduct"}
     requirements: { _method: post }
+
+user_getBrands:
+    pattern:  /getBrands
+    defaults: { _controller: "SiteSavalizeBundle:Customer:getBrands"}
+    requirements: { _method: post }
     
 user_report_fromCategory:
     pattern: /fromCategory
