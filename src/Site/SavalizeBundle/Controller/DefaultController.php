@@ -318,11 +318,24 @@ class DefaultController extends Controller
     }
     
     public function getpictureAction(){
-       /* $session = $request->getSession();
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getEntityManager();
+        $session = $request->getSession();
         $id = $session->get('id');
         $role = $session->get('role');
         if ($role == 'company'){
-            
-        }*/
+            $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
+            $picname = $obj->getPicture();
+        }
+        elseif ($role == 'admin') {
+            $obj = $em->getRepository('SiteSavalizeBundle:Admin')->find($id);
+            $picname = $obj->getUser()->getPicture();
+        }
+        elseif ($role == 'customer'){
+            $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
+            $picname = $obj->getUser()->getPicture();
+        }
+        
+        return Response($picname);
     }
 }

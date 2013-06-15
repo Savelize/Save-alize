@@ -17,10 +17,11 @@
         <![endif]-->
     </head>
     <body>
+        <div style="text-align: left"><img src="{{asset('img/lastSavalize.png')}}"></div>
         <div style="text-align: right">
-            <a href="{{ path('user_signOut') }}" class="btn" style="float: right;">Log out</a>
+            <a href="{{ path('user_signOut') }}" class="btn btn-warning" style="float: right;">Log out</a>
             <p style="font-size: 20px;padding-top: 7px;text-align: right">Welcome {{app.session.get('userName')}}  </p>  
- 
+            <img src="/Save-alize/web/img/usersimges/{{path('site_default_getpicture')}}" width="100px" height="100px">
             </div>
         {% block body %}{% endblock %}
 
