@@ -457,9 +457,8 @@ class CustomerController extends Controller {
         $request = $this->getRequest();
         $successMessage = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 2;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
         $collectionConstraint = new Collection(array(
@@ -530,13 +529,14 @@ class CustomerController extends Controller {
                         $postdata['upload_your_photo']->move($path,$picturename);
                         $em->getRepository('SiteSavalizeBundle:User')->updatePicture($uid,$picturename);
                     }
-                    //$obj->getUser()->setUpdatedAt(new \DateTime('NOW'));
+                    $obj->getUser()->setUpdatedAt(new \DateTime());
+                    $em->flush();
                     $successMessage = true;
                     //$request->getSession()->getFlashBag()->add('successMessage', true);
                 }
             }
           
-        return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'picture' => $picturename));
+        return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
     }
 
     /* user change-password settings */
@@ -547,14 +547,12 @@ class CustomerController extends Controller {
         $diffpasswd = false;
         $wrongpasswd = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 3;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
         $uid = $obj->getUser()->getId();
         $passwd= $obj->getUser()->getPassword();
-        $picturename= $obj->getUser()->getPicture();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -580,6 +578,8 @@ class CustomerController extends Controller {
                         if ($passwd == \crypt($postdata['Old_password'],$passwd)){
                             $hashpasswd = \crypt($postdata['New_password']);
                             $em->getRepository('SiteSavalizeBundle:User')->updatePassword($uid,$hashpasswd);
+                            $obj->getUser()->setUpdatedAt(new \DateTime());
+                            $em->flush();
                             $successMessage = true;
                         }
                         else {
@@ -591,7 +591,7 @@ class CustomerController extends Controller {
                     }
                 }
             }
-        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd, 'picture' => $picturename));
+        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
     /* user linked-account settings */
 

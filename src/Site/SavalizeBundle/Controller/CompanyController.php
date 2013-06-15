@@ -199,9 +199,8 @@ class CompanyController extends Controller
         $request = $this->getRequest();
         $successMessage = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 1;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
         $collectionConstraint = new Collection(array(
@@ -265,11 +264,13 @@ class CompanyController extends Controller
                         $postdata['upload_your_photo']->move($path,$picturename);
                         $em->getRepository('SiteSavalizeBundle:Company')->updatePicture($id,$picturename);
                     }
+                    $obj->setUpdatedAt(new \DateTime());
+                    $em->flush();
                     $successMessage = true;
                     //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
-        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'picture' => $picturename));
+        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
     }
     
     /* company change-password settings */
@@ -279,12 +280,10 @@ class CompanyController extends Controller
         $diffpasswd = false;
         $wrongpasswd = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 1;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
-        $picturename= $obj->getPicture();
         $passwd= $obj->getPassword();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
@@ -311,6 +310,8 @@ class CompanyController extends Controller
                         if ($passwd == \crypt($postdata['Old_password'],$passwd)){
                             $hashpasswd = \crypt($postdata['New_password']);
                             $em->getRepository('SiteSavalizeBundle:Company')->updatePassword($id,$hashpasswd);
+                            $obj->setUpdatedAt(new \DateTime());
+                            $em->flush();
                             $successMessage = true;
                         }
                         else {
@@ -322,7 +323,7 @@ class CompanyController extends Controller
                     }
                 }
             }
-        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd, 'picture' => $picturename));
+        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
     public function contactAction() {
         //get the request object

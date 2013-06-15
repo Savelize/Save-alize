@@ -195,9 +195,8 @@ class AdminAccountController extends Controller
         $request = $this->getRequest();
         $successMessage = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 3;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Admin')->find($id);
         
@@ -250,11 +249,13 @@ class AdminAccountController extends Controller
                         $postdata['upload_your_photo']->move($path,$picturename);
                         $em->getRepository('SiteSavalizeBundle:User')->updatePicture($uid,$picturename);
                     }
+                    $obj->getUser()->setUpdatedAt(new \DateTime());
+                    $em->flush();
                     $successMessage = true;
                     //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
-        return $this->render('SiteSavalizeBundle:AdminAccount:personaladminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'picture' => $picturename));
+        return $this->render('SiteSavalizeBundle:AdminAccount:personaladminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
     }
     
     /* admin change-password settings */
@@ -264,14 +265,12 @@ class AdminAccountController extends Controller
         $diffpasswd = false;
         $wrongpasswd = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 3;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Admin')->find($id);
         $uid = $obj->getUser()->getId();
         $passwd= $obj->getUser()->getPassword();
-        $picturename= $obj->getUser()->getPicture();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -297,6 +296,8 @@ class AdminAccountController extends Controller
                         if ($passwd == \crypt($postdata['Old_password'],$passwd)){
                             $hashpasswd = \crypt($postdata['New_password']);
                             $em->getRepository('SiteSavalizeBundle:User')->updatePassword($uid,$hashpasswd);
+                            $obj->getUser()->setUpdatedAt(new \DateTime());
+                            $em->flush();
                             $successMessage = true;
                         }
                         else {
@@ -308,6 +309,6 @@ class AdminAccountController extends Controller
                     }
                 }
             }
-        return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd, 'picture' => $picturename));
+        return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
 }
