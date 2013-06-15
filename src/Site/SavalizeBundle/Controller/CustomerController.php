@@ -171,35 +171,38 @@ class CustomerController extends Controller {
                                 $em->persist($brand);
                                 $em->flush($brand);
                             }
-                            $ProductbrandRep = $em->getRepository("SiteSavalizeBundle:ProductBrand");
-                            $Productbrand = $ProductbrandRep->findOneBy(array("brand" => $brand, "product" => $product));
-                            if (!$Productbrand) {
-                                $Productbrand = new ProductBrand();
-                                $Productbrand->setBrand($brand);
-                                $Productbrand->setCategory($cat);
-                                $Productbrand->setPicture("anonymos.jpg");
-                                $Productbrand->setProduct($product);
-                                $em->persist($Productbrand);
-                                $em->flush($Productbrand);
-                            }
-                            $history = new History();
-                            $history->setBaughtAt($data['Date']);
-                            $history->setCustomer($customer);
-                            $history->setPrice($data['Price']);
-                            $history->setProductBrand($Productbrand);
-                            $history->setQuantity($data['Quantity']);
-                            $em->persist($history);
-                            $em->flush($history);
-                        } else {
-                            return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg" => "form is not valid"));
+                        $ProductbrandRep = $em->getRepository("SiteSavalizeBundle:ProductBrand");
+                        $Productbrand=$ProductbrandRep->findOneBy(array("brand"=>$brand,"product"=>$product));
+                        if(!$Productbrand)
+                        {
+                            $Productbrand=new ProductBrand();
+                            $Productbrand->setBrand($brand);
+                            $Productbrand->setCategory($cat);
+                            $Productbrand->setPicture("anonymos.jpg");
+                            $Productbrand->setProduct($product);
+                            $em->persist($Productbrand);
+                            $em->flush($Productbrand);
                         }
-                        return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(), 'sucess' => true));
-                    }
-                    return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(), 'sucess' => false));
-                }
-            }
-            return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg" => "you are not authorized"));
+                        $history=new History();
+                        $history->setBaughtAt($data['Date']);
+                        $history->setCustomer($customer);
+                        $history->setPrice($data['Price']);
+                        $history->setProductBrand($Productbrand);
+                        $history->setQuantity($data['Quantity']);
+                        $em->persist($history);
+                        $em->flush($history);
+                     }
+                     else
+                     {
+                         return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg"=>"form is not valid"));
+                     }
+                     return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>true));
+                 }
+                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>false));
+            }  
         }
+        }
+        return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg" => "you are not authorized"));
     }
 
     public function indexAction() {
