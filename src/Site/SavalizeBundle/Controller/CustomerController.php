@@ -207,8 +207,8 @@ class CustomerController extends Controller {
                 return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>false));
             }  
         }
-        return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg" => "you are not authorized"));
         }
+        return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg" => "you are not authorized"));
     }
 
     public function indexAction() {

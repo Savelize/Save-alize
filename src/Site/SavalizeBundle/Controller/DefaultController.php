@@ -335,7 +335,8 @@ class DefaultController extends Controller
             $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
             $picname = $obj->getUser()->getPicture();
         }
-        
-        return Response($picname);
+        if(!$picname)
+            $picname="anonymous.jpg";
+        return new Response($picname);
     }
 }
