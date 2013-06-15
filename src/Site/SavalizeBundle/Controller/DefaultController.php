@@ -253,6 +253,8 @@ class DefaultController extends Controller
                                 $company->setEmail($data['Email']);
                                 $pass_crypt = \crypt($data['Password']);
                                 $company->setPassword($pass_crypt);
+                                $company->setCreatedAt(new \DateTime());
+                                $company->setUpdatedAt(new \DateTime());
                                 $em->persist($company);
                                 $em->flush($company);
                                 $session = $this->getRequest()->getSession();
@@ -313,5 +315,14 @@ class DefaultController extends Controller
 		}
 	}*/
 	return new Response (json_encode($brands));
+    }
+    
+    public function getpictureAction(){
+       /* $session = $request->getSession();
+        $id = $session->get('id');
+        $role = $session->get('role');
+        if ($role == 'company'){
+            
+        }*/
     }
 }
