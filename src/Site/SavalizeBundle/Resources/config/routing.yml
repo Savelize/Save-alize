@@ -198,3 +198,18 @@ admin_chart_ProductBrandCategory:
 admin_chart_Region:
     pattern: /admin/renderreportRegion
     defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegion }
+
+admin_New_ProductsApprovel:
+    pattern: /admin/NewProductsApprovel
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:NewProductsApprovel }
+    
+product_approval_submit:
+    pattern: /admin/productApprovalSubmit
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:productApprovalSubmit }
+    requirements: { _method: post }
+
+brand_approval_submit:
+    pattern: /admin/brandApprovalSubmit
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:brandApprovalSubmit }
+    requirements: { _method: post }
+
