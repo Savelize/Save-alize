@@ -14,63 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
-    public function getUserIDByUserName($username)
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-        $userRep = $em->getRepository("SiteSavalizeBundle:User");
-        $user=$userRep->findOneByUsername($username);
-        if($user)
-        {
-            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
-            $customer=$customerRep->findOneByUser($user);
-            if($customer)
-            {
-                return $customer->getId();
-            }
-            $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
-            $admin=$adminRep->findOneByUser($user);
-            if($admin)
-            {
-                return $admin->getId();
-            }
-        }
-        $CompanyRep = $em->getRepository("SiteSavalizeBundle:Company");
-        $company=$CompanyRep->findOneByUsername($username);
-        if($company)
-        {
-            return $company->getId();
-        }
-        return null;
-    }
-    
-    public function getUserTypeByUserName($username)
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-        $userRep = $em->getRepository("SiteSavalizeBundle:User");
-        $user=$userRep->findOneByUsername($username);
-        if($user)
-        {
-            $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
-            $customer=$customerRep->findOneByUser($user);
-            if($customer)
-            {
-                return "customer";
-            }
-            $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
-            $admin=$adminRep->findOneByUser($user);
-            if($admin)
-            {
-                return "admin";
-            }
-        }
-        $CompanyRep = $em->getRepository("SiteSavalizeBundle:Company");
-        $company=$CompanyRep->findOneByUsername($username);
-        if($company)
-        {
-            return "company";
-        }
-        return null;
-    }
     public function indexAction()
     {
         //echo $this->getUserIDByUserName("admin");
@@ -167,11 +110,20 @@ class DefaultController extends Controller
                     $session->set('userName',$data['User_Name']);
                     $adminRep = $em->getRepository("SiteSavalizeBundle:Admin");
                     $admin=$adminRep->findOneByUser($user);
+                    $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+                    $customer=$customerRep->findOneByUser($user);
                     if($admin)
+                    {
+                        $session->set('id',$admin->getId());
+                        $session->set('role',"admin");
                         return $this->redirect($this->generateUrl('site_personal_admin_settings'));
-                    else
+                    }
+                    else if($customer)
+                    {
+                        $session->set('id',$customer->getId());
+                        $session->set('role',"customer");
                         return $this->redirect($this->generateUrl('user_addProduct'));
-                    
+                    }
                 }
                 else
                 {
@@ -183,12 +135,12 @@ class DefaultController extends Controller
             {
                 $pass_crypt =$Company->getPassword();
                 $pass=$data['Password'];
-                echo \crypt($pass, $pass_crypt)."</br>";
-                echo "$pass_crypt";
                 if ($pass_crypt == \crypt($pass, $pass_crypt))
                 {
                     $session = $this->getRequest()->getSession();
                     $session->set('userName',$data['User_Name']);
+                    $session->set('id',$Company->getId());
+                    $session->set('role',"company");
                     return $this->redirect($this->generateUrl('site_personal_company_settings'));
                 }
                 else
@@ -314,7 +266,37 @@ class DefaultController extends Controller
     }
     public function showOneReviewAction()
     {
-    	return $this->render('SiteSavalizeBundle:Default:oneReview.html.twig', array());
+    	$request = $this->container->get('request');
+    	$session = $this->getRequest()->getSession();
+    	$picName = $request->get('name');
+    	$em=$this->getDoctrine()->getEntityManager();
+    	$allLikesAndRatings = $em->getRepository('SiteSavalizeBundle:ProductRating')->getAllRatingsAndLikes($picName);
+    	$allLikes = $allLikesAndRatings[0]['likesCount'];
+    	//$username = $session->get('userName');
+    	$username = 'samarhassan';
+    	$productBrandObj = $em->getRepository('SiteSavalizeBundle:ProductBrand')->findOneByPicture($picName);
+    	$customerObj = $em->getRepository('SiteSavalizeBundle:User')->findOneByUsername($username);
+	//$productBrandId = 2;
+	$customerId = $customerObj->getId();
+	$pbId = $productBrandObj->getId();
+    	$userLikeAndRating = $em->getRepository('SiteSavalizeBundle:ProductRating')->getUserLikeAndRating($pbId, $customerId);
+    	/*if ($userLikeAndRating[0]['userLike'])
+    	{$userLike = 1;}
+    	else
+    	{$userLike = 0;}*/
+    	//echo "pb".$pbId;
+    	//echo "c".$customerId;
+	//print_r($userLikeAndRating);
+	//exit;
+    	$userLike = ($userLikeAndRating[0]['userLike'])? 1 : 0;
+    	$userRating = $userLikeAndRating[0]['userRating'];
+	
+    	//echo round(6.5);
+    	//exit;
+    	//return new Response($allLiksAndRatings[0]['likesCount']);	
+    	//return new Response($userLike);
+    	//return new Response($pbId);
+    	return $this->render('SiteSavalizeBundle:Default:oneReview.html.twig', array('picName'=>$picName, 'allLikes'=>$allLikes, 'userLike'=>$userLike, 'userRating'=>$userRating));
     }
     public function showAllReviewsAction()
     {
@@ -346,20 +328,19 @@ class DefaultController extends Controller
 	{
 		$brands[$i] = $brandsOfCategory[$i]->getName();
 	}
-	/*for($i=0; $i<count($brands); $i++)
-	{
-		for($i=0; $i<count($brandsArr); $i++)
-		{
-			if($brands[$i]==$brandsArr[$j])
-			{
-				$flag = 1;
-			}
-			if($flag == 1)
-			{
-				$brandsArr[$j] = $brands[$i];
-			}
-		}
-	}*/
 	return new Response (json_encode($brands));
+    }
+    public function getBrandPicturesAction()
+    {
+    	$request = $this->container->get('request');
+    	$brandSearched = $request->get('brandSearched');
+    	$em=$this->getDoctrine()->getEntityManager();
+    	$brandPictures = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getBrandPictures($brandSearched);
+    	for($i=0; $i<count($brandPictures); $i++)
+	{
+		$brandPics[$i] = $brandPictures[$i]->getPicture();
+	}
+    	return new Response (json_encode($brandPics));
+    	
     }
 }

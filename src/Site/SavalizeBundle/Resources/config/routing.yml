@@ -26,8 +26,10 @@ site_savalize_ajaxtoshowchart:
   defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChart }
 
 SiteSavalizeBundle_one_review:
-    pattern:  /review/show
-    defaults: { _controller: SiteSavalizeBundle:Default:showOneReview }
+    pattern:  /review/show/{name}
+    defaults: { _controller: SiteSavalizeBundle:Default:showOneReview, name: "" }
+    requirements:
+        id: \d+
 SiteSavalizeBundle_all_reviews:
     pattern:  /reviews/show
     defaults: { _controller: SiteSavalizeBundle:Default:showAllReviews }
@@ -129,3 +131,9 @@ company_add_newproduct:
 site_brands_cat:
     pattern: /categories
     defaults: { _controller: SiteSavalizeBundle:Default:getBrandsOfCategory }
+    requirements: { _method: post }
+brand_pictures:
+    pattern: /brand/pics
+    defaults: { _controller: SiteSavalizeBundle:Default:getBrandPictures }
+    requirements: { _method: post }
+    

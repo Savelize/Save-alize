@@ -31,14 +31,14 @@ class Category
     /**
      * @var integer
      *
-     * @ORM\Column(name="confirmed", type="integer")
+     * @ORM\Column(name="confirmed", type="integer", options={"default"=0})
      */
     private $confirmed;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="isDeleted", type="boolean")
+     * @ORM\Column(name="isDeleted", type="boolean", options={"default"=false})
      */
     private $isDeleted;
 

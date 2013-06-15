@@ -39,7 +39,7 @@
         
       <img src="{{ asset('img/') }}{{ picName }}" width="300px" height="300px"><br>
 
-<br>
+
 
 <label  >Your rating: {{ userRating }}</label><label></label>
 

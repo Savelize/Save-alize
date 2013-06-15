@@ -1,38 +1,86 @@
 {% extends '::base.html.twig' %}
+{% block title %}Socialize - Product Reviews{% endblock %}
+
+{% block stylesheets %}
+<link href="{{asset('css/fullcalendar.css')}}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+
+
 {% block body %}
-<div>
-	<h2>Select a category</h2>
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#">Save and Socialize</a>
+
+        <div class="nav-collapse">
+            <ul class="nav" style="font-weight:normal">
+                <li><a href="#">New Purchases</a> </li>
+                <li><a href="#">My Alerts</a></li>
+                <li ><a href="#">History</a></li>
+                <li class="active"><a href="#">Product Reviews</a></li>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid" >
+    <div class="span12 content">
+
+        <h2>Product Reviews</h2>
+        
+        <br><br>
+        <h2 style="font-size:20px">Select a category</h2>
 	<select id = "categorySelect" name="categorySelect">
 		<option value="select">-- Select a category --</option>
 		{% for category in categories %}
 			<option value="{{ category.id }}">{{ category.name }}</option>
 		{% endfor %}
 	</select>
-	<h2>Search for a specific brand:</h2>
-	<input id="autocomplete">
-	<button >Go</button>
+	<h2 style="font-size:20px">Search for a specific brand:</h2>
+	<input id="autocomplete" autocomplete="off">
+	<button id="searchBrand">Go</button>
 	
 	<br>
 	<br>
 	<input type="hidden" id="hiddenBrands" value="{{ brands }}">
 	<input type="hidden" id="allBrands" value="{{ allBrands }}">
-	{% for pb in pbs %}
-		{% for pb1 in pb %}
-			<img src="{{asset('img/')}}{{ pb1.picture }}" width="200" height="200"/>
+	
+	<div id = "pictures">
+	{#src="{{asset('img/')}}{{ pb1.picture }}"#}
+		{% for pb in pbs %}
+			{% for pb1 in pb %}
+				<a href="#" ><img id="pb1.picture" width="200" height="200"/></a>
+			{% endfor %}
 		{% endfor %}
-		
-	{% endfor %}
-</div>
+	</div>
+	
 	{% block javascripts %}
-		<script src="{{asset('js/jquery.js')}}"></script>
-		<script src="{{asset('js/jquery-ui.js')}}"></script>
-              <script src="{{asset('js/jquery-ui-1.10.2.custom.min.js')}}"></script>
-            <script src="{{asset('js/bootstrap.min.js')}}"></script>
+		
+		
+             
+            
             
 		<script>
-			var path = "{{ path('site_brands_cat') }}" 
+			var path1 = "{{ path('site_brands_cat') }}"
+			var path2 = "{{ path('brand_pictures') }}" 
+			var basePathOfPictures = "{{ asset('img/') }}"
+			var newPath = "{{ path('SiteSavalizeBundle_one_review') }}"
 		</script>
-		<script src="{{asset('js/reviewsPages.js')}}"></script>
-	{% endblock %}
-{% endblock %}
+		
 
+			
+
+	{% endblock %}
+        
+        
+    </div>
+</div>
+{% endblock %}

@@ -22,8 +22,8 @@
             <ul class="nav" style="font-weight:normal">
                 <li><a href="#">New Purchases</a> </li>
                 <li><a href="#">My Alerts</a></li>
-                <li ><a href="#">History</a></li>
-                <li class="active"><a href="#">Product Reviews</a></li>
+                <li class="active"><a href="#">History</a></li>
+                <li><a href="#">Product Reviews</a></li>
                 <li><a href="#">Reports</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="#">Contact Us</a></li>
@@ -37,9 +37,9 @@
         <h2>Product Reviews</h2>
         
         
-      <img src="{{ asset('img/') }}{{ picName }}" width="300px" height="300px"><br>
+      <img src="{{ asset('img/11.jpg') }}" width="300px" height="300px"><br>
 
-<br>
+
 
 <label  >Your rating: {{ userRating }}</label><label></label>
 
@@ -57,7 +57,7 @@
 	</div>
 {% else %}
 	<div class="imgWrap">
-	<img id="likeImg" src="{{asset('img/like.jpeg')}}" width="100px" height="100px" />
+	<img src="{{asset('img/like.jpeg')}}" width="100px" height="100px" />
 	<p id="likeP" class="imgDescription">Click here to like</p>
 	</div>
 {% endif %}
@@ -119,28 +119,35 @@
 <script>
 	var baseLikeImg = "{{asset('img/')}}";
 	var userLike = {{ userLike }};
-$("#likeP").on('click',function(){
-			if(userLike == 1)
+	if(userLike == 1)
 	{
+		$("#likeP").on('click',function(){
 			//alert("d");
 			var likeImgPath = baseLikeImg + 'like.jpeg'
 			$("#likeImg").attr('src', likeImgPath);
 			$("#likeP").html("click here to like");
 			userLike = 0;
-		
+		});
 	}
 	else
 	{
+		$("#likeP").on('click',function(){
 			//alert("d");
 			var likeImgPath = baseLikeImg + 'liked.jpeg'
 			$("#likeImg").attr('src', likeImgPath);
-			$("#likeP").html("click here to unlike");
+			$("#likeP").html("click here to like");
 			userLike = 1;
-		}
-	});
+		});
+	}
 </script>  
         
         
      </div>
 </div>
+     
+   
+
+{% block javascripts %}
+          
+            
 {% endblock %}

@@ -26,8 +26,10 @@ site_savalize_ajaxtoshowchart:
   defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChart }
 
 SiteSavalizeBundle_one_review:
-    pattern:  /review/show
+    pattern:  /review/show/{name}
     defaults: { _controller: SiteSavalizeBundle:Default:showOneReview }
+    requirements:
+        id: \d+
 SiteSavalizeBundle_all_reviews:
     pattern:  /reviews/show
     defaults: { _controller: SiteSavalizeBundle:Default:showAllReviews }
@@ -88,12 +90,17 @@ user_signUp:
     requirements: { _method: post }
 
 user_signOut:
-    pattern:  /signUp
+    pattern:  /signOut
     defaults: { _controller: "SiteSavalizeBundle:Default:signOut" }
     
 user_addProduct:
     pattern:  /addProduct
     defaults: { _controller: "SiteSavalizeBundle:Customer:addProduct" }
+
+user_getProducts:
+    pattern:  /getProduct
+    defaults: { _controller: "SiteSavalizeBundle:Customer:getProduct"}
+    requirements: { _method: post }
     
 user_report_fromCategory:
     pattern: /fromCategory
@@ -121,10 +128,12 @@ company_view_product:
 company_add_newproduct:
     pattern: /company/products/{id}
     defaults: { _controller: SiteSavalizeBundle:Company:viewProduct }
-<<<<<<< HEAD
 site_brands_cat:
     pattern: /categories
     defaults: { _controller: SiteSavalizeBundle:Default:getBrandsOfCategory }
-=======
-
->>>>>>> e7e7d94dd6d1cc824bd57e021359123c89c774ad
+    requirements: { _method: post }
+brand_pictures:
+    pattern: /brand/pics
+    defaults: { _controller: SiteSavalizeBundle:Default:getBrandPictures }
+    requirements: { _method: post }
+    

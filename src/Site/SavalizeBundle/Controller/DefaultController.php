@@ -266,7 +266,37 @@ class DefaultController extends Controller
     }
     public function showOneReviewAction()
     {
-    	return $this->render('SiteSavalizeBundle:Default:oneReview.html.twig', array());
+    	$request = $this->container->get('request');
+    	$session = $this->getRequest()->getSession();
+    	$picName = $request->get('name');
+    	$em=$this->getDoctrine()->getEntityManager();
+    	$allLikesAndRatings = $em->getRepository('SiteSavalizeBundle:ProductRating')->getAllRatingsAndLikes($picName);
+    	$allLikes = $allLikesAndRatings[0]['likesCount'];
+    	$username = $session->get('userName');
+    	//$username = 'samarhassan';
+    	$productBrandObj = $em->getRepository('SiteSavalizeBundle:ProductBrand')->findOneByPicture($picName);
+    	$customerObj = $em->getRepository('SiteSavalizeBundle:User')->findOneByUsername($username);
+	//$productBrandId = 2;
+	$customerId = $customerObj->getId();
+	$pbId = $productBrandObj->getId();
+    	$userLikeAndRating = $em->getRepository('SiteSavalizeBundle:ProductRating')->getUserLikeAndRating($pbId, $customerId);
+    	/*if ($userLikeAndRating[0]['userLike'])
+    	{$userLike = 1;}
+    	else
+    	{$userLike = 0;}*/
+    	//echo "pb".$pbId;
+    	//echo "c".$customerId;
+	//print_r($userLikeAndRating);
+	//exit;
+    	$userLike = ($userLikeAndRating[0]['userLike'])? 1 : 0;
+    	$userRating = $userLikeAndRating[0]['userRating'];
+	
+    	//echo round(6.5);
+    	//exit;
+    	//return new Response($allLiksAndRatings[0]['likesCount']);	
+    	//return new Response($userLike);
+    	//return new Response($pbId);
+    	return $this->render('SiteSavalizeBundle:Default:oneReview.html.twig', array('picName'=>$picName, 'allLikes'=>$allLikes, 'userLike'=>$userLike, 'userRating'=>$userRating));
     }
     public function showAllReviewsAction()
     {
@@ -298,20 +328,19 @@ class DefaultController extends Controller
 	{
 		$brands[$i] = $brandsOfCategory[$i]->getName();
 	}
-	/*for($i=0; $i<count($brands); $i++)
-	{
-		for($i=0; $i<count($brandsArr); $i++)
-		{
-			if($brands[$i]==$brandsArr[$j])
-			{
-				$flag = 1;
-			}
-			if($flag == 1)
-			{
-				$brandsArr[$j] = $brands[$i];
-			}
-		}
-	}*/
 	return new Response (json_encode($brands));
+    }
+    public function getBrandPicturesAction()
+    {
+    	$request = $this->container->get('request');
+    	$brandSearched = $request->get('brandSearched');
+    	$em=$this->getDoctrine()->getEntityManager();
+    	$brandPictures = $em->getRepository('SiteSavalizeBundle:ProductBrand')->getBrandPictures($brandSearched);
+    	for($i=0; $i<count($brandPictures); $i++)
+	{
+		$brandPics[$i] = $brandPictures[$i]->getPicture();
+	}
+    	return new Response (json_encode($brandPics));
+    	
     }
 }

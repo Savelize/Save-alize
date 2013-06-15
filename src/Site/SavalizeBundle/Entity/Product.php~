@@ -28,22 +28,22 @@ class Product
      */
     private $name;
     /**
-     *@ORM\ManyToOne(targetEntity="\Site\SavalizeBundle\Entity\Brand", inversedBy="products")
-     *@ORM\JoinColumn(name="brand_id", referencedColumnName="id", onDelete = "CASCADE")
+     *@ORM\ManyToOne(targetEntity="\Site\SavalizeBundle\Entity\Category", inversedBy="products")
+     *@ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete = "CASCADE")
      */
     private $category;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="confirmed", type="integer")
+     * @ORM\Column(name="confirmed", type="integer", options={"default"=false})
      */
     private $confirmed;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="isDeleted", type="boolean")
+     * @ORM\Column(name="isDeleted", type="boolean", options={"default"=false})
      */
     private $isDeleted;
 
