@@ -42,6 +42,16 @@ class UserRepository extends EntityRepository
         $query->execute();
     }
     
+    function updatePassword($id,$Password){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:User u
+                            SET u.password = :Password 
+                            WHERE u.id = :uid"
+                        )->setParameters(array('uid'=>$id,'Password'=>$Password));
+        $query->execute();
+    }
+    
     function updateEmail($id,$Email){
         $query = $this->getEntityManager()
                         ->createQuery("
@@ -49,6 +59,16 @@ class UserRepository extends EntityRepository
                             SET u.email = :Email 
                             WHERE u.id = :uid"
                         )->setParameters(array('uid'=>$id,'Email'=>$Email));
+        $query->execute();
+    }
+    
+    function updatePicture($id,$Picture){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:User u
+                            SET u.picture = :Picture 
+                            WHERE u.id = :uid"
+                        )->setParameters(array('uid'=>$id,'Picture'=>$Picture));
         $query->execute();
     }
 }

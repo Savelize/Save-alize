@@ -20,10 +20,6 @@ site_savalize_viewNotifications:
 site_savalize_displayDummyChart:
     pattern: /displayChart
     defaults: { _controller: SiteSavalizeBundle:Customer:displayEnteryChartPage }
-    
-site_savalize_ajaxtoshowchart:
-  pattern:  /usr/renderreport
-  defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChart }
 
 SiteSavalizeBundle_one_review:
     pattern:  /review/show
@@ -99,6 +95,11 @@ user_getProducts:
     pattern:  /getProduct
     defaults: { _controller: "SiteSavalizeBundle:Customer:getProduct"}
     requirements: { _method: post }
+
+user_getBrands:
+    pattern:  /getBrands
+    defaults: { _controller: "SiteSavalizeBundle:Customer:getBrands"}
+    requirements: { _method: post }
     
 user_report_fromCategory:
     pattern: /fromCategory
@@ -113,6 +114,21 @@ user_chart_datesOnly:
     pattern:  /usr/renderreportdatesonly
     defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesOnly }
 
+user_chart_datesCategory:
+  pattern:  /usr/renderreport
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesCategory }
+    
+user_chart_ProductBrand:
+    pattern: /usr/renderreportproductbrand
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartProductBrand }
+    
+user_chart_datesProduct:
+    pattern: /usr/renderreportproduct
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesProduct }
+    
+user_chart_datesBrand:
+    pattern: /usr/renderreportbrand
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesBrand }
 
 show_new_product_details:
     pattern: /showproduct

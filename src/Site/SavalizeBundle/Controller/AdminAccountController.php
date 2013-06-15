@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Site\SavalizeBundle\Entity\AdminAccount;
 use Site\SavalizeBundle\Form\AdminAccountType;
 
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -192,10 +193,10 @@ class AdminAccountController extends Controller
     /* admin personal settings */
     public function personaladminsettingsAction(){
         $request = $this->getRequest();
+        $successMessage = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 3;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Admin')->find($id);
         
@@ -203,13 +204,23 @@ class AdminAccountController extends Controller
                     'First_Name' => new NotBlank(),
                     'Last_Name' => new NotBlank(),
                     'Username' => new NotBlank(),
-                    'Email' => array(new Email(), new NotBlank())
+                    'Email' => array(new Email(), new NotBlank()),
+                    'upload_your_photo' => new Image (array(
+                'maxSize' => '2048k',
+                'mimeTypes' => array(
+                    'image/jpeg',
+                    'image/png',
+                    'image/bmp',
+                    'image/gif',
+            ),
+                'mimeTypesMessage' => 'Please upload a valid Image (jpg, jpeg , png , bmp or gif)'))
                         ));
         $uid = $obj->getUser()->getId();
         $data['First_Name']= $obj->getUser()->getFname();
         $data['Last_Name']= $obj->getUser()->getLname();
         $data['Username']= $obj->getUser()->getUsername();
         $data['Email']= $obj->getUser()->getEmail();
+        $picturename= $obj->getUser()->getPicture();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
@@ -217,6 +228,7 @@ class AdminAccountController extends Controller
                 ->add('Last_Name')
                 ->add('Username')
                 ->add('Email', 'email', array('attr' => array('class' => 'email')))
+                ->add('upload_your_photo','file', array('required' => false))
                 ;
         $form = $formBuilder->getForm();
         if ($request->getMethod() == 'POST') {
@@ -230,17 +242,35 @@ class AdminAccountController extends Controller
                     $em->getRepository('SiteSavalizeBundle:User')->updateLastName($uid,$postdata['Last_Name']);
                     $em->getRepository('SiteSavalizeBundle:User')->updateUsername($uid,$postdata['Username']);
                     $em->getRepository('SiteSavalizeBundle:User')->updateEmail($uid,$postdata['Email']);
+                    if($postdata['upload_your_photo']){
+                        $imgext = $postdata['upload_your_photo']->guessExtension();
+                        $picturename = $postdata['Username'].".".$imgext;
+                        $path = '/opt/lampp/htdocs/Save-alize/web/img/usersimgs';
+                        $postdata['upload_your_photo']->move($path,$picturename);
+                        $em->getRepository('SiteSavalizeBundle:User')->updatePicture($uid,$picturename);
+                    }
+                    $obj->getUser()->setUpdatedAt(new \DateTime());
+                    $em->flush();
+                    $successMessage = true;
                     //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
-        return $this->render('SiteSavalizeBundle:AdminAccount:personaladminsettings.html.twig', array('form' => $form->createView()));
+        return $this->render('SiteSavalizeBundle:AdminAccount:personaladminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
     }
     
     /* admin change-password settings */
     public function passwordadminsettingsAction(){
         $request = $this->getRequest();
+        $successMessage = false;
+        $diffpasswd = false;
+        $wrongpasswd = false;
         $data = array();
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
+        $obj = $em->getRepository('SiteSavalizeBundle:Admin')->find($id);
+        $uid = $obj->getUser()->getId();
+        $passwd= $obj->getUser()->getPassword();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -254,7 +284,6 @@ class AdminAccountController extends Controller
                 ->add('Confirm_password','password')
         ;
         $form = $formBuilder->getForm();
-        /*
         if ($request->getMethod() == 'POST') {
            
                 //fill the form data from the request
@@ -262,11 +291,24 @@ class AdminAccountController extends Controller
                 //check if the form values are correct
                 if ($form->isValid()) {
                     $postdata = $form->getData();
-                    //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
+                    
+                    if($postdata['New_password'] == $postdata['Confirm_password']){
+                        if ($passwd == \crypt($postdata['Old_password'],$passwd)){
+                            $hashpasswd = \crypt($postdata['New_password']);
+                            $em->getRepository('SiteSavalizeBundle:User')->updatePassword($uid,$hashpasswd);
+                            $obj->getUser()->setUpdatedAt(new \DateTime());
+                            $em->flush();
+                            $successMessage = true;
+                        }
+                        else {
+                            $wrongpasswd = true;
+                        }
+                    }
+                    else {
+                        $diffpasswd = true;
+                    }
                 }
             }
-         * 
-         */
-        return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig', array('form' => $form->createView()));
+        return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
 }

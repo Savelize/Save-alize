@@ -11,20 +11,14 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class HistoryRepository extends EntityRepository {
-
+    
+/* for calendar */
     public function getMonthlyPurchases($start, $end) {
 
         $q = $this->createQueryBuilder('p');
         $q->select('p')
                 ->where('p.baughtAt >= :start')
                 ->andWhere('p.baughtAt <= :end')
-//                ->groupBy('p.baughtAt')
-//       $q = $this->getEntityManager()->createQuery('
-//            SELECT sum(p.price) as price
-//            FROM SiteSavalizeBundle:History p
-//            WHERE p.baughtAt BETWEEN :start AND :end
-//            GROUP BY p.baughtAt
-//            ')
                 ->setParameter('start', $start)
                 ->setParameter('end', $end);
         $result = $q->getQuery()->getResult();
@@ -65,7 +59,7 @@ class HistoryRepository extends EntityRepository {
         return $result;
     }
 
-    public function userChartFiltersPrice($startDate, $endDate, $productbrand) {
+    public function userChartFilters($startDate, $endDate, $categoryID) {
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");
         $endDate = new \DateTime($endDate);
@@ -74,14 +68,14 @@ class HistoryRepository extends EntityRepository {
         $q = $this->getEntityManager()->createQuery('
             SELECT SUM(h.price) as price , p.name as name
             FROM SiteSavalizeBundle:History h
-            JOIN SiteSavalizeBundle:Product p
-            JOIN SiteSavalizeBundle:ProductBrand pb
+            JOIN h.productBrand pb
+            JOIN pb.product p
             WHERE p.id = pb.product
-            AND pb.category = :category
+            AND p.category = :category
             AND h.baughtAt BETWEEN :start AND :end
-            GROUP BY pb.category
-')
-                ->setParameter('category', $productbrand)
+            GROUP BY pb.product
+            ')
+                ->setParameter('category', $categoryID)
                 ->setParameter('start', $startDates)
                 ->setParameter('end', $endDate);
 
@@ -110,7 +104,12 @@ class HistoryRepository extends EntityRepository {
 //
 //        return $result;
 //    }
-public function userChartFilters($startDate, $endDate, $category) {
+    
+    //-------------------------------uncomment the following
+    
+    
+    /*
+    public function userChartFilters($startDate, $endDate, $category) {
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");
         $endDate = new \DateTime($endDate);
@@ -122,7 +121,7 @@ public function userChartFilters($startDate, $endDate, $category) {
             WHERE pb.category = :category
             AND h.baughtAt BETWEEN :start AND :end
             GROUP BY h.productBrand
-')  ->setParameter('category', $category)
+')->setParameter('category', $category)
                 ->setParameter('start', $startDates)
                 ->setParameter('end', $endDate);
 
@@ -130,5 +129,5 @@ public function userChartFilters($startDate, $endDate, $category) {
 
         return $result;
     }
-
+*/
 }
