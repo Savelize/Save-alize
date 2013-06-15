@@ -410,7 +410,9 @@ class CustomerController extends Controller {
 
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Category');
         $result = $repository->categoryAutocomplete();
-        return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig', array('categories' => json_encode($result)));
+        $brand = $repository->brandAutocomplete();
+        $product = $repository->productAutocomplete();
+        return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig', array('categories' => json_encode($result), 'products' => json_encode($product), 'brands' => json_encode($brand)));
     }
 
     public function contactAction() {

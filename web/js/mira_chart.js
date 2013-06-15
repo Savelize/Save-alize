@@ -3,7 +3,11 @@ $(document).ready(function(){
     var chartproducts = new Array();
     price[0] = 0;
     var categorySources = new Array();
+    var brandSources = new Array();
+    var productSources = new Array();
     var hiddenCategory = JSON.parse($("#hiddenCategory").val());
+    var hiddenBrand = JSON.parse($("#hiddenBrand").val());
+    var hiddenProduct = JSON.parse($("#hiddenProduct").val());
     var categoryHash={};
     var categoryID;
     var userChartStartDate;
@@ -15,11 +19,21 @@ $(document).ready(function(){
     for(i = 0; i < hiddenCategory.length; i++){
         categorySources[i] = hiddenCategory[i].name;
     }
+    
+    for(i = 0; i < hiddenBrand.length; i++){
+        brandSources[i] = hiddenBrand[i].name;
+    }
+    
+    for(i = 0; i < hiddenProduct.length; i++){
+        productSources[i] = hiddenProduct[i].name;
+    }
+    
     hiddenCategory.forEach(function(element,i){
         if(i <= hiddenCategory.length){
             categoryHash[hiddenCategory[i].name]= (hiddenCategory[i].id)
         }
     });
+   
    
     //   .setDefaults({
     //        showOn: "both",
@@ -42,9 +56,9 @@ $(document).ready(function(){
         userChartEndDate = $('#endDate').val();
     });
     
-    $("#categoryIP").autocomplete({
-        source: categorySources
-    });
+    
+    
+    
     $("#categoryIP").on('change', function(){
         categoryID = (categoryHash[$("#categoryIP").val()]);
         $.ajax({
@@ -81,11 +95,29 @@ $(document).ready(function(){
     
     var filterSelect =  $("#filterSelect");
     filterSelect.on('change', function(){
-        if(filterSelect.val() == 1){       
+        if(filterSelect.val() == 1){    
+            $("#categoryIP").autocomplete({
+                source: categorySources
+            });
+            $("#productIP").autocomplete({
+                source: []
+            });
             dateAndCategory();
         }else if(filterSelect.val() == 2){
+            $("#brandIP").autocomplete({
+                source: brandSources
+            });
+            $("#productIP").autocomplete({
+                source: []
+            });
             dateAndBrand();
         }else if(filterSelect.val() == 3){
+            $("#brandIP").autocomplete({
+                source: []
+            });
+            $("#productIP").autocomplete({
+                source: productSources
+            });
             dateAndProduct();
         }else if(filterSelect.val() == 4){
             dateProductAndBrand();
@@ -97,18 +129,14 @@ $(document).ready(function(){
         $('#productIp').hide();
         $('#brandIp').show();
         $('#categoryIp').hide();
-    }
-    function dateAndProduct(){
-        $('#productIp').show();
-        $('#brandIp').hide();
-        $('#categoryIp').hide();
-         $.ajax({
+        $.ajax({
             type: 'POST',
-            url: dateProductpath,
+            url: dateBrandpath,
             datatype: 'json',
             data: {
                 startDate: userChartStartDate, 
-                endDate: userChartEndDate
+                endDate: userChartEndDate,
+                productID: $('productID').val()
             },
             success: function(response) {
                 plots = JSON.parse(response);
@@ -117,9 +145,6 @@ $(document).ready(function(){
                     price[i] = parseInt(plots[i].price);
                     chartproducts[i] = plots[i].name;
                 }
-                
-               
-
                 var data = {
                     labels : chartproducts,
                     datasets : [
@@ -132,16 +157,107 @@ $(document).ready(function(){
                     }
                     ]
                 }
-                //                var myNewChart = new Chart(ctx).Bar(data);
-                graphType(data);
+                graphType(data, dataCurve);
             }
         });
     }
-    function dateProductandBrand(){
+    
+    function dateAndProduct(){
         $('#productIp').show();
-        $('#brandIp').show();
+        $('#brandIp').hide();
         $('#categoryIp').hide();
+        $.ajax({
+            type: 'POST',
+            url: dateProductpath,
+            datatype: 'json',
+            data: {
+                startDate: userChartStartDate, 
+                endDate: userChartEndDate,
+                productID: $('brandID').val()
+            },
+            success: function(response) {
+                plots = JSON.parse(response);
+                console.log(plots);
+                for(var i in plots){    
+                    price[i] = parseInt(plots[i].price);
+                    chartproducts[i] = plots[i].name;
+                }
+                var data = {
+                    labels : chartproducts,
+                    datasets : [
+                    {
+                        fillColor : "rgba(220,220,220,0.5)",
+                        strokeColor : "rgba(220,220,220,1)",
+                        pointColor : "rgba(220,220,220,1)",
+                        pointStrokeColor : "#fff",
+                        data : price
+                    }
+                    ]
+                }
+                
+                function getRandomColour() {
+                    var color = '';
+                    while (!color.match(/(#[c-e].)([e-f][a-f])([9-c].)/)) {
+                        color = '#' + Math.floor(Math.random() * (Math.pow(16,6))).toString(16);
+                    }
+                    return color;
+                }
+                
+                var dataCurve = []
+                for(i=0; i<price.length; i++){
+                    dataCurve.push( {
+                        value: price[i],
+                        labels: chartproducts[i],
+                        color: getRandomColour()
+                    });		
+                }
+                    
+                
+                //                var myNewChart = new Chart(ctx).Bar(data);
+                graphType(data, dataCurve);
+            }
+        });
     }
+    //    function dateProductandBrand(){
+    //        $('#productIp').show();
+    //        $('#brandIp').show();
+    //        $('#categoryIp').hide();
+    //         $.ajax({
+    //            type: 'POST',
+    //            url: dateProductpath,
+    //            datatype: 'json',
+    //            data: {
+    //                startDate: userChartStartDate, 
+    //                endDate: userChartEndDate,
+    //                productID: $('productID').val()
+    //            },
+    //            success: function(response) {
+    //                plots = JSON.parse(response);
+    //                console.log(plots);
+    //                for(var i in plots){    
+    //                    price[i] = parseInt(plots[i].price);
+    //                    chartproducts[i] = plots[i].name;
+    //                }
+    //                
+    //               
+    //
+    //                var data = {
+    //                    labels : chartproducts,
+    //                    datasets : [
+    //                    {
+    //                        fillColor : "rgba(220,220,220,0.5)",
+    //                        strokeColor : "rgba(220,220,220,1)",
+    //                        pointColor : "rgba(220,220,220,1)",
+    //                        pointStrokeColor : "#fff",
+    //                        data : price
+    //                    }
+    //                    ]
+    //                }
+    //                //                var myNewChart = new Chart(ctx).Bar(data);
+    //                graphType(data);
+    //            }
+    //        });
+    //    }
     
     
     function reportViaDatesOnly(){
@@ -178,8 +294,26 @@ $(document).ready(function(){
                     }
                     ]
                 }
+                
+                 function getRandomColour() {
+                    var color = '';
+                    while (!color.match(/(#[c-e].)([e-f][a-f])([9-c].)/)) {
+                        color = '#' + Math.floor(Math.random() * (Math.pow(16,6))).toString(16);
+                    }
+                    return color;
+                }
+                
+                var dataCurve = []
+                for(i=0; i<price.length; i++){
+                    dataCurve.push( {
+                        value: price[i],
+                        label: chartproducts[i],
+                        color: getRandomColour()
+                    });		
+                }
+                    
                 //                var myNewChart = new Chart(ctx).Bar(data);
-                graphType(data);
+                graphType(data, dataCurve);
             }
         });
     }
@@ -232,13 +366,13 @@ $(document).ready(function(){
             }
         });
     }
-    function graphType(data){
+    function graphType(data, dataCurve){
         var ctx = document.getElementById("myChart").getContext("2d");
         var type = $("#graphTypeSelect").val();
         if(type == "Bar"){
             var myNewChart = new Chart(ctx).Bar(data);
         }else if(type == "Pie"){
-            var myNewChart = new Chart(ctx).Pie(data);
+            var myNewChart = new Chart(ctx).Pie(dataCurve);
         }else{
             var myNewChart = new Chart(ctx).Line(data);
         }
