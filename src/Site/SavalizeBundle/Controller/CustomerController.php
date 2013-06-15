@@ -330,7 +330,7 @@ class CustomerController extends Controller {
                     'lastPageNumber' => $lastPageNumber));
     }
 
-    public function insertUserNotificationAction($title, $content, $user_id) {
+    public function insertUserNotificationAction($title, $content, $type) {
 
         $em = $this->getDoctrine()->getEntityManager();
         $notification = new UserNotification();
@@ -342,25 +342,24 @@ class CustomerController extends Controller {
         exit;
     }
 
-    // public function insertSeenNotificationAction($notf_id){
+    // public function displaynotification($content){
     //     $em = $this->getDoctrine()->getEntityManager();
     //     $customer = $em->getRepository('SiteSavalizeBundle:Customer')->find(1);
     //     $notification = $em->getRepository('SiteSavalizeBundle:UserNotification')->find($notf_id);
-    //     $seenNotf = new UserNotificationSeen();
-    //     $seenNotf->setCustomer($customer);
-    //     $seenNotf->setUserNotification();
-    //     $em->persist($seenNotf);
-    //     $em->flush();
-    //     exit;        
+         
     // }
 
-    public function showNewProductDetailsAction($notf_id) {
-
+    public function showNewProductDetailsAction() {
+        $request = $this->container->get('request');
+        $content = $request->get('content');
+        $releasedat = $request->get('releasedat');
         $em = $this->getDoctrine()->getEntityManager();
-        $result = $em->getRepository('SiteSavalizeBundle:UserNotification')->updateSeen($notf_id);
-        if ($result) {
-            // return new Response("hello");
-        }
+        $user = $em->getRepository('SiteSavalizeBundle:User')->find(1);
+        $user_name = $user->getUsername();
+        return $this->render('SiteSavalizeBundle:Customer:showewroductdetails.html.twig', array('username' => $user_name,
+                                                                                                'content' => $content,
+                                                                                                'releasedat' => $releasedat));
+        
     }
 
     public function displayUserChartAction() {
