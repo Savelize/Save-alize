@@ -427,29 +427,63 @@ class CompanyController extends Controller
                 return New Response($success);
             }else{
                 // if the brand is assigned to a company ..
-                $url = $this->generateUrl('contact_us_company',array(),true);
                 return New Response('<p class="alert alert-error"> this company is already assigned to another please contact us for more details</p>');
 
             }
         }
     }
-    public function insertNewProuctAction(){
-                
-        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
-        $productDB = $repository->findBy( array('name' => $product));
+    
+    public function insertNewProductAction(){
+
+        $request = $this->container->get('request');
+        $brand = $request->get('brand');
+        $product = $request->get('product');
+        $category_id = $request->get('category_id');
+
+        $fileObject = $request->files->get('photoInput');
+        $imgext = $fileObject->guessExtension();
+        $picturename = $brand ."." . $imgext;
+        $dir = '/var/www/Save-alize/web/img/productImages';
+        $fileObject->move($dir , $picturename);
+        echo $category_id;exit;
+
+        // $category_id = $request->get('category_id');
+        $em = $this->getDoctrine()->getEntityManager();        
+        $repository = $em->getRepository('SiteSavalizeBundle:Product');
+        $productDB = $repository->findOneByName($product);
+        $repository = $em->getRepository('SiteSavalizeBundle:Brand');
+        // check for the brand name in the database
+        $brandDB = $repository->findOneByName($brand);
+        $category = $em->getRepository('SiteSavalizeBundle:Category')->find(1);
+        $brandCompany = $em->getRepository('SiteSavalizeBundle:Company')->find(1);
         // if the product does not exists
-        if(!$productDB){
+        if((!$productDB) && (!$brandDB)){
             $productDB = new Product();
+            $brandDB = new Brand();
             $productDB->setName($productDB);
+            $productDB->setCategory($category);
+            $productDB->setConfirmed(1);
+            $brandDB->setName($brand);
+            $brandDB->setPicture($picturename);
+            $brandDB->setCompany($brandCompany);
+            $brandDB->setConfirmed(1);
             $em->persist($productDB);
+            $em->persist($brandDB);
+
+            $product_brand = new ProductBrand();
+            $product_brand->setProduct($productDB);
+            $product_brand->setBrand($brandDB);
+            // $product_brand->setPicture();
+            $em->persist($product_brand);
+            $em->flush();
+            $success = '<p class="alert alert-success"> data has been added successively</p>';
+            return New Response($success); 
+
+        }else{
+                // 7aga metkarara ....
+            return New Response('<p class="alert alert-error"> this data already exists...</p>');
         }
-        $product_brand = new ProductBrand();
-        $product_brand->setProduct($productDB);
-        $product_brand->setBrand($brandDB);
-        $product_brand->setPicture();
-        $em->persist($product_brand);
-        $em->flush();
-        exit;
+            
         
     }
 }

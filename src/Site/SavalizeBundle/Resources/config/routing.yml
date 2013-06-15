@@ -135,7 +135,7 @@ show_new_product_details:
     defaults: { _controller: SiteSavalizeBundle:Customer:showNewProductDetails }
 
 company_view_product:
-    pattern: /company/products/{id}
+    pattern: /company/products
     defaults: { _controller: SiteSavalizeBundle:Company:viewProduct }
 
 company_choose_brandproduct:
@@ -146,6 +146,10 @@ site_brands_cat:
     pattern: /categories
     defaults: { _controller: SiteSavalizeBundle:Default:getBrandsOfCategory }
 
-company_add_newproduct:
+company_add_newbrand:
     pattern: /addcompanybrand
     defaults: { _controller: SiteSavalizeBundle:Company:insertNewBrand }
+
+company_add_newproduct:
+    pattern: /addcompanyproduct
+    defaults: { _controller: SiteSavalizeBundle:Company:insertNewProduct }

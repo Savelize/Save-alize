@@ -495,11 +495,6 @@ class CustomerController extends Controller {
 
         $result = $repository->dateRangeData($startDate, $endDate);
 
-//        for ($i = 0; $i < count($result); $i++) {
-//            $pb['price'] = $result[$i]['price'];
-//            $pb['name'] = $result[$i]['name'];
-//        }
-
         return new Response(json_encode($result));
     }
 
