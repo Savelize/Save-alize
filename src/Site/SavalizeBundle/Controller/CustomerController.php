@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -482,7 +483,16 @@ class CustomerController extends Controller {
                     'City' => new NotBlank(),
                     'Region' => new NotBlank(),
                     'Age' => new NotBlank(),
-                    'Salary' => new NotBlank()
+                    'Salary' => new NotBlank(),
+                    'upload_your_photo' => new Image (array(
+                        'maxSize' => '2048k',
+                        'mimeTypes' => array(
+                        'image/jpeg',
+                        'image/png',
+                        'image/bmp',
+                        'image/gif',
+                    ),
+                'mimeTypesMessage' => 'Please upload a valid Image (jpg, jpeg , png , bmp or gif)'))
                 ));
         $uid = $obj->getUser()->getId();
         $data['First_Name'] = $obj->getUser()->getFname();
@@ -494,6 +504,7 @@ class CustomerController extends Controller {
         $data['Region'] = $obj->getRegion();
         $data['Age'] = $obj->getAge();
         $data['Salary'] = $obj->getSalary();
+        $picturename= $obj->getUser()->getPicture();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
@@ -506,6 +517,7 @@ class CustomerController extends Controller {
                 ->add('Region')
                 ->add('Age')
                 ->add('Salary')
+                ->add('upload_your_photo','file', array('required' => false))
         ;
         $form = $formBuilder->getForm();
         if ($request->getMethod() == 'POST') {
@@ -523,12 +535,20 @@ class CustomerController extends Controller {
                     $em->getRepository('SiteSavalizeBundle:Customer')->updateRegion($id,$postdata['Region']);
                     $em->getRepository('SiteSavalizeBundle:Customer')->updateAge($id,$postdata['Age']);
                     $em->getRepository('SiteSavalizeBundle:Customer')->updateSalary($id,$postdata['Salary']);
+                    if($postdata['upload_your_photo']){
+                        $imgext = $postdata['upload_your_photo']->guessExtension();
+                        $picturename = $postdata['Username'].".".$imgext;
+                        $path = '/opt/lampp/htdocs/Save-alize/web/img/usersimgs';
+                        $postdata['upload_your_photo']->move($path,$picturename);
+                        $em->getRepository('SiteSavalizeBundle:User')->updatePicture($uid,$picturename);
+                    }
+                    //$obj->getUser()->setUpdatedAt(new \DateTime('NOW'));
                     $successMessage = true;
                     //$request->getSession()->getFlashBag()->add('successMessage', true);
                 }
             }
           
-        return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
+        return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'picture' => $picturename));
     }
 
     /* user change-password settings */
@@ -546,6 +566,7 @@ class CustomerController extends Controller {
         $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
         $uid = $obj->getUser()->getId();
         $passwd= $obj->getUser()->getPassword();
+        $picturename= $obj->getUser()->getPicture();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -582,7 +603,7 @@ class CustomerController extends Controller {
                     }
                 }
             }
-        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
+        return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd, 'picture' => $picturename));
     }
     /* user linked-account settings */
 

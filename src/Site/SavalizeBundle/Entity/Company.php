@@ -283,6 +283,29 @@ class Company
     {
         return $this->region;
     }
+    
+    /**
+     * Set picture
+     *
+     * @param string $picture
+     * @return Company
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+    
+        return $this;
+    }
+
+    /**
+     * Get picture
+     *
+     * @return string 
+     */
+    public function getPicture()
+    {
+        return $this->picture;
+    }
     /**
      * Constructor
      */

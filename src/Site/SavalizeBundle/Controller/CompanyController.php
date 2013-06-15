@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -211,7 +212,15 @@ class CompanyController extends Controller
             'Country' => array(),
             'City' => array(),
             'Region' => array(),
-            'upload_your_photo' => array()
+            'upload_your_photo' => new Image (array(
+                'maxSize' => '2048k',
+                'mimeTypes' => array(
+                    'image/jpeg',
+                    'image/png',
+                    'image/bmp',
+                    'image/gif',
+            ),
+                'mimeTypesMessage' => 'Please upload a valid Image (jpg, jpeg , png , bmp or gif)'))
             
         ));
         $data['Name']= $obj->getName();
@@ -221,7 +230,7 @@ class CompanyController extends Controller
         $data['Country']= $obj->getCountry();
         $data['City']= $obj->getCity();
         $data['Region']= $obj->getRegion();
-        $picturename= "anonymous.jpg";//$obj->getPicture();
+        $picturename= $obj->getPicture();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
@@ -260,7 +269,7 @@ class CompanyController extends Controller
                     //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
-        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'pic' => $picturename));
+        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'picture' => $picturename));
     }
     
     /* company change-password settings */
@@ -275,6 +284,7 @@ class CompanyController extends Controller
         $id = 1;
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
+        $picturename= $obj->getPicture();
         $passwd= $obj->getPassword();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
@@ -312,7 +322,7 @@ class CompanyController extends Controller
                     }
                 }
             }
-        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
+        return $this->render('SiteSavalizeBundle:Company:passwordcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd, 'picture' => $picturename));
     }
     public function contactAction() {
         //get the request object
