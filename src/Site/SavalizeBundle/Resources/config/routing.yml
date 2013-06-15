@@ -194,3 +194,16 @@ admin_chart_datesBrand:
 admin_chart_ProductBrandCategory:
     pattern: /admin/renderreportCBP
     defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartProductBrandCategory }
+
+admin_New_ProductsApprovel:
+    pattern: /admin/NewProductsApprovel
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:NewProductsApprovel }
+    
+product_approval_submit:
+    pattern: /admin/productApprovalSubmit
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:productApprovalSubmit }
+    requirements: { _method: post }
+brand_approval_submit:
+    pattern: /admin/brandApprovalSubmit
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:brandApprovalSubmit }
+    requirements: { _method: post }

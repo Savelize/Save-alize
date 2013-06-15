@@ -1,0 +1,61 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Socialize - Reports{% endblock %}
+
+{% block stylesheets %}
+<link href="{{asset('css/fullcalendar.css')}}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+
+{% block body %}
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#">Save and Socialize</a>
+
+        <div class="nav-collapse">
+            <ul class="nav inline" style="font-weight:normal">
+                <li><a href="#">Reports</a></li>
+                <li class="active"><a href="#">New Product Approval</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid content" >
+    <h2>Approve New Products or Brands</h2>
+    <div class="row-fluid">
+        <div class="span3">
+            <center>
+            <form action="{{ path('product_approval_submit') }}" method="post" {{ form_enctype(productForm) }} class="form-horizontal">
+            <div class="control-group">
+    {{ form_errors(productForm) }}
+      
+    {{ form_rest(productForm) }}
+                    </div>
+    <input id="approve" name="submit" type="submit" value="Approve" class="btn btn-info"/>
+    <input id="Disapprove" name="submit" type="submit" value="Disapprove" class="btn btn-danger"/>
+            </form>
+                    </center>
+        </div>
+            <div class="span3"><center>
+            
+            <form action="{{ path('brand_approval_submit') }}" method="post" {{ form_enctype(brandForm) }} class="form-horizontal">
+            <div class="control-group">
+    {{ form_errors(brandForm) }}
+      
+    {{ form_rest(brandForm) }}
+                    </div>
+    <input id="approve" name="submit" type="submit" value="Approve" class="btn btn-info"/>
+    <input id="Disapprove" name="submit" type="submit" value="Disapprove" class="btn btn-danger"/>
+            </form>
+                    </center>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -25,6 +25,146 @@ class AdminAccountController extends Controller
      * Lists all AdminAccount entities.
      *
      */
+    public function NewProductsApprovelAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $NotConfirmedProducts = $em->getRepository('SiteSavalizeBundle:Product')->findByConfirmed(0);
+        $NotConfirmedBrands = $em->getRepository('SiteSavalizeBundle:Brand')->findByConfirmed(0);
+        $productSelectTag = array();
+        foreach ($NotConfirmedProducts as $prod) {
+            $productSelectTag[$prod->getId()] = $prod->getName();
+        }
+        $brandSelectTag = array();
+        foreach ($NotConfirmedBrands as $brand) {
+            $brandSelectTag[$brand->getId()] = $brand->getName();
+        }
+        $collectionConstraint = new Collection(array(
+                                'Products' => new NotBlank(),
+        ));
+        $data = array();
+        
+        $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Products', 'choice', array(
+                                'choices' => $productSelectTag,
+                                'multiple' => true,
+                                'attr' => array('class' => 'input-large','size'=>"20%",)
+                                )
+                                    )
+                    ;
+        $productForm = $formBuilder->getForm();
+        
+        $collectionConstraint = new Collection(array(
+                                'Brands' => new NotBlank(),
+        ));
+        $data = array();
+        $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Brands', 'choice', array(
+                                'choices' => $brandSelectTag,
+                                'multiple' => true,
+                                'attr' => array('class' => 'input-large','size'=>"20%",)
+                                )
+                                    )
+                    ;
+        $brandForm = $formBuilder->getForm();
+        return $this->render('SiteSavalizeBundle:AdminAccount:NewProductsApprovel.html.twig', array('productForm' => $productForm->createView(),'brandForm' => $brandForm->createView()));
+    }
+    public function productApprovalSubmitAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $prodRepo = $em->getRepository('SiteSavalizeBundle:Product');
+        $NotConfirmedProducts=$prodRepo->findByConfirmed(0);
+        $productSelectTag = array();
+        foreach ($NotConfirmedProducts as $prod) {
+            $productSelectTag[$prod->getId()] = $prod->getName();
+        }
+        $collectionConstraint = new Collection(array(
+                                'Products' => new NotBlank(),
+        ));
+        $data = array();
+        $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Products', 'choice', array(
+                                'choices' => $productSelectTag,
+                                'multiple' => true,
+                                'attr' => array('class' => 'input-large','size'=>"20%",)
+                                )
+                                    )
+                    ;
+        $productForm = $formBuilder->getForm();
+        $request = $this->getRequest();
+        $productForm->bindRequest($request);
+        if ($productForm->isValid())
+        {
+            $data = $productForm->getData();
+            $type=$request->get("submit");
+            if($type=="Approve")
+                $flag=1;
+            else
+                $flag=2;
+            
+            foreach ($data["Products"] as $prodID)
+                {
+                    $product=$prodRepo->find($prodID);
+                    $product->setConfirmed($flag);
+                }
+                $em->flush();
+                return $this->redirect($this->generateUrl('admin_New_ProductsApprovel'));
+        }
+        return new Response("data is not valid");
+    }
+    public function brandApprovalSubmitAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $brandRepo=$em->getRepository('SiteSavalizeBundle:Brand');
+        $NotConfirmedBrands = $brandRepo->findByConfirmed(0);
+        $brandSelectTag = array();
+        foreach ($NotConfirmedBrands as $brand) {
+            $brandSelectTag[$brand->getId()] = $brand->getName();
+        }
+        $collectionConstraint = new Collection(array(
+                                'Brands' => new NotBlank(),
+        ));
+        $data = array();
+        $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Brands', 'choice', array(
+                                'choices' => $brandSelectTag,
+                                'multiple' => true,
+                                'attr' => array('class' => 'input-large','size'=>"20%",)
+                                )
+                                    )
+                    ;
+        $brandForm = $formBuilder->getForm();
+        $request = $this->getRequest();
+        $brandForm->bindRequest($request);
+        $data = $brandForm->getData();
+        
+        if ($brandForm->isValid())
+        {
+            $data = $brandForm->getData();
+            $type=$request->get("submit");
+            if($type=="Approve")
+                $flag=1;
+            else
+                $flag=2;
+            
+            foreach ($data["Brands"] as $brandID)
+                {
+                    $brand=$brandRepo->find($brandID);
+                    $brand->setConfirmed($flag);
+                }
+                $em->flush();
+                return $this->redirect($this->generateUrl('admin_New_ProductsApprovel'));
+        }
+        return new Response("data is not valid");
+    }
+    
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
