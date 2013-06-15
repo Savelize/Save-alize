@@ -13,6 +13,28 @@ use Doctrine\ORM\EntityRepository;
 class AdminRepository extends EntityRepository
 {
     
+    public function dateRangeData($startDate, $endDate) {
+        $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , p.name as name 
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            WHERE h.baughtAt BETWEEN :start AND :end
+            GROUP BY h.productBrand
+    ')
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
      public function adminChartFilters($startDate, $endDate, $categoryID) {
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");

@@ -34,7 +34,7 @@ class CategoryRepository extends EntityRepository {
                 AND h.productBrand = pb.id
 		')->setParameter('customer', $customerId);
         $result = $q->getResult();
-     
+
         $result = \array_values($result);
         return $result;
     }
@@ -49,7 +49,30 @@ class CategoryRepository extends EntityRepository {
                 WHERE h.customer = :customer
 		')->setParameter('customer', $customerId);
         $result = $q->getResult();
-    
+
+        $result = \array_values($result);
+        return $result;
+    }
+
+    public function productAutocompleteAdmin() {
+        $q = $this->getEntityManager()->createQuery('
+		SELECT p.name , p.id 
+                FROM SiteSavalizeBundle:Product p
+                ');
+        $result = $q->getResult();
+
+        $result = \array_values($result);
+        return $result;
+    }
+
+    public function brandAutocompleteAdmin() {
+
+        $q = $this->getEntityManager()->createQuery('
+		SELECT b.name , b.id 
+		FROM SiteSavalizeBundle:Brand b
+                ');
+        $result = $q->getResult();
+
         $result = \array_values($result);
         return $result;
     }
