@@ -25,7 +25,8 @@ class CategoryRepository extends EntityRepository
         public function productAutocomplete() {
 		$q = $this->getEntityManager()->createQuery('
 		SELECT p.name , p.id 
-		FROM SiteSavalizeBundle:Product p 
+		FROM SiteSavalizeBundle:Product p
+                AND 
 		');
 		$result = $q->getResult();
 		return $result;

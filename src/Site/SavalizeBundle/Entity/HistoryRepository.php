@@ -13,14 +13,16 @@ use Doctrine\ORM\EntityRepository;
 class HistoryRepository extends EntityRepository {
     /* for calendar */
 
-    public function getMonthlyPurchases($start, $end) {
+    public function getMonthlyPurchases($start, $end, $userID) {
 
         $q = $this->createQueryBuilder('p');
         $q->select('p')
                 ->where('p.baughtAt >= :start')
                 ->andWhere('p.baughtAt <= :end')
+                ->andWhere('p.customer = :userID')
                 ->setParameter('start', $start)
-                ->setParameter('end', $end);
+                ->setParameter('end', $end)
+                ->setParameter('customer', $userID);
         $result = $q->getQuery()->getResult();
 
         return $result;
