@@ -311,6 +311,12 @@ class CompanyController extends Controller
             //check if the form values are correct
             if ($form->isValid()) {
                 $data = $form->getData();
+                $to      = 'companyContact@savealize.com';
+                $subject = $data['subject'];
+                $message = $data['message'];
+                $headers = 'From: '.$data['email']. "\r\n";
+
+                mail($to, $subject, $message, $headers);
                 return $this->render('SiteSavalizeBundle:Company:msgToUser.html.twig', array('msg' =>"Thank u ".$data['name']." for contacting us"));
             }
         

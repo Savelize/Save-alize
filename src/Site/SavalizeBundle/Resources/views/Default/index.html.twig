@@ -64,7 +64,7 @@
         </header>     
     <div class="span3 form-signup">
        		<h2>Sign Up</h2>
-                <form action="{{ path('user_signUp') }}" method="post" {{ form_enctype(signUpform) }} class="form-inline">
+                <form id="SignUpForm" action="{{ path('user_signUp') }}" method="post" {{ form_enctype(signUpform) }} class="form-inline">
     
     <div class="control-group">
     {{ form_label(signUpform.User_Name) }}
@@ -87,7 +87,7 @@
   </div>
 </div>
             </div>
-                            <input href="#myModal" data-toggle="modal" role="button" value="Sign Up" class="btn btn-success btn-large">
+                    <input id="fakeSupmit" data-toggle="modal" value="Sign Up" class="btn btn-success btn-large" href="#myModal">
                       
                     </form>
        </div> 
@@ -95,5 +95,19 @@
 </div>
 <script src="{{asset('js/jquery.js')}}"></script>
 <script src="{{asset('js/bootstrap.min.js')}}"></script>
+    <script>
+     
+        function check(input)
+        {
+            if (input.value != document.getElementById('form_Confirm_Password').value)
+            {
+                input.setCustomValidity('Password miss match');
+            }
+            else
+            {
+                input.setCustomValidity('');
+            }
+        }
+    </script>
 </body>
 </html>
