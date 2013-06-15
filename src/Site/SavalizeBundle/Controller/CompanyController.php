@@ -6,11 +6,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Site\SavalizeBundle\Entity\Company;
 use Site\SavalizeBundle\Entity\Category;
+use Site\SavalizeBundle\Entity\Brand;
 use Site\SavalizeBundle\Form\CompanyType;
 
 /**
@@ -198,9 +200,8 @@ class CompanyController extends Controller
         $request = $this->getRequest();
         $successMessage = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 1;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
         $collectionConstraint = new Collection(array(
@@ -211,7 +212,15 @@ class CompanyController extends Controller
             'Country' => array(),
             'City' => array(),
             'Region' => array(),
-            'upload_your_photo' => array()
+            'upload_your_photo' => new Image (array(
+                'maxSize' => '2048k',
+                'mimeTypes' => array(
+                    'image/jpeg',
+                    'image/png',
+                    'image/bmp',
+                    'image/gif',
+            ),
+                'mimeTypesMessage' => 'Please upload a valid Image (jpg, jpeg , png , bmp or gif)'))
             
         ));
         $data['Name']= $obj->getName();
@@ -221,7 +230,7 @@ class CompanyController extends Controller
         $data['Country']= $obj->getCountry();
         $data['City']= $obj->getCity();
         $data['Region']= $obj->getRegion();
-        $picturename= "anonymous.jpg";//$obj->getPicture();
+        $picturename= $obj->getPicture();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
@@ -256,11 +265,13 @@ class CompanyController extends Controller
                         $postdata['upload_your_photo']->move($path,$picturename);
                         $em->getRepository('SiteSavalizeBundle:Company')->updatePicture($id,$picturename);
                     }
+                    $obj->setUpdatedAt(new \DateTime());
+                    $em->flush();
                     $successMessage = true;
                     //return $this->redirect($this->generateUrl('contact_success', array('name' => $data['name'])));
                 }
             }
-        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'pic' => $picturename));
+        return $this->render('SiteSavalizeBundle:Company:personalcompanysettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
     }
     
     /* company change-password settings */
@@ -270,9 +281,8 @@ class CompanyController extends Controller
         $diffpasswd = false;
         $wrongpasswd = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 1;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
         $passwd= $obj->getPassword();
@@ -301,6 +311,8 @@ class CompanyController extends Controller
                         if ($passwd == \crypt($postdata['Old_password'],$passwd)){
                             $hashpasswd = \crypt($postdata['New_password']);
                             $em->getRepository('SiteSavalizeBundle:Company')->updatePassword($id,$hashpasswd);
+                            $obj->setUpdatedAt(new \DateTime());
+                            $em->flush();
                             $successMessage = true;
                         }
                         else {
@@ -340,6 +352,12 @@ class CompanyController extends Controller
             //check if the form values are correct
             if ($form->isValid()) {
                 $data = $form->getData();
+                $to      = 'companyContact@savealize.com';
+                $subject = $data['subject'];
+                $message = $data['message'];
+                $headers = 'From: '.$data['email']. "\r\n";
+
+                mail($to, $subject, $message, $headers);
                 return $this->render('SiteSavalizeBundle:Company:msgToUser.html.twig', array('msg' =>"Thank u ".$data['name']." for contacting us"));
             }
         
@@ -352,6 +370,7 @@ class CompanyController extends Controller
     public function viewProductAction(){
 
         $em = $this->getDoctrine()->getEntityManager();
+        // I NEED THE COMPANY_ID HEREEEEEEEEEEE >>>>>>>>>>>>>>>>>>>>>>>>>>>>
         $productsBrands = $em->getRepository('SiteSavalizeBundle:ProductBrand')->displayCompanyProducts(1);
             for($i=0; $i<count($productsBrands); $i++)
             {
@@ -369,7 +388,7 @@ class CompanyController extends Controller
         $request = $this->container->get('request');
         $category_id = $request->get('category_id');
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand');
-        $result = $repository->displayCategoryData(1,$category_id);
+        $result = $repository->displayCategoryData($category_id);
         $pb = array();
         for($i=0; $i<count($result); $i++)
         {
@@ -379,20 +398,46 @@ class CompanyController extends Controller
         return new Response(json_encode($pb));
     }
 
-    public function insertNewProductAction(){
+    public function insertNewBrandAction(){
+ // I NEED THE COMPANY_ID AS A PARAMETER
         $request = $this->container->get('request');
         $brand = $request->get('brand');
-        $product = $request->get('product');
+        // $product = $request->get('product');
         $em = $this->getDoctrine()->getEntityManager();
-        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Brand');
-        $brandDB = $repository->findBy( array('name' => $brand));
+        $repository = $em->getRepository('SiteSavalizeBundle:Brand');
+        // check for the brand name in the database
+        $brandDB = $repository->findOneByName($brand);
+        $brandCompany = $em->getRepository('SiteSavalizeBundle:Company')->find(1);
+        // if not exists create a new brand with company = company_id
         if(!$brandDB){
             $brandDB = new Brand();
-            $brandDB->setName($brandDB);
-            $em->persist($brandDB);    
+            $brandDB->setName($brand);
+            $brandDB->setCompany($brandCompany);
+            $brandDB->setConfirmed(1);
+            $em->persist($brandDB);
+            return New Response($success);
+            $em->flush();    
+        }else{
+            // if it already exists check on the company_id
+            $brandCompany = $brandDB->getCompany();
+            if(!$brandCompany){
+                $repo = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand');
+                $result = $repo->updateCompany(1, $brand);
+                $success = '<p class="alert alert-success"> data has been added successively</p>';
+                return New Response($success);
+            }else{
+                // if the brand is assigned to a company ..
+                $url = $this->generateUrl('contact_us_company',array(),true);
+                return New Response('<p class="alert alert-error"> this company is already assigned to another please contact us for more details</p>');
+
+            }
         }
+    }
+    public function insertNewProuctAction(){
+                
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
         $productDB = $repository->findBy( array('name' => $product));
+        // if the product does not exists
         if(!$productDB){
             $productDB = new Product();
             $productDB->setName($productDB);
@@ -405,8 +450,7 @@ class CompanyController extends Controller
         $em->persist($product_brand);
         $em->flush();
         exit;
-
+        
     }
 }
-
 

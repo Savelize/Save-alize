@@ -1,7 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block title %}Company Settings{% endblock %}
 {% block body %}
-<img src='/Save-alize/web/img/usersimgs/{{pic}}' width="100px" heigth="100px">
 <div class="container-fluid" >
 <nav class="navbar">
     <div class="navbar-inner">
@@ -17,7 +16,7 @@
                 <li><a href="#">New Product</a></li>
                 <li><a href="#">Products Reviews</a></li>
                 <li class="active"><a href="#">Settings</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li><a href="{{ path('contact_us_company') }}">Contact Us</a></li>
             </ul>
         </div>
     </div>

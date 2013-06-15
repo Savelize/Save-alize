@@ -61,4 +61,14 @@ class UserRepository extends EntityRepository
                         )->setParameters(array('uid'=>$id,'Email'=>$Email));
         $query->execute();
     }
+    
+    function updatePicture($id,$Picture){
+        $query = $this->getEntityManager()
+                        ->createQuery("
+                            UPDATE SiteSavalizeBundle:User u
+                            SET u.picture = :Picture 
+                            WHERE u.id = :uid"
+                        )->setParameters(array('uid'=>$id,'Picture'=>$Picture));
+        $query->execute();
+    }
 }

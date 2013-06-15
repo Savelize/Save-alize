@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -30,21 +31,75 @@ class CustomerController extends Controller {
      * Lists all UserAccount entities.
      *
      */
-    public function getProductAction() {
-        $data = array();
+
+    public function getProductAction()
+    {
         $request = $this->getRequest();
-        $catId = $request->get("catId");
-        if ($catId == 1) {
-            $data[] = "ahmed";
-            $data[] = "mohamed";
-        } else {
-            $data[] = "mohsen";
-            $data[] = "khaled";
+        $session = $request->getSession();
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        $customerId=$session->get('id');
+        $catId=$request->get("catId");
+        $data=array();
+        
+        $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+        $customer=$customerRep->find($customerId);
+        
+        $historyRep = $em->getRepository("SiteSavalizeBundle:History");
+        $history=$historyRep->findByCustomer($customer);
+        
+        $catRep = $em->getRepository("SiteSavalizeBundle:Category");
+        $cat=$catRep->find($catId);
+        
+        foreach ($history as $row) {
+            $product=$row->getProductBrand()->getProduct();
+            if($product->getCategory()==$cat)
+            {
+                
+                $data[]=$product->getName();
+            }
         }
+        
+        
+        $productRep = $em->getRepository("SiteSavalizeBundle:Product");
+        $products=$productRep->findBy(array('category'=>$cat,'confirmed'=>1));
+        foreach ($products as $product) {
+            $data[]=$product->getName();
+        }
+        $data=\array_unique($data,SORT_STRING);
+        $data=\array_values($data);
+        return new Response(json_encode($data));
+    }
+    public function getBrandsAction()
+    {
+        $data=array();
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getEntityManager();
+        $session = $request->getSession();
+        
+        $customerId=$session->get('id');
+        $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+        $customer=$customerRep->find($customerId);
+        
+        $historyRep = $em->getRepository("SiteSavalizeBundle:History");
+        $history=$historyRep->findByCustomer($customer);
+        
+        foreach ($history as $row) {
+            $brand=$row->getProductBrand()->getBrand();                
+            $data[]=$brand->getName();
+        }
+        
+        $brandRep = $em->getRepository("SiteSavalizeBundle:Brand");
+        $brands=$brandRep->findBy(array('confirmed'=>1));
+        foreach ($brands as $brand) {
+            $data[]=$brand->getName();
+        }
+        $data=\array_unique($data,SORT_STRING);
+        $data=\array_values($data);
         return new Response(json_encode($data));
     }
 
-    public function addProductAction() {
+    public function addProductAction(){
         $session = $this->getRequest()->getSession();
         $username = $session->get('userName');
 
@@ -91,19 +146,68 @@ class CustomerController extends Controller {
                     $addproductForm = $formBuilder->getForm();
                     $request = $this->getRequest();
                     if ($request->getMethod() == 'POST') {
-                        //fill the form data from the request
-
-                        $addproductForm->bindRequest($request);
-                        if ($addproductForm->isValid()) {
-                            return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg" => "form is valid"));
-                        } else {
-                            return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg" => "form is not valid"));
+                        //fill the form data from the request 
+                     $addproductForm->bindRequest($request);
+                     if ($addproductForm->isValid())
+                     {
+                         $data=$addproductForm->getData();
+                         $productRep = $em->getRepository("SiteSavalizeBundle:Product");
+                         $product=$productRep->findOneByName($data['Product']);
+                         $catRep = $em->getRepository("SiteSavalizeBundle:Category");
+                         $cat=$catRep->find($data['Categories']);
+                         if(!$product)
+                         {
+                            $product=new Product();
+                            $product->setConfirmed(0);
+                            $product->setIsDeleted(0);
+                            $product->setName($data['Product']);
+                            $product->setCategory($cat);
+                            $em->persist($product);
+                            $em->flush($product);
                         }
-                    }
-                    return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView()));
-                }
-            }
-            return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg" => "you are not authorized"));
+                        $brandRep = $em->getRepository("SiteSavalizeBundle:Brand");
+                        $brand=$brandRep->findOneByName($data['Brand']);
+                        if(!$brand)
+                        {
+                            $brand=new Brand();
+                            $brand->setName($data['Brand']);
+                            $brand->setCompany(null);
+                            $brand->setConfirmed(0);
+                            $brand->setIsDeleted(0);
+                            $em->persist($brand);
+                            $em->flush($brand);
+                        }
+                        $ProductbrandRep = $em->getRepository("SiteSavalizeBundle:ProductBrand");
+                        $Productbrand=$ProductbrandRep->findOneBy(array("brand"=>$brand,"product"=>$product));
+                        if(!$Productbrand)
+                        {
+                            $Productbrand=new ProductBrand();
+                            $Productbrand->setBrand($brand);
+                            $Productbrand->setCategory($cat);
+                            $Productbrand->setPicture("anonymos.jpg");
+                            $Productbrand->setProduct($product);
+                            $em->persist($Productbrand);
+                            $em->flush($Productbrand);
+                        }
+                        $history=new History();
+                        $history->setBaughtAt($data['Date']);
+                        $history->setCustomer($customer);
+                        $history->setPrice($data['Price']);
+                        $history->setProductBrand($Productbrand);
+                        $history->setQuantity($data['Quantity']);
+                        $em->persist($history);
+                        $em->flush($history);
+                     }
+                     else
+                     {
+                         return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array("msg"=>"form is not valid"));
+                     }
+                     return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>true));
+                 }
+                return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>false));
+            }  
+        }
+        return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg" => "you are not authorized"));
         }
     }
 
@@ -322,7 +426,7 @@ class CustomerController extends Controller {
                     'lastPageNumber' => $lastPageNumber));
     }
 
-    public function insertUserNotificationAction($title, $content, $user_id) {
+    public function insertUserNotificationAction($title, $content, $type) {
 
         $em = $this->getDoctrine()->getEntityManager();
         $notification = new UserNotification();
@@ -334,25 +438,24 @@ class CustomerController extends Controller {
         exit;
     }
 
-    // public function insertSeenNotificationAction($notf_id){
+    // public function displaynotification($content){
     //     $em = $this->getDoctrine()->getEntityManager();
     //     $customer = $em->getRepository('SiteSavalizeBundle:Customer')->find(1);
     //     $notification = $em->getRepository('SiteSavalizeBundle:UserNotification')->find($notf_id);
-    //     $seenNotf = new UserNotificationSeen();
-    //     $seenNotf->setCustomer($customer);
-    //     $seenNotf->setUserNotification();
-    //     $em->persist($seenNotf);
-    //     $em->flush();
-    //     exit;        
+         
     // }
 
-    public function showNewProductDetailsAction($notf_id) {
-
+    public function showNewProductDetailsAction() {
+        $request = $this->container->get('request');
+        $content = $request->get('content');
+        $releasedat = $request->get('releasedat');
         $em = $this->getDoctrine()->getEntityManager();
-        $result = $em->getRepository('SiteSavalizeBundle:UserNotification')->updateSeen($notf_id);
-        if ($result) {
-            // return new Response("hello");
-        }
+        $user = $em->getRepository('SiteSavalizeBundle:User')->find(1);
+        $user_name = $user->getUsername();
+        return $this->render('SiteSavalizeBundle:Customer:showewroductdetails.html.twig', array('username' => $user_name,
+                                                                                                'content' => $content,
+                                                                                                'releasedat' => $releasedat));
+        
     }
 
     public function displayUserChartDatesProductAction() {
@@ -486,6 +589,12 @@ class CustomerController extends Controller {
             if ($form->isValid()) {
                 $data = $form->getData();
                 //return $this->redirect($this->generateUrl('contact_success',array('name' => $data['name'])));
+                $to      = 'customerContact@savealize.com';
+                $subject = $data['subject'];
+                $message = $data['message'];
+                $headers = 'From: '.$data['email']. "\r\n";
+
+                mail($to, $subject, $message, $headers);
                 return $this->render('SiteSavalizeBundle:Customer:msgToUser.html.twig', array('msg' => "Thank u " . $data['name'] . " for contacting us"));
             }
         }
@@ -498,9 +607,8 @@ class CustomerController extends Controller {
         $request = $this->getRequest();
         $successMessage = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 2;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
         $collectionConstraint = new Collection(array(
@@ -512,7 +620,16 @@ class CustomerController extends Controller {
                     'City' => new NotBlank(),
                     'Region' => new NotBlank(),
                     'Age' => new NotBlank(),
-                    'Salary' => new NotBlank()
+                    'Salary' => new NotBlank(),
+                    'upload_your_photo' => new Image (array(
+                        'maxSize' => '2048k',
+                        'mimeTypes' => array(
+                        'image/jpeg',
+                        'image/png',
+                        'image/bmp',
+                        'image/gif',
+                    ),
+                'mimeTypesMessage' => 'Please upload a valid Image (jpg, jpeg , png , bmp or gif)'))
                 ));
         $uid = $obj->getUser()->getId();
         $data['First_Name'] = $obj->getUser()->getFname();
@@ -524,6 +641,7 @@ class CustomerController extends Controller {
         $data['Region'] = $obj->getRegion();
         $data['Age'] = $obj->getAge();
         $data['Salary'] = $obj->getSalary();
+        $picturename= $obj->getUser()->getPicture();
         $formBuilder = $this->createFormBuilder($data, array(
                     'validation_constraint' => $collectionConstraint,
                 ))
@@ -536,26 +654,37 @@ class CustomerController extends Controller {
                 ->add('Region')
                 ->add('Age')
                 ->add('Salary')
+                ->add('upload_your_photo','file', array('required' => false))
         ;
         $form = $formBuilder->getForm();
         if ($request->getMethod() == 'POST') {
-            //fill the form data from the request
-            $form->bindRequest($request);
-            //check if the form values are correct
-            if ($form->isValid()) {
-                $postdata = $form->getData();
-                $em->getRepository('SiteSavalizeBundle:User')->updateFirstName($uid, $postdata['First_Name']);
-                $em->getRepository('SiteSavalizeBundle:User')->updateLastName($uid, $postdata['Last_Name']);
-                $em->getRepository('SiteSavalizeBundle:User')->updateUsername($uid, $postdata['Username']);
-                $em->getRepository('SiteSavalizeBundle:User')->updateEmail($uid, $postdata['Email']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateCountry($id, $postdata['Country']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateCity($id, $postdata['City']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateRegion($id, $postdata['Region']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateAge($id, $postdata['Age']);
-                $em->getRepository('SiteSavalizeBundle:Customer')->updateSalary($id, $postdata['Salary']);
-                $successMessage = true;
-                //$request->getSession()->getFlashBag()->add('successMessage', true);
-            }
+
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    $postdata = $form->getData();
+                    $em->getRepository('SiteSavalizeBundle:User')->updateFirstName($uid,$postdata['First_Name']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateLastName($uid,$postdata['Last_Name']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateUsername($uid,$postdata['Username']);
+                    $em->getRepository('SiteSavalizeBundle:User')->updateEmail($uid,$postdata['Email']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateCountry($id,$postdata['Country']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateCity($id,$postdata['City']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateRegion($id,$postdata['Region']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateAge($id,$postdata['Age']);
+                    $em->getRepository('SiteSavalizeBundle:Customer')->updateSalary($id,$postdata['Salary']);
+                    if($postdata['upload_your_photo']){
+                        $imgext = $postdata['upload_your_photo']->guessExtension();
+                        $picturename = $postdata['Username'].".".$imgext;
+                        $path = '/opt/lampp/htdocs/Save-alize/web/img/usersimgs';
+                        $postdata['upload_your_photo']->move($path,$picturename);
+                        $em->getRepository('SiteSavalizeBundle:User')->updatePicture($uid,$picturename);
+                    }
+                    $obj->getUser()->setUpdatedAt(new \DateTime());
+                    $em->flush();
+                    $successMessage = true;
+                    //$request->getSession()->getFlashBag()->add('successMessage', true);
+                }
         }
 
         return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
@@ -569,9 +698,8 @@ class CustomerController extends Controller {
         $diffpasswd = false;
         $wrongpasswd = false;
         $data = array();
-        //$session = $request->getSession();
-        //$id = $session->get('id');
-        $id = 3;
+        $session = $request->getSession();
+        $id = $session->get('id');
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
         $uid = $obj->getUser()->getId();
@@ -590,22 +718,26 @@ class CustomerController extends Controller {
         ;
         $form = $formBuilder->getForm();
         if ($request->getMethod() == 'POST') {
-
-            //fill the form data from the request
-            $form->bindRequest($request);
-            //check if the form values are correct
-            if ($form->isValid()) {
-                $postdata = $form->getData();
-
-                if ($postdata['New_password'] == $postdata['Confirm_password']) {
-                    if ($passwd == \crypt($postdata['Old_password'], $passwd)) {
-                        $hashpasswd = \crypt($postdata['New_password']);
-                        $em->getRepository('SiteSavalizeBundle:User')->updatePassword($uid, $hashpasswd);
-                        $successMessage = true;
-                    } else {
-                        $wrongpasswd = true;
+          
+                //fill the form data from the request
+                $form->bindRequest($request);
+                //check if the form values are correct
+                if ($form->isValid()) {
+                    $postdata = $form->getData();
+                    
+                    if($postdata['New_password'] == $postdata['Confirm_password']){
+                        if ($passwd == \crypt($postdata['Old_password'],$passwd)){
+                            $hashpasswd = \crypt($postdata['New_password']);
+                            $em->getRepository('SiteSavalizeBundle:User')->updatePassword($uid,$hashpasswd);
+                            $obj->getUser()->setUpdatedAt(new \DateTime());
+                            $em->flush();
+                            $successMessage = true;
+                        }
+                        else {
+                            $wrongpasswd = true;
+                        }
                     }
-                } else {
+                  else {
                     $diffpasswd = true;
                 }
             }

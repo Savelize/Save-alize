@@ -29,10 +29,9 @@ class ProductBrandRepository extends EntityRepository {
         $query = $this->getEntityManager()->createQuery('
             SELECT pb
             FROM SiteSavalizeBundle:ProductBrand pb
-            JOIN SiteSavalizeBundle:Brand b
-            WHERE b.id = pb.brand
-            AND pb.category = :category_id
-            AND b.company is null
+            JOIN SiteSavalizeBundle:Product p
+            WHERE p.id = pb.product
+            AND p.category = :category_id
             ')->setParameter('category_id' , $category_id );
         return $query->getResult();
     }
@@ -47,6 +46,17 @@ class ProductBrandRepository extends EntityRepository {
             ')->setParameter('brand' , $brand);
         return $query->getResult();
 
+    }
+
+     public function updateCompany($company_id , $brand) {
+        $query = $this->getEntityManager()->createQuery('
+            UPDATE SiteSavalizeBundle:Brand b
+            SET b.company = :company_id
+            where b.name = :brand
+            ');
+        $query->setParameters(array('company_id' => $company_id, 'brand' => $brand));
+        $result = $query->execute();
+        return $result;
     }
 
 	public function getFirstPBfromCategory($catId){
