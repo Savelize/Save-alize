@@ -194,3 +194,7 @@ admin_chart_datesBrand:
 admin_chart_ProductBrandCategory:
     pattern: /admin/renderreportCBP
     defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartProductBrandCategory }
+
+admin_chart_Region:
+    pattern: /admin/renderreportRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegion }

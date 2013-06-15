@@ -378,6 +378,20 @@ class AdminAccountController extends Controller
         return new Response(json_encode($result));
     }
 
+     public function displayAdminChartRegionAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $productID = $request->get('productID');
+        $categoryID = $request->get('categoryID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersRegion($startDate, $endDate, $brandID, $productID, $categoryID);
+
+        return new Response(json_encode($result));
+    }
+
+    
     public function displayAdminChartDatesCategoryAction() {
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');

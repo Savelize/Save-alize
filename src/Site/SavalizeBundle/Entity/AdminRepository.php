@@ -42,8 +42,8 @@ class AdminRepository extends EntityRepository
         $endDate = $endDate->format("Y-m-d");
         // g stands for graph
         $q = $this->getEntityManager()->createQuery('
-            SELECT SUM(h.price) as price , p.name as name
-            FROM SiteSavalizeBundle:History h
+            SELECT SUM(h.price) as price , p.name as name, u.region as region
+            FROM SiteSavalizeBundle:User u
             JOIN h.productBrand pb
             JOIN pb.product p
             WHERE p.id = pb.product
@@ -152,6 +152,37 @@ class AdminRepository extends EntityRepository
             AND pb.product = :productID
             AND h.baughtAt BETWEEN :start AND :end
           
+            ')
+                ->setParameter('categoryID', $categoryID)
+                ->setParameter('brandID', $brandID)
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersRegion($startDate, $endDate, $brandID, $productID, $categoryID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.region as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND p.category = :categoryID
+            AND p.id = :productID
+            AND pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+           
+            GROUP BY u.region
             ')
                 ->setParameter('categoryID', $categoryID)
                 ->setParameter('brandID', $brandID)

@@ -52,6 +52,7 @@
                         <option value="4">Brand and Product</option>
                         <option value="5">Category,Brand and Product</option>
                     </select>
+                    <input type="button" id="region" value="Group By Region">
                     <div id="filters"></div>
 
 
@@ -75,6 +76,8 @@
             var dateBrandpath = "{{ path('admin_chart_datesBrand') }}";
             var ProductBrandpath = "{{ path('admin_chart_ProductBrand') }}";
             var CategoryBrandProductpath = "{{ path('admin_chart_ProductBrandCategory') }}";
+            var CategoryBrandProductRegionpath = "{{ path('admin_chart_Region') }}";
+            
             </script>
             <script> var fromCategoryPath = "{{ path('admin_report_fromCategory') }}" </script>
             <script src="{{asset('js/admin_chart.js')}}"></script>
