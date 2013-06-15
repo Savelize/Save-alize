@@ -1,19 +1,5 @@
 $(document).ready(function(){
     
-    var viewFlag = true;
-    
-    $("#switchView").click(function(){
-        viewFlag = !viewFlag;
-    });
-    
-    if(viewFlag){
-        $("#historyList").hide();
-        $("#calendar").show();
-    }else{
-        $("#historyList").show();
-        $("#calendar").hide();
-    }
-    
     var price = new Array();
     var products = new Array();
     var boughtAt = new Date(new Array());
@@ -40,9 +26,18 @@ $(document).ready(function(){
    
     
     $('#calendar').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,basicWeek,basicDay'
+        },
+                        
         editable: true,
         
         events: calendarpath,
+        
+       
+
 			
         eventDrop: function(event, delta) {
             alert(event.title + ' was moved ' + delta + ' days\n' +

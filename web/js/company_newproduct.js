@@ -25,8 +25,6 @@ $(document).ready(function(){
 			categoryID = $("#catIp").val();
 			var products = new Array();
 			var brands = new Array();
-			
-				// alert(categoryID);
 			if(categoryID){
 				$.ajax({
 			            type: 'POST',
@@ -34,8 +32,6 @@ $(document).ready(function(){
 			            data: {category_id: categoryID
 			            },
 			            success: function(response) {
-                          alert(response);
-
 			            	var pb = JSON.parse(response);
 			            	for(var b in pb.brands){ 
 								brands[b] = pb.brands[b];
@@ -43,7 +39,7 @@ $(document).ready(function(){
 								for(var b in pb.products){ 
 								products[b] = pb.products[b];
 							}
-								alert(brands);
+								// alert(brands);
 								$("#brandIp").autocomplete({
 									source: brands
 								});
@@ -52,20 +48,44 @@ $(document).ready(function(){
 								});
 			            	}
 			        	});
-				/*	$.ajax({
-							type: 'POST',
-							url: path,
-							data: { brand: $("#brandIp").val(),
-								    product: $().val("#productIp")},
-							success: function(response){
-
-							}
-
-					});*/
-
-			}else{
+				}else{
 				alert("please enter a value");
 		}
     });
+    
+    $('#addBrandButton').on('click', function(){
+    	var brand = $("#brandIp").val();
+			if(brand){
+				$.ajax({
+
+						type: 'POST',
+						url: path,
+						data: { brand: brand },
+						success: function(response){
+							$('#msg').html(response);
+						}
+				});
+			}else{
+				alert("please choose a correct value ..")
+			}
+	});
+
+ //    $('#addBrandButton').on('click', function(){
+ //    	var brand = $("#brandIp").val();
+	// 		if(brand){
+	// 			$.ajax({
+
+	// 					type: 'POST',
+	// 					url: path,
+	// 					data: { brand: brand },
+	// 								    // product: $().val("#productIp")},
+	// 					success: function(response){
+	// 						$('#msg').html(response);
+	// 					}
+	// 			});
+	// 		}else{
+	// 			alert("please choose a correct value ..")
+	// 		}
+	// });
 
 });

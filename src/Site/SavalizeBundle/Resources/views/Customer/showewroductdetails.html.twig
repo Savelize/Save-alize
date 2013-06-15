@@ -1,0 +1,46 @@
+{% extends '::base.html.twig' %}
+{% block title %}Notifications{% endblock %}
+{% block body %}
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#">Save and Socialize</a>
+        <div class="nav-collapse">
+            <ul class="nav" style="font-weight:normal">
+                <li><a href="#">New Purchases</a> </li>
+                <li class="active"><a href="#">My Alerts</a></li>
+                <li><a href="#">History</a></li>
+                <li><a href="#">Product Reviews</a></li>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid" >
+    <div class="span12 content">
+        <h2>Your Notifications</h2><br><br>
+        
+                    
+    <div class="span9">
+        <h4> Hello {{ username }}</h4>
+        <p> {{ content }}</p>
+        <p> please check our brands .. </p>
+        Sent at: <p> {{ releasedat }}</p>
+
+    </div>
+    <a href="{{ url('site_savalize_viewNotifications') }}" class="btn"> Back </a>
+</div>
+</div>
+
+    <script src="{{asset('js/jquery.js')}}"></script>
+    <script src="{{asset('js/bootstrap.min.js')}}"></script>
+    <script src="{{asset('js/company_newproduct.js')}}"></script>
+    <script> var back = "{{ path('site_savalize_viewNotifications') }}" </script>
+{% endblock %}

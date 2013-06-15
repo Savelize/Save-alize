@@ -31,6 +31,7 @@ class CustomerController extends Controller {
      * Lists all UserAccount entities.
      *
      */
+
     public function getProductAction()
     {
         $request = $this->getRequest();
@@ -97,7 +98,7 @@ class CustomerController extends Controller {
         $data=\array_values($data);
         return new Response(json_encode($data));
     }
-    
+
     public function addProductAction(){
         $session = $this->getRequest()->getSession();
         $username = $session->get('userName');
@@ -108,48 +109,44 @@ class CustomerController extends Controller {
         if ($user) {
             $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
             $customer = $customerRep->findOneByUser($user);
-            if ($customer) {
-            {
-                $CategoryRep = $em->getRepository("SiteSavalizeBundle:Category");
-                $categories=$CategoryRep->findAll();
+            if ($customer) { {
+                    $CategoryRep = $em->getRepository("SiteSavalizeBundle:Category");
+                    $categories = $CategoryRep->findAll();
 
-                
-                $catSelectTag=array();
-                foreach ($categories as $cat)
-                {
-                    $catSelectTag[$cat->getId()]=$cat->getName();
-                }
-                $collectionConstraint = new Collection(array(
-                    'Categories' => new NotBlank(),
-                    'Product' => new NotBlank(),
-                    'Brand' => new NotBlank(),
-                    'Price' => array(new NotBlank(),new Type("integer")),
-                    'Quantity' => array(new NotBlank(),new Type("integer")),
-                    'Date' => array(new NotBlank(),new Date()),
-                ));
-                
-                $data = array(
-                    'Date' => new \DateTime()
-                );
-                //create the form
 
-                $formBuilder = $this->createFormBuilder($data, array(
-                            'validation_constraint' => $collectionConstraint,
-                        ))
-                        ->add('Categories', 'choice',array('choices'=>$catSelectTag,'attr' => array('class' => 'input-large')))
-                        ->add('Product',null, array('required' => true,'attr' => array('class' => 'input-large','id'=>'product')))
-                        ->add('Brand',null, array('required' => true,'attr' => array('class' => 'input-large')))
-                        ->add('Price',"integer", array('required' => true,'attr' => array('class' => 'input-large')))
-                        ->add('Quantity', "integer", array('required' => true,'attr' => array('class' => 'input-large')))
-                        ->add('Date',"date", array('required' => true,'attr' => array('class' => '')))
-                        
-                ;
-                $addproductForm = $formBuilder->getForm();
-                $request = $this->getRequest();
-                 if ($request->getMethod() == 'POST')
-                {
-                    //fill the form data from the request
-                     
+                    $catSelectTag = array();
+                    foreach ($categories as $cat) {
+                        $catSelectTag[$cat->getId()] = $cat->getName();
+                    }
+                    $collectionConstraint = new Collection(array(
+                                'Categories' => new NotBlank(),
+                                'Product' => new NotBlank(),
+                                'Brand' => new NotBlank(),
+                                'Price' => array(new NotBlank(), new Type("integer")),
+                                'Quantity' => array(new NotBlank(), new Type("integer")),
+                                'Date' => array(new NotBlank(), new Date()),
+                            ));
+
+                    $data = array(
+                        'Date' => new \DateTime()
+                    );
+                    //create the form
+
+                    $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Categories', 'choice', array('choices' => $catSelectTag, 'attr' => array('class' => 'input-large')))
+                            ->add('Product', null, array('required' => true, 'attr' => array('class' => 'input-large', 'id' => 'product')))
+                            ->add('Brand', null, array('required' => true, 'attr' => array('class' => 'input-large')))
+                            ->add('Price', "integer", array('required' => true, 'attr' => array('class' => 'input-large')))
+                            ->add('Quantity', "integer", array('required' => true, 'attr' => array('class' => 'input-large')))
+                            ->add('Date', "date", array('required' => true, 'attr' => array('class' => '')))
+
+                    ;
+                    $addproductForm = $formBuilder->getForm();
+                    $request = $this->getRequest();
+                    if ($request->getMethod() == 'POST') {
+                        //fill the form data from the request 
                      $addproductForm->bindRequest($request);
                      if ($addproductForm->isValid())
                      {
@@ -208,10 +205,10 @@ class CustomerController extends Controller {
                      return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>true));
                  }
                 return $this->render('SiteSavalizeBundle:Customer:addProducts.html.twig', array('form' => $addproductForm->createView(),'sucess'=>false));
-            }   
+            }  
         }
         return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg" => "you are not authorized"));
-    }
+        }
     }
 
     public function indexAction() {
@@ -373,7 +370,8 @@ class CustomerController extends Controller {
     }
 
     /* user history page 4 */
-/* for calendar from calendar*/
+    /* for calendar from calendar */
+
     public function historyDateSelectionAction() {
         $request = $this->container->get('request');
         $start = $request->get('start');
@@ -398,10 +396,12 @@ class CustomerController extends Controller {
 
         return new Response(json_encode($resultArr), 200, array('Content-Type: application/json'));
     }
-/*calls the action and renders the twig*/
+
+    /* calls the action and renders the twig */
+
     public function usrhistoryAction() {
         $resultArr = $this->historyDateSelectionAction();
-        return $this->render('SiteSavalizeBundle:Customer:page4.html.twig', array('monthlydata' => $resultArr));
+        return $this->render('SiteSavalizeBundle:Customer:user_calendar.html.twig', array('monthlydata' => $resultArr));
     }
 
     public function shownotificationAction($page) {
@@ -426,7 +426,7 @@ class CustomerController extends Controller {
                     'lastPageNumber' => $lastPageNumber));
     }
 
-    public function insertUserNotificationAction($title, $content, $user_id) {
+    public function insertUserNotificationAction($title, $content, $type) {
 
         $em = $this->getDoctrine()->getEntityManager();
         $notification = new UserNotification();
@@ -438,25 +438,70 @@ class CustomerController extends Controller {
         exit;
     }
 
-    // public function insertSeenNotificationAction($notf_id){
+    // public function displaynotification($content){
     //     $em = $this->getDoctrine()->getEntityManager();
     //     $customer = $em->getRepository('SiteSavalizeBundle:Customer')->find(1);
     //     $notification = $em->getRepository('SiteSavalizeBundle:UserNotification')->find($notf_id);
-    //     $seenNotf = new UserNotificationSeen();
-    //     $seenNotf->setCustomer($customer);
-    //     $seenNotf->setUserNotification();
-    //     $em->persist($seenNotf);
-    //     $em->flush();
-    //     exit;        
+         
     // }
 
-    public function showNewProductDetailsAction($notf_id) {
-
+    public function showNewProductDetailsAction() {
+        $request = $this->container->get('request');
+        $content = $request->get('content');
+        $releasedat = $request->get('releasedat');
         $em = $this->getDoctrine()->getEntityManager();
-        $result = $em->getRepository('SiteSavalizeBundle:UserNotification')->updateSeen($notf_id);
-        if ($result) {
-            // return new Response("hello");
-        }
+        $user = $em->getRepository('SiteSavalizeBundle:User')->find(1);
+        $user_name = $user->getUsername();
+        return $this->render('SiteSavalizeBundle:Customer:showewroductdetails.html.twig', array('username' => $user_name,
+                                                                                                'content' => $content,
+                                                                                                'releasedat' => $releasedat));
+        
+    }
+
+    public function displayUserChartDatesProductAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $productID = $request->get('productID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
+        $result = $repository->userChartFiltersProductOnly($startDate, $endDate, $productID);
+        
+        return new Response(json_encode($result));
+    }
+    public function displayUserChartDatesBrandAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
+        $result = $repository->userChartFiltersBrandOnly($startDate, $endDate, $brandID);
+        
+        return new Response(json_encode($result));
+    }
+    
+    public function displayUserChartProductBrandAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $productID = $request->get('productID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
+        $result = $repository->userChartFiltersBrandOnly($startDate, $endDate, $brandID);
+        
+        return new Response(json_encode($result));
+    }
+    
+    public function displayUserChartProductBrandCategoryAction(){
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $productID = $request->get('productID');
+        $categoryID = $request->get('categoryID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
+        $result = $repository->userChartFiltersProductBrandCategory($startDate, $endDate, $brandID, $productID, $categoryID);
+        
+        return new Response(json_encode($result));
     }
 
     public function displayUserChartDatesCategoryAction() {
@@ -470,9 +515,11 @@ class CustomerController extends Controller {
             $pb[$i]['price'] = $result[$i]['price'];
             $pb[$i]['products'] = $result[$i]['name'];
         }
-        return new Response(json_encode($result));
+        return new Response(json_encode($pb));
     }
-/*autocomplete of brands and products in user report*/
+
+    /* autocomplete of brands and products in user report */
+
     public function fromCategoryAction() {
         $request = $this->container->get('request');
         $categoryID = $request->get('categoryID');
@@ -510,7 +557,7 @@ class CustomerController extends Controller {
         $result = $repository->categoryAutocomplete();
         $brand = $repository->brandAutocomplete();
         $product = $repository->productAutocomplete();
-        return $this->render('SiteSavalizeBundle:Customer:chart_trial.html.twig', array('categories' => json_encode($result), 'products' => json_encode($product), 'brands' => json_encode($brand)));
+        return $this->render('SiteSavalizeBundle:Customer:user_report.html.twig', array('categories' => json_encode($result), 'products' => json_encode($product), 'brands' => json_encode($brand)));
     }
 
     public function contactAction() {
@@ -611,6 +658,7 @@ class CustomerController extends Controller {
         ;
         $form = $formBuilder->getForm();
         if ($request->getMethod() == 'POST') {
+
                 //fill the form data from the request
                 $form->bindRequest($request);
                 //check if the form values are correct
@@ -637,8 +685,8 @@ class CustomerController extends Controller {
                     $successMessage = true;
                     //$request->getSession()->getFlashBag()->add('successMessage', true);
                 }
-            }
-          
+        }
+
         return $this->render('SiteSavalizeBundle:Customer:personalusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage));
     }
 
@@ -655,7 +703,7 @@ class CustomerController extends Controller {
         $em = $this->getDoctrine()->getEntityManager();
         $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
         $uid = $obj->getUser()->getId();
-        $passwd= $obj->getUser()->getPassword();
+        $passwd = $obj->getUser()->getPassword();
         $collectionConstraint = new Collection(array(
                     'Old_password' => new NotBlank(),
                     'New_password' => new NotBlank(),
@@ -670,7 +718,7 @@ class CustomerController extends Controller {
         ;
         $form = $formBuilder->getForm();
         if ($request->getMethod() == 'POST') {
-           
+          
                 //fill the form data from the request
                 $form->bindRequest($request);
                 //check if the form values are correct
@@ -689,13 +737,14 @@ class CustomerController extends Controller {
                             $wrongpasswd = true;
                         }
                     }
-                    else {
-                        $diffpasswd = true;
-                    }
+                  else {
+                    $diffpasswd = true;
                 }
             }
+        }
         return $this->render('SiteSavalizeBundle:Customer:passwordusersettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
+
     /* user linked-account settings */
 
     public function linkedusersettingsAction() {
