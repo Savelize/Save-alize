@@ -36,22 +36,28 @@
         <h2>Reports</h2>
         <div style="float: left" class="row-fluid">
         <ul class="inline row-fluid" style = "font-size: 20px">
+
             <div class="span12">
-                <li>
-                Start Date: <input type="date" id="startDate">
-                </li>
-                <li>
-            End Date: <input type="date" id="endDate">
-            </li>
-            <input type="button" id="reportViaDatesOnly" value="Generate Report Via Dates Only" style="padding-right: 30%"/>
-                <li>
-            Chart: <select></select>
-            </li>
+                I would like a <select id="graphTypeSelect">
+                <option value="Bar">--Type of Chart--</option>--Type of Chart--
+                <option value="Line">Line</option>
+                <option value="Bar">Bar</option>
+                <option value="Pie">Pie</option>
+                </select> from: <input type="date" id="startDate"> to: <input type="date" id="endDate">
+               
+            <input type="button" id="reportViaDatesOnly" value="Generate Report Via Dates Only" style="padding-right: 15%; padding-left: 15%; padding-top: 0.3%; padding-bottom: 0.3%"/>
+             <br>To be more specific, I would like to search by <select id="filterSelect">
+                <option>--Choose Filter(s)--</option>--Type of Chart--
+                <option value="1">Category</option>
+                <option value="2">Brand</option>
+                <option value="3">Product</option>
+                <option value="4">Brand and Product</option>
+                </select>
             <li>
                 Category: <input type="text" id="categoryIP"> 
             </li>
             <li>
-            Brand: <input type="text" id="brandIP">
+                Brand: <input type="text" id="brandIP">
             </li>
             <li>
             Product: <input type="text" id="productIP">
@@ -63,13 +69,18 @@
 
             <canvas id="myChart" width="400" height="400"></canvas>
         <input type="hidden" id="hiddenCategory" value="{{ categories }}"> 
+        <input type="hidden" id="hiddenBrand" value="{{ brands }}">
+        <input type="hidden" id="hiddenProduct" value="{{ products }}">
           
 {% endblock %}
 
 {% block javascripts %}
             <script src="{{asset('js/fullcalendar.js')}}"></script>
-            <script> var path = "{{ path('site_savalize_ajaxtoshowchart') }}"
-                var dateOnlypath = "{{ path('user_chart_datesOnly') }}"
+            <script> var path = "{{ path('user_chart_datesCategory') }}";
+                var dateOnlypath = "{{ path('user_chart_datesOnly') }}";
+                var dateProductpath = "{{ path('user_chart_datesProduct') }}";
+                var dateBrandpath = "{{ path('user_chart_datesBrand') }}";
+                var ProductBrandpath = "{{ path('user_chart_ProductBrand') }}";
                 </script>
             <script> var fromCategoryPath = "{{ path('user_report_fromCategory') }}" </script>
             <script src="{{asset('js/mira_chart.js')}}"></script>

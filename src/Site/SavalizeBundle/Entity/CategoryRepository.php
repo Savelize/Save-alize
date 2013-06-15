@@ -21,4 +21,22 @@ class CategoryRepository extends EntityRepository
 		$result = $q->getResult();
 		return $result;
 	}
+        
+        public function productAutocomplete() {
+		$q = $this->getEntityManager()->createQuery('
+		SELECT p.name , p.id 
+		FROM SiteSavalizeBundle:Product p 
+		');
+		$result = $q->getResult();
+		return $result;
+	}
+        
+        public function brandAutocomplete() {
+		$q = $this->getEntityManager()->createQuery('
+		SELECT b.name , b.id 
+		FROM SiteSavalizeBundle:Brand b 
+		');
+		$result = $q->getResult();
+		return $result;
+	}
 }
