@@ -29,12 +29,12 @@ class UserNotificationRepository extends EntityRepository
         $page--;   // to start from zero
 
         $query = $this->getEntityManager()->createQuery('
-        SELECT u.id, u.title, u.content , u.releasedAt , N.seen
-        FROM SiteSavalizeBundle:UserNotificationSeen N
-        JOIN SiteSavalizeBundle:UserNotification u
-        where N.customer = :id
-        and u.id = N.userNotification
-        order by u.releasedAt desc
+            SELECT u.id, u.title, u.content , u.releasedAt , N.seen
+            FROM SiteSavalizeBundle:UserNotificationSeen N
+            JOIN SiteSavalizeBundle:UserNotification u
+            where N.customer = :id
+            and u.id = N.userNotification
+            order by u.releasedAt desc
         ');
 
         if ($maxResults) {

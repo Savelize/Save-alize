@@ -1,6 +1,7 @@
 {% extends '::base.html.twig' %}
 {% block title %}Admin Settings{% endblock %}
 {% block body %}
+<img src='/Save-alize/web/img/usersimgs/{{picture}}' width="100px" heigth="100px">
 <div class="container-fluid" >
 <nav class="navbar">
     <div class="navbar-inner">
@@ -30,6 +31,12 @@
             </ul>
         </div>
         <div class="span8" style="padding-left: 5px">
+            {% if successMessage %}
+                <div class="alert alert-success">
+                    <b>Success</b><br>
+                    Edited successfully.
+                </div>
+            {% endif %}
             <form action="{{path('site_personal_admin_settings')}}" method="post" {{ form_enctype(form) }}>
                 <h3>Personal settings:</h3><br>
                 {{ form_errors(form) }}
