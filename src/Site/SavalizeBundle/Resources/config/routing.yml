@@ -153,3 +153,28 @@ site_brands_cat:
 company_add_newproduct:
     pattern: /addcompanybrand
     defaults: { _controller: SiteSavalizeBundle:Company:insertNewBrand }
+
+
+admin_chart_datesOnly:
+    pattern:  /admin/renderreportdatesonly
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartDatesOnly }
+
+admin_chart_datesCategory:
+  pattern:  /admin/renderreportcategory
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartDatesCategory }
+    
+admin_chart_ProductBrand:
+    pattern: /admin/renderreportproductbrand
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartProductBrand }
+    
+admin_chart_datesProduct:
+    pattern: /admin/renderreportproduct
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartDatesProduct }
+    
+admin_chart_datesBrand:
+    pattern: /admin/renderreportbrand
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartDatesBrand }
+    
+admin_chart_ProductBrandCategory:
+    pattern: /admin/renderreportCBP
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartProductBrandCategory }

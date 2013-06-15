@@ -311,4 +311,85 @@ class AdminAccountController extends Controller
             }
         return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
+    
+        public function displayAdminChartDatesProductAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $productID = $request->get('productID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersProductOnly($startDate, $endDate, $productID);
+
+        return new Response(json_encode($result));
+    }
+
+    public function displayAdminChartDatesBrandAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersBrandOnly($startDate, $endDate, $brandID);
+
+        return new Response(json_encode($result));
+    }
+
+    public function displayAdminChartProductBrandAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $productID = $request->get('productID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersBrandOnly($startDate, $endDate, $brandID);
+
+        return new Response(json_encode($result));
+    }
+
+    public function displayAdminChartProductBrandCategoryAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $productID = $request->get('productID');
+        $categoryID = $request->get('categoryID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersProductBrandCategory($startDate, $endDate, $brandID, $productID, $categoryID);
+
+        return new Response(json_encode($result));
+    }
+
+    public function displayAdminChartDatesCategoryAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $categoryID = $request->get('categoryID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFilters($startDate, $endDate, $categoryID);
+        for ($i = 0; $i < count($result); $i++) {
+            $pb[$i]['price'] = $result[$i]['price'];
+            $pb[$i]['products'] = $result[$i]['name'];
+        }
+        return new Response(json_encode($pb));
+    }
+
+    public function fromCategoryAdminAction() {
+        $request = $this->container->get('request');
+        $categoryID = $request->get('categoryID');
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
+        $em = $this->getDoctrine()->getEntityManager();
+        $brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID, $userID);
+
+        $pb = array();
+        for ($i = 0; $i < count($brandsOfCategory); $i++) {
+            $pb['brands'][$i] = $brandsOfCategory[$i]->getBrand()->getName();
+            $pb['products'][$i] = $brandsOfCategory[$i]->getProduct()->getName();
+        }
+
+        $pb['brands'] = \array_unique($pb['brands'], SORT_STRING);
+        $pb['brands'] = \array_values($pb['brands']);
+
+        return new Response(json_encode($pb));
+    }
 }

@@ -22,7 +22,7 @@ class HistoryRepository extends EntityRepository {
                 ->andWhere('p.customer = :userID')
                 ->setParameter('start', $start)
                 ->setParameter('end', $end)
-                ->setParameter('customer', $userID);
+                ->setParameter('userID', $userID);
         $result = $q->getQuery()->getResult();
 
         return $result;
@@ -39,7 +39,7 @@ class HistoryRepository extends EntityRepository {
         return $month;
     }
 
-    public function dateRangeData($startDate, $endDate) {
+    public function dateRangeData($startDate, $endDate, $userID) {
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");
         $endDate = new \DateTime($endDate);
@@ -48,11 +48,13 @@ class HistoryRepository extends EntityRepository {
         $q = $this->getEntityManager()->createQuery('
             SELECT SUM(h.price) as price , p.name as name 
             FROM SiteSavalizeBundle:History h
-            JOIN SiteSavalizeBundle:Product p
-            WHERE p.id = h.productBrand 
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            WHERE h.customer = :userID
             AND h.baughtAt BETWEEN :start AND :end
             GROUP BY h.productBrand
-')
+    ')
+                ->setParameter('userID', $userID)
                 ->setParameter('start', $startDates)
                 ->setParameter('end', $endDate);
 
@@ -61,7 +63,7 @@ class HistoryRepository extends EntityRepository {
         return $result;
     }
 
-    public function userChartFilters($startDate, $endDate, $categoryID) {
+    public function userChartFilters($startDate, $endDate, $categoryID, $userID) {
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");
         $endDate = new \DateTime($endDate);
@@ -75,8 +77,10 @@ class HistoryRepository extends EntityRepository {
             WHERE p.id = pb.product
             AND p.category = :category
             AND h.baughtAt BETWEEN :start AND :end
+            AND h.customer = :user
             GROUP BY pb.product
-            ')
+            ')                
+                ->setParameter('user', $userID)
                 ->setParameter('category', $categoryID)
                 ->setParameter('start', $startDates)
                 ->setParameter('end', $endDate);
@@ -86,7 +90,7 @@ class HistoryRepository extends EntityRepository {
         return $result;
     }
 
-    public function userChartFiltersProductOnly($startDate, $endDate, $productID) {
+    public function userChartFiltersProductOnly($startDate, $endDate, $productID, $userID) {
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");
         $endDate = new \DateTime($endDate);
@@ -100,8 +104,9 @@ class HistoryRepository extends EntityRepository {
             WHERE p.id = pb.product
             AND p.id = :productID
             AND h.baughtAt BETWEEN :start AND :end
-            
+            AND h.customer = :user            
             ')
+                ->setParameter('user', $userID)
                 ->setParameter('productID', $productID)
                 ->setParameter('start', $startDates)
                 ->setParameter('end', $endDate);
@@ -111,7 +116,7 @@ class HistoryRepository extends EntityRepository {
         return $result;
     }
 
-    public function userChartFiltersBrandOnly($startDate, $endDate, $brandID) {
+    public function userChartFiltersBrandOnly($startDate, $endDate, $brandID, $userID) {
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");
         $endDate = new \DateTime($endDate);
@@ -124,8 +129,10 @@ class HistoryRepository extends EntityRepository {
             JOIN pb.product p
             WHERE pb.brand = :brandID
             AND h.baughtAt BETWEEN :start AND :end
+            AND h.customer = :user
             GROUP BY pb.product
             ')
+                ->setParameter('user', $userID)
                 ->setParameter('brandID', $brandID)
                 ->setParameter('start', $startDates)
                 ->setParameter('end', $endDate);
@@ -135,7 +142,7 @@ class HistoryRepository extends EntityRepository {
         return $result;
     }
 
-    public function userChartFiltersProductBrandOnly($startDate, $endDate, $brandID, $productID) {
+    public function userChartFiltersProductBrandOnly($startDate, $endDate, $brandID, $productID, $userID) {
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");
         $endDate = new \DateTime($endDate);
@@ -150,7 +157,9 @@ class HistoryRepository extends EntityRepository {
             WHERE b.id = pb.brand
             AND b.id = :brandID
             AND h.baughtAt BETWEEN :start AND :end
+            AND h.customer = :user
             ')
+                ->setParameter('user', $userID)
                 ->setParameter('productID', $productID)
                 ->setParameter('brandID', $brandID)
                 ->setParameter('start', $startDates)
@@ -161,7 +170,7 @@ class HistoryRepository extends EntityRepository {
         return $result;
     }
     
-    public function userChartFiltersProductBrandCategory($startDate, $endDate, $brandID, $productID, $categoryID){
+    public function userChartFiltersProductBrandCategory($startDate, $endDate, $brandID, $productID, $categoryID, $userID){
         $startDated = new \DateTime($startDate);
         $startDates = $startDated->format("Y-m-d");
         $endDate = new \DateTime($endDate);
@@ -177,8 +186,9 @@ class HistoryRepository extends EntityRepository {
             AND p.id = :productID
             AND pb.product = :productID
             AND h.baughtAt BETWEEN :start AND :end
-          
+           AND h.customer = :user
             ')
+                ->setParameter('user', $userID)
                 ->setParameter('categoryID', $categoryID)
                 ->setParameter('brandID', $brandID)
                 ->setParameter('productID', $productID)
@@ -192,6 +202,4 @@ class HistoryRepository extends EntityRepository {
 
     //-------------------------------uncomment the following
 
-
-  
 }

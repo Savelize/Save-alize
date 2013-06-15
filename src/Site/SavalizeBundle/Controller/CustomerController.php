@@ -363,11 +363,12 @@ class CustomerController extends Controller {
     /* user history page 4 */
     /* for calendar from calendar */
 
-    public function historyDateSelectionAction($userID) {
+    public function historyDateSelectionAction() {
         $request = $this->container->get('request');
         $start = $request->get('start');
         $end = $request->get('end');
-
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
         $start = gmdate("Y-m-d H:i:s", $start);
         $end = gmdate("Y-m-d H:i:s", $end);
 
@@ -451,40 +452,48 @@ class CustomerController extends Controller {
     }
 
     public function displayUserChartDatesProductAction() {
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
         $productID = $request->get('productID');
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
-        $result = $repository->userChartFiltersProductOnly($startDate, $endDate, $productID);
+        $result = $repository->userChartFiltersProductOnly($startDate, $endDate, $productID, $userID);
 
         return new Response(json_encode($result));
     }
 
     public function displayUserChartDatesBrandAction() {
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
         $brandID = $request->get('brandID');
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
-        $result = $repository->userChartFiltersBrandOnly($startDate, $endDate, $brandID);
+        $result = $repository->userChartFiltersBrandOnly($startDate, $endDate, $brandID, $userID);
 
         return new Response(json_encode($result));
     }
 
     public function displayUserChartProductBrandAction() {
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
         $brandID = $request->get('brandID');
         $productID = $request->get('productID');
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
-        $result = $repository->userChartFiltersBrandOnly($startDate, $endDate, $brandID);
+        $result = $repository->userChartFiltersBrandOnly($startDate, $endDate, $brandID, $userID);
 
         return new Response(json_encode($result));
     }
 
     public function displayUserChartProductBrandCategoryAction() {
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
@@ -492,49 +501,93 @@ class CustomerController extends Controller {
         $productID = $request->get('productID');
         $categoryID = $request->get('categoryID');
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
-        $result = $repository->userChartFiltersProductBrandCategory($startDate, $endDate, $brandID, $productID, $categoryID);
+        $result = $repository->userChartFiltersProductBrandCategory($startDate, $endDate, $brandID, $productID, $categoryID, $userID);
 
         return new Response(json_encode($result));
     }
 
     public function displayUserChartDatesCategoryAction() {
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
         $categoryID = $request->get('categoryID');
+        $pb = array();
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
-        $result = $repository->userChartFilters($startDate, $endDate, $categoryID);
+        $result = $repository->userChartFilters($startDate, $endDate, $categoryID, $userID);
         for ($i = 0; $i < count($result); $i++) {
             $pb[$i]['price'] = $result[$i]['price'];
             $pb[$i]['products'] = $result[$i]['name'];
         }
+
         return new Response(json_encode($pb));
     }
 
     /* autocomplete of brands and products in user report */
 
     public function fromCategoryAction() {
-        $request = $this->container->get('request');
-        $categoryID = $request->get('categoryID');
+        /*
+          $request = $this->container->get('request');
+          $categoryID = $request->get('categoryID');
+          $session = $this->getRequest()->getSession();
+          $userID = $session->get('id');
+          $em = $this->getDoctrine()->getEntityManager();
+          $brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID, $userID);
+
+          $pb = array();
+          for ($i = 0; $i < count($brandsOfCategory); $i++) {
+          $pb['brands'][$i] = $brandsOfCategory[$i]->getBrand()->getName();
+          $pb['products'][$i] = $brandsOfCategory[$i]->getProduct()->getName();
+          }
+
+          $pb['brands'] = \array_unique($pb['brands'], SORT_STRING);
+          $pb['brands'] = \array_values($pb['brands']);
+          $pb['products'] = \array_unique($pb['products'], SORT_STRING);
+          $pb['products'] = \array_values($pb['products']);
+         */
+        $request = $this->getRequest();
+        $session = $request->getSession();
         $em = $this->getDoctrine()->getEntityManager();
-        $brandsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID);
-        $productsOfCategory = $em->getRepository('SiteSavalizeBundle:ProductBrand')->productsandbrands($categoryID);
+
+        $customerId = $session->get('id');
+        $catId = $request->get("categoryID");
         $pb = array();
-        for ($i = 0; $i < count($brandsOfCategory); $i++) {
-            $pb['brands'][$i] = $brandsOfCategory[$i]->getBrand()->getName();
-            $pb['products'][$i] = $brandsOfCategory[$i]->getProduct()->getName();
+
+        $customerRep = $em->getRepository("SiteSavalizeBundle:Customer");
+        $customer = $customerRep->find($customerId);
+
+        $historyRep = $em->getRepository("SiteSavalizeBundle:History");
+        $history = $historyRep->findByCustomer($customer);
+
+        $catRep = $em->getRepository("SiteSavalizeBundle:Category");
+        $cat = $catRep->find($catId);
+
+        foreach ($history as $row) {
+            $product = $row->getProductBrand()->getProduct();
+            if ($product->getCategory() == $cat) {
+                $pb['products'][] = $product->getName();
+            }
+            $pb['brands'][] = $row->getProductBrand()->getBrand()->getName();
         }
+
+        $pb['brands'] = \array_unique($pb['brands'], SORT_STRING);
+        $pb['brands'] = \array_values($pb['brands']);
+        $pb['products'] = \array_unique($pb['products'], SORT_STRING);
+        $pb['products'] = \array_values($pb['products']);
         return new Response(json_encode($pb));
     }
 
     public function displayUserChartDatesOnlyAction() {
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
 
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:History');
 
-        $result = $repository->dateRangeData($startDate, $endDate);
+        $result = $repository->dateRangeData($startDate, $endDate, $userID);
 
 //        for ($i = 0; $i < count($result); $i++) {
 //            $pb['price'] = $result[$i]['price'];
@@ -545,17 +598,15 @@ class CustomerController extends Controller {
     }
 
     public function displayEnteryChartPageAction() {
-//        $session = $this->getRequest()->getSession();
-//        $userID = $session->get('id');
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
 //        
-//        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Category');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Category');
         $result = $repository->categoryAutocomplete();
-//        $brand = $repository->brandAutocomplete();
-//        $product = $repository->productAutocomplete();
-        $product = $this->getProductAction();
-        $brand = $this->getBrandsAction();
-        
-        return $this->render('SiteSavalizeBundle:Customer:user_report.html.twig', array('categories' => json_encode($result), 'products' => $product, 'brands' => $brand));
+        $brand = $repository->brandAutocomplete($userID);
+        $product = $repository->productAutocomplete($userID);
+
+        return $this->render('SiteSavalizeBundle:Customer:user_report.html.twig', array('categories' => json_encode($result), 'products' => json_encode($product), 'brands' => json_encode($brand)));
     }
 
     public function contactAction() {
