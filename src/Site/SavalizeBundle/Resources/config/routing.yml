@@ -110,7 +110,7 @@ user_chart_datesOnly:
     defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesOnly }
 
 user_chart_datesCategory:
-  pattern:  /usr/renderreport
+  pattern:  /usr/renderreportcategory
   defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesCategory }
     
 user_chart_ProductBrand:
@@ -124,6 +124,10 @@ user_chart_datesProduct:
 user_chart_datesBrand:
     pattern: /usr/renderreportbrand
     defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesBrand }
+    
+user_chart_ProductBrandCategory:
+    pattern: /usr/renderreportCBP
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartProductBrandCategory }
 
 show_new_product_details:
     pattern: /showproduct/{notf_id}

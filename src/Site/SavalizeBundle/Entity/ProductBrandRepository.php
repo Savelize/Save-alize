@@ -14,8 +14,8 @@ class ProductBrandRepository extends EntityRepository {
 
     public function displayCompanyProducts($company_id) {
         $query = $this->getEntityManager()->createQuery('
-			SELECT pb
-			FROM SiteSavalizeBundle:ProductBrand pb
+            SELECT pb
+            FROM SiteSavalizeBundle:ProductBrand pb
             JOIN SiteSavalizeBundle:Brand b
             WHERE b.id = pb.brand
             AND b.company = :company_id

@@ -1,0 +1,73 @@
+{% extends '::base.html.twig' %}
+{% block title %}Socialize - History{% endblock %}
+
+{% block stylesheets %}
+<link href="{{asset('css/fullcalendar.css')}}" rel="stylesheet" type="text/css">
+<style>
+        #calendar {
+            width: 600px;
+            margin: 0 auto;
+        }
+
+    </style>
+{% endblock %}
+
+
+
+{% block body %}
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#">Save and Socialize</a>
+
+            <div class="nav-collapse">
+                <ul class="nav" style="font-weight:normal">
+                    <li><a href="#">New Purchases</a> </li>
+                    <li><a href="#">My Alerts</a></li>
+                    <li class="active"><a href="#">History</a></li>
+                    <li><a href="#">Product Reviews</a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid" >
+        <div class="span12 content">
+
+            <h2>History</h2>
+            <div style="float: left">
+                <br>
+                <div id = 'calendar'>
+
+                    <div id="detailedData" style="float: left;"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul>
+{#% for m in monthlydata %}
+        <li>
+            {{ m.productPrice }}
+            {{ m.productName }}
+{#% set monthlydataArr = {'name': (name), 'price': (price)} %#}
+            <!--  </li>-->
+{#% endfor %#}
+        </ul>
+        <input type="hidden" id="hiddenMonth" value="{#{ month }#}">
+        <input type="hidden" id="monthlyData" value="{{ monthlydata }}">
+{% endblock %}
+
+{% block javascripts %}
+        <script> var calendarpath = "{{ path('site_user_page4') }}" </script>
+        <script src="{{asset('js/fullcalendar.js')}}"></script>
+        <script src="{{asset('js/user_calendar.js')}}"></script>
+
+{% endblock %}
