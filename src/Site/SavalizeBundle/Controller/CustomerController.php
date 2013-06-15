@@ -377,11 +377,10 @@ class CustomerController extends Controller {
 
         $repository = $this->getDoctrine()->getEntityManager();
         $result = $repository->getRepository('SiteSavalizeBundle:History')->getMonthlyPurchases($start, $end, $userID);
+        $myrepository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
         $resultArr = array();
         for ($i = 0; $i < count($result); $i++) {
-            $myrepository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Product');
-            $x = $result[$i]->getProductBrand()->getId();
-            $productResult[$i] = $myrepository->find($x);
+            $productResult[$i] = $result[$i]->getProductBrand()->getProduct();
             $boughtAt[$i] = $result[$i]->getBaughtAt()->format('Y-m-d');
 
             $resultArr[$i] = array('title' => $productResult[$i]->getName(), 'data' => array('product' => $productResult[$i]->getName(),
@@ -398,7 +397,7 @@ class CustomerController extends Controller {
         $session = $this->getRequest()->getSession();
         $userID = $session->get('id');
 
-        $resultArr = $this->historyDateSelectionAction($userID);
+        $resultArr = $this->historyDateSelectionAction();
         return $this->render('SiteSavalizeBundle:Customer:user_calendar.html.twig', array('monthlydata' => $resultArr));
     }
 
