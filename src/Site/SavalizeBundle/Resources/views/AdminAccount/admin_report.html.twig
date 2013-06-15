@@ -19,13 +19,10 @@
 
         <div class="nav-collapse">
             <ul class="nav inline" style="font-weight:normal">
-                <li><a href="{{ path('user_addProduct') }}">New Purchases</a> </li>
-                <li><a href="#">Notifications</a></li>
-                <li><a href="{{ path('site_ajax_get_calendar') }}">History</a></li>
-                <li><a href="#">Product Reviews</a></li>
-                <li class="active"><a href="{{ path('site_savalize_displayDummyChart') }}">Reports</a></li>
+                <li class="active"><a href="#">Reports</a></li>
+                <li><a href="#">New Product Approval</a></li>
                 <li><a href="#">Settings</a></li>
-                <li><a href="{{ path('contact_us') }}">Contact Us</a></li>
+                <li><a href="#">Contact Us</a></li>
             </ul>
         </div>
     </div>
@@ -35,52 +32,52 @@
 
         <h2>Reports</h2>
         <div style="float: left" class="row-fluid">
-        <ul class="inline row-fluid" style = "font-size: 20px">
+            <ul class="inline row-fluid" style = "font-size: 20px">
 
-            <div class="span12">
-                I would like a <select id="graphTypeSelect">
-                <option value="Bar">--Type of Chart--</option>--Type of Chart--
-                <option value="Line">Line</option>
-                <option value="Bar">Bar</option>
-                <option value="Pie">Pie</option>
-                <option value="Doughnut">Doughnut</option>
-                </select> from: <input type="date" id="startDate"> to: <input type="date" id="endDate">
-               
-            <input type="button" id="reportViaDatesOnly" value="Generate Report Via Dates Only" style="padding-right: 15%; padding-left: 15%; padding-top: 0.3%; padding-bottom: 0.3%"/>
-             <br>To be more specific, I would like to search by <select id="filterSelect">
-                <option>--Choose Filter(s)--</option>--Type of Chart--
-                <option value="1">Category</option>
-                <option value="2">Brand</option>
-                <option value="3">Product</option>
-                <option value="4">Brand and Product</option>
-                <option value="5">Category,Brand and Product</option>
-                </select>
-             <div id="filters"></div>
-            
-            
-            </div>
-        </ul>
-            </div>
-          <input type="button" id="generateReport" value="Generate Report"/>
+                <div class="span12">
+                    I would like a <select id="graphTypeSelect">
+                        <option value="Bar">--Type of Chart--</option>--Type of Chart--
+                        <option value="Line">Line</option>
+                        <option value="Bar">Bar</option>
+                        <option value="Pie">Pie</option>
+                        <option value="Doughnut">Doughnut</option>
+                    </select> from: <input type="date" id="startDate"> to: <input type="date" id="endDate">
 
-            <canvas id="myChart" width="400" height="400"></canvas>
+                    <input type="button" id="reportViaDatesOnly" value="Generate Report Via Dates Only" style="padding-right: 15%; padding-left: 15%; padding-top: 0.3%; padding-bottom: 0.3%"/>
+                    <br>To be more specific, I would like to search by <select id="filterSelect">
+                        <option>--Choose Filter(s)--</option>--Type of Chart--
+                        <option value="1">Category</option>
+                        <option value="2">Brand</option>
+                        <option value="3">Product</option>
+                        <option value="4">Brand and Product</option>
+                        <option value="5">Category,Brand and Product</option>
+                    </select>
+                    <div id="filters"></div>
+
+
+                </div>
+            </ul>
+        </div>
+        <input type="button" id="generateReport" value="Generate Report"/>
+
+        <canvas id="myChart" width="400" height="400"></canvas>
         <input type="hidden" id="hiddenCategory" value="{{ categories }}"> 
         <input type="hidden" id="hiddenBrand" value="{{ brands }}">
         <input type="hidden" id="hiddenProduct" value="{{ products }}">
-          
+
 {% endblock %}
 
 {% block javascripts %}
-            <script src="{{asset('js/fullcalendar.js')}}"></script>
-            <script> var dateCategorypath = "{{ path('admin_chart_datesCategory') }}";
-                var dateOnlypath = "{{ path('admin_chart_datesOnly') }}";
-                var dateProductpath = "{{ path('admin_chart_datesProduct') }}";
-                var dateBrandpath = "{{ path('admin_chart_datesBrand') }}";
-                var ProductBrandpath = "{{ path('admin_chart_ProductBrand') }}";
-                var CategoryBrandProductpath = "{{ path('admin_chart_ProductBrandCategory') }}";
-                </script>
+        <script src="{{asset('js/fullcalendar.js')}}"></script>
+        <script> var dateCategorypath = "{{ path('admin_chart_datesCategory') }}";
+            var dateOnlypath = "{{ path('admin_chart_datesOnly') }}";
+            var dateProductpath = "{{ path('admin_chart_datesProduct') }}";
+            var dateBrandpath = "{{ path('admin_chart_datesBrand') }}";
+            var ProductBrandpath = "{{ path('admin_chart_ProductBrand') }}";
+            var CategoryBrandProductpath = "{{ path('admin_chart_ProductBrandCategory') }}";
+            </script>
             <script> var fromCategoryPath = "{{ path('admin_report_fromCategory') }}" </script>
             <script src="{{asset('js/admin_chart.js')}}"></script>
             <script src="{{asset('js/Chart.js')}}"></script>
 {% endblock %}
-            
+

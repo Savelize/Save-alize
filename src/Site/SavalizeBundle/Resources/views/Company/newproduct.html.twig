@@ -57,30 +57,31 @@
         
         <div class="span4" style="text-align:center">
             <h4>Add New Product</h4>
-            <div id="msg2"></div>
+            <div id="anothermsg"></div>
             <div class="row-fluid" style = "font-size: 20px">
-                <form id="">
+                <form id="submitForm" enctype="multipart/form-data">
             <table>
             <tr>
                 <td>Category: </td> <td><select  id="catInput">
                 <option value="0"></option>
                     {% for category in categories %}
-                    <option value="{{ category.id }}"> {{ category.name }} </option>
+                    <option value="{{ category.id }}" name = "category_id"> {{ category.name }} </option>
                     {% endfor %}
                     </select> </td>
             </tr>
             <tr>
-                <td>Brand: </td><td><input type="text" id="brandInput"></td>
+                <td>Brand: </td><td><input type="text" name="brand" id="brandInput"></td>
             </tr>
             <tr>
-                <td>Product: </td><td><input type="text" id="brandInput"></td>
+                <td>Product: </td><td><input type="text" name="product" id="productInput"></td>
             </tr>
             <tr>
-                <td>Upload Photo: </td><td><input type="file" id="photoInput"></td>
+                <td>Upload Photo: </td><td><input type="file" name="photoInput" ></td>
+
             </tr>
+            <tr><input type="submit" class="btn" id="addProductButton" value="Add"/></tr>
             </table>
         </form>
-            <input type="submit" class="btn2" id="addProductButton" value="Add"/>
            
         </div>
             </div>
@@ -93,5 +94,6 @@
 {% block javascripts %}
     <script src="{{asset('js/company_newproduct.js')}}"></script>
     <script> var catValue = "{{ path('company_choose_brandproduct') }}" </script>
-    <script> var path = "{{ path('company_add_newproduct') }}" </script>
+    <script> var path = "{{ path('company_add_newbrand') }}" </script>
+    <script> var path2 = "{{ path('company_add_newproduct') }}" </script>
 {% endblock %}
