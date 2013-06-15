@@ -1,5 +1,5 @@
 {% extends '::base.html.twig' %}
-{% block title %}Socialize - Cotact us{% endblock %}
+{% block title %}Socialize - Contact us{% endblock %}
 {% block body %}
 
 <nav class="navbar">
@@ -15,9 +15,9 @@
             <ul class="nav" style="font-weight:normal">
                 <li><a href="{{ path('user_addProduct') }}">New Purchases</a> </li>
                 <li><a href="#">My Alerts</a></li>
-                <li><a href="#">History</a></li>
+                <li><a href="{{ path('site_ajax_get_calendar') }}">History</a></li>
                 <li><a href="#">Product Reviews</a></li>
-                <li><a href="#">Reports</a></li>
+                <li><a href="{{ path('site_savalize_displayDummyChart') }}">Reports</a></li>
                 <li><a href="#">Settings</a></li>
                 <li class="active"><a href="{{ path('contact_us') }}">Contact Us</a></li>
             </ul>

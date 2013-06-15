@@ -14,8 +14,8 @@ class ProductBrandRepository extends EntityRepository {
 
     public function displayCompanyProducts($company_id) {
         $query = $this->getEntityManager()->createQuery('
-			SELECT pb
-			FROM SiteSavalizeBundle:ProductBrand pb
+            SELECT pb
+            FROM SiteSavalizeBundle:ProductBrand pb
             JOIN SiteSavalizeBundle:Brand b
             WHERE b.id = pb.brand
             AND b.company = :company_id
@@ -23,8 +23,7 @@ class ProductBrandRepository extends EntityRepository {
         return $query->getResult();
     }
 
-
-    public function displayCategoryData($category_id){
+    public function displayCategoryData($category_id) {
 
         $query = $this->getEntityManager()->createQuery('
             SELECT pb
@@ -32,23 +31,22 @@ class ProductBrandRepository extends EntityRepository {
             JOIN SiteSavalizeBundle:Product p
             WHERE p.id = pb.product
             AND p.category = :category_id
-            ')->setParameter('category_id' , $category_id );
+            ')->setParameter('category_id', $category_id);
         return $query->getResult();
     }
 
-    public function checktoinsertNewData($brand, $product){
+    public function checktoinsertNewData($brand, $product) {
         $query = $this->getEntityManager()->createQuery('
             SELECT pb
             FROM SiteSavalizeBundle:ProductBrand pb
             JOIN SiteSavalizeBundle:Brand b
             WHERE b.id = pb.brand
             AND b.name = :brand 
-            ')->setParameter('brand' , $brand);
+            ')->setParameter('brand', $brand);
         return $query->getResult();
-
     }
 
-     public function updateCompany($company_id , $brand) {
+    public function updateCompany($company_id, $brand) {
         $query = $this->getEntityManager()->createQuery('
             UPDATE SiteSavalizeBundle:Brand b
             SET b.company = :company_id
@@ -59,8 +57,8 @@ class ProductBrandRepository extends EntityRepository {
         return $result;
     }
 
-	public function getFirstPBfromCategory($catId){
-		 $query= $this->getEntityManager()->createQuery('
+    public function getFirstPBfromCategory($catId) {
+        $query = $this->getEntityManager()->createQuery('
 
 			select pb
 			from SiteSavalizeBundle:ProductBrand pb 
@@ -94,16 +92,18 @@ class ProductBrandRepository extends EntityRepository {
         return $query->getResult();
     }
 
-    public function productsandbrands($categoryID) {
+    public function productsandbrands($categoryID, $customerID) {
 
         $q = $this->getEntityManager()->createQuery('
             SELECT pb
-            FROM SiteSavalizeBundle:ProductBrand pb
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
             JOIN pb.product p 
-            JOIN p.category c 
-            WHERE c.id = :categoryID
-            AND p.category = :categoryID       
-            ')->setParameter('categoryID', $categoryID);
+            WHERE h.customer = :customerID
+            AND p.category = :categoryID
+                  
+            ')->setParameter('categoryID', $categoryID)
+                ->setParameter('customerID', $customerID);
         $result = $q->getResult();
         return $result;
     }
