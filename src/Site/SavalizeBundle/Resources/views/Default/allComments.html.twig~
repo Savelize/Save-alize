@@ -1,0 +1,59 @@
+{% extends '::base.html.twig' %}
+{% block title %}Socialize - Product Reviews{% endblock %}
+
+{% block stylesheets %}
+<link href="{{asset('css/fullcalendar.css')}}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+
+
+{% block body %}
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#">Save and Socialize</a>
+
+        <div class="nav-collapse">
+            <ul class="nav" style="font-weight:normal">
+                <li><a href="#">New Purchases</a> </li>
+                <li><a href="#">My Alerts</a></li>
+                <li class="active"><a href="#">History</a></li>
+                <li><a href="#">Product Reviews</a></li>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid" >
+    <div class="span12 content">
+
+        <h2>Product Reviews</h2>
+        {#
+        {% for comment in pic %}
+        	<img width="100px" height="100px"  src="{{ asset('img/') }}{{ comment }}" />
+	
+		
+	{% endfor %}
+        {% for comment in comments %}
+        	
+		{{ comment }}
+		<br><br>
+	{% endfor %}
+        #}
+        {% for i in 0..comments|length %}
+        	<img width="100px" height="100px"  src="{{ asset('img/') }}{{ pic[i] }}" />
+		{{ comments[i] }}
+		<br><br>
+	{% endfor %}
+        
+     </div>
+     </div>
+     
+{% endblock %}

@@ -39,7 +39,7 @@
         
       <img src="{{ asset('img/') }}{{ picName }}" width="300px" height="300px"><br>
 
-
+<br>
 
 <label  >Your rating: {{ userRating }}</label><label></label>
 
@@ -64,21 +64,21 @@
 
 
 
-<label >Overall likes: {{ allLikes }}</label><label></label>
+<label >Overall likes: <span id="overAllLike" >{{ allLikes }}<span></label>
 
-
+<input id="hiddenpb" type = "hidden" value = {{ pbId }}>
 
 
 <div >
 <br>
-<button>Add comment:</button>
+<button id="addComment">Add comment:</button>
 <br>
 <br>
-<textarea rows="4" cols="150">
+<textarea id="addText" rows="4" cols="150">
 </textarea>
 <br>
 
-<span >Comments:</span>
+<a id="showComs" href="#">See previous comments ?</a>
 
 {#{% for comment in comments %}#}
  <span></span>
@@ -115,10 +115,20 @@
  cursor: hand; cursor: pointer; 
 }
 </style>
-
+			
 <script>
+
+	var likePath = "{{ path('site_like') }}"
+	var commentPath = "{{ path('site_add_comment') }}"
 	var baseLikeImg = "{{asset('img/')}}";
 	var userLike = {{ userLike }};
+	var commentsPath = "{{ path('site_show_comments') }}"
+	var pbId = $("#hiddenpb").val();
+	//alert(pbId);
+$("#showComs").on('click', function(){
+	//alert("fff");
+	$("#showComs").attr('href', commentsPath+"/"+pbId);
+});
 $("#likeP").on('click',function(){
 			if(userLike == 1)
 	{
@@ -127,6 +137,20 @@ $("#likeP").on('click',function(){
 			$("#likeImg").attr('src', likeImgPath);
 			$("#likeP").html("click here to like");
 			userLike = 0;
+			$("#overAllLike").html($("#overAllLike").html()-1);
+			$.ajax({
+				type: 'POST',
+				url: likePath,
+				datatype: 'json',
+				data: {
+					userLikeVal : userLike
+				},
+				success: function(resp)
+				{
+					//alert("ss");
+					$("#overAllLike").html(parseInt($("#overAllLike").html())-1);
+				}
+			});
 		
 	}
 	else
@@ -136,7 +160,28 @@ $("#likeP").on('click',function(){
 			$("#likeImg").attr('src', likeImgPath);
 			$("#likeP").html("click here to unlike");
 			userLike = 1;
+			$("#overAllLike").html(parseInt($("#overAllLike").html())+1);
 		}
+	});
+	$("#addComment").on('click', function(){
+		//alert("{{ username }}");
+		$.ajax({
+				type: 'POST',
+				url: commentPath,
+				datatype: 'json',
+				data: {
+					userComment : $("#addText").val(),
+					pbId : {{ pbId }},
+					customerId : {{ customerId }}
+					
+				},
+				success: function(resp)
+				{
+					$("#addText").val()="";
+					//alert("comment added successfully");
+					//$("#overAllLike").html(parseInt($("#overAllLike").html())-1);
+				}
+			});
 	});
 </script>  
         

@@ -73,6 +73,7 @@
 			var path2 = "{{ path('brand_pictures') }}" 
 			var basePathOfPictures = "{{ asset('img/') }}"
 			var newPath = "{{ path('SiteSavalizeBundle_one_review') }}"
+			var commentsPath = "{{ path('site_show_comments') }}"
 		</script>
 		
 

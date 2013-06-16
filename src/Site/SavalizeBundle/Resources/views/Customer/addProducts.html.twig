@@ -8,17 +8,17 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </a>
-        <a class="brand" href="#">Save and Socialize</a>
+            <a class="brand" ></a>
 
         <div class="nav-collapse">
-            <ul class="nav" style="font-weight:normal">
-                <li class="active"><a href="#">New Purchases</a> </li>
+            <ul class="nav" style="font-weight:normal;padding-left: 30px">
+                <li class="active"><a href="{{ path('user_addProduct') }}">New Purchases</a> </li>
                 <li><a href="#">My Alerts</a></li>
                 <li><a href="#">History</a></li>
                 <li><a href="#">Product Reviews</a></li>
                 <li><a href="#">Reports</a></li>
                 <li><a href="#">Settings</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li><a href="{{ path('contact_us') }}">Contact Us</a></li>
             </ul>
         </div>
     </div>
@@ -26,6 +26,11 @@
 <div class="container-fluid" >
     <div class="span12 content">
         <h2>Add New Product</h2>
+        {% if sucess %}
+        <div class="alert alert-success">
+            product add succefully
+        </div>
+        {% endif %}
         <form action="{{ path('user_addProduct') }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
             <div class="control-group">
     {{ form_errors(form) }}
@@ -36,7 +41,7 @@
 
     {{ form_rest(form) }}
                     </div>
-    <input type="submit" value="submit" class="btn btn-primary"/>
+    <input type="submit" value="submit" class="btn btn-info"/>
             </form>
         </div>
     </div>
@@ -44,6 +49,22 @@
     <script>
         $(document).ready(function()
         {
+            $.ajax
+                    ({
+                        type: 'POST',
+                        url: '{{ url('user_getBrands')}}',
+                        success: function(resp)
+                        {
+                            var allBrands = JSON.parse(resp);
+                            var Prands=new Array()
+                            for(var i=0;i<allBrands.length;i++)
+                            {
+                                Prands[i] = allBrands[i]; 
+                            }
+                            $('#form_Brand').autocomplete({source: Prands});
+                        }
+                    });
+                    
             products=new Array();
             
             $("#form_Categories").on('change',function(){

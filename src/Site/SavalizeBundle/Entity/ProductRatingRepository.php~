@@ -29,5 +29,13 @@ class ProductRatingRepository extends EntityRepository
 		    ')->setParameters(array('customerId'=> $customerId, 'productBrandId'=>$productBrandId));
             return $query->getResult();
 	}
+	public function updateLike($customerObj, $likeVal)
+	{
+		$query = $this->getEntityManager()->createQuery('
+		    update SiteSavalizeBundle:ProductRatingpRating set pRating.liked = :likeVal where pRating.customer.id = :customerObj
+		    ')->setParameters(array('customerObj'=> $customerObj, 'likeVal'=>$likeVal));
+            return $query->getResult();
+	}
 }
+
 

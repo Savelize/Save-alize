@@ -1,4 +1,8 @@
 
+
+
+
+
 var allBrands = JSON.parse($("#allBrands").val());
 var completeItems = new Array();
 for(i=0;i<allBrands.length;i++){
@@ -35,6 +39,7 @@ $("#categorySelect").on('change',function(){
 		}
 	});
 });
+
 
 $("#searchBrand").on('click',function(){
 	if($("#autocomplete").val() != "")
@@ -78,7 +83,11 @@ $("#searchBrand").on('click',function(){
 });	
 
 $("#likeImg").on('click',function(){
-	var likeImgPath = baseLikeImg + 'liked.jpeg'
+	var likeImgPath = baseLikeImg + 'liked.jpeg';
 	$("#likeImg").attr('src', likeImgPath);
 });
+
+
+	
+
 

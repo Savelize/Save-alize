@@ -161,6 +161,29 @@ class User
     }
 
     /**
+     * Set picture
+     *
+     * @param string $picture
+     * @return User
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+    
+        return $this;
+    }
+
+    /**
+     * Get picture
+     *
+     * @return string 
+     */
+    public function getPicture()
+    {
+        return $this->picture;
+    }
+    
+    /**
      * Set createdAt
      *
      * @param \DateTime $createdAt

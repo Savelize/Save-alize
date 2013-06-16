@@ -2,6 +2,8 @@
 
 namespace Site\SavalizeBundle\Entity;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -13,16 +15,66 @@ use Doctrine\ORM\EntityRepository;
 class CategoryRepository extends EntityRepository {
 
     public function categoryAutocomplete() {
+
         $q = $this->getEntityManager()->createQuery('
-            SELECT c.name , c.id 
-            FROM SiteSavalizeBundle:Category c           
-        ');
+		SELECT c.name , c.id 
+		FROM SiteSavalizeBundle:Category c 
+		');
         $result = $q->getResult();
         return $result;
     }
 
-    
+    public function productAutocomplete($customerId) {
+        $q = $this->getEntityManager()->createQuery('
+		SELECT p.name , p.id 
+                FROM SiteSavalizeBundle:History h
+                JOIN h.productBrand pb
+		JOIN pb.product p
+                WHERE h.customer = :customer
+                AND h.productBrand = pb.id
+		')->setParameter('customer', $customerId);
+        $result = $q->getResult();
 
-   
+        $result = \array_values($result);
+        return $result;
+    }
+
+    public function brandAutocomplete($customerId) {
+
+        $q = $this->getEntityManager()->createQuery('
+		SELECT b.name , b.id 
+		FROM SiteSavalizeBundle:History h
+                JOIN h.productBrand pb
+		JOIN pb.brand b
+                WHERE h.customer = :customer
+		')->setParameter('customer', $customerId);
+        $result = $q->getResult();
+
+        $result = \array_values($result);
+        return $result;
+    }
+
+    public function productAutocompleteAdmin() {
+        $q = $this->getEntityManager()->createQuery('
+		SELECT p.name , p.id 
+                FROM SiteSavalizeBundle:Product p
+                ');
+        $result = $q->getResult();
+
+        $result = \array_values($result);
+        return $result;
+    }
+
+    public function brandAutocompleteAdmin() {
+
+        $q = $this->getEntityManager()->createQuery('
+		SELECT b.name , b.id 
+		FROM SiteSavalizeBundle:Brand b
+                ');
+        $result = $q->getResult();
+
+        $result = \array_values($result);
+        return $result;
+    }
 
 }

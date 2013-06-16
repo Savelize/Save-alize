@@ -11,6 +11,7 @@ use Site\SavalizeBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Site\SavalizeBundle\Entity\ProductComment;
 
 class DefaultController extends Controller
 {
@@ -22,7 +23,7 @@ class DefaultController extends Controller
         
         if($session->get('userName')!=null)
         {
-            $userType=$this->getUserTypeByUserName($session->get('userName'));
+            $userType=$session->get("role");
             if($userType=="customer")
                 return $this->redirect($this->generateUrl('user_addProduct'));
             else if($userType=="company")
@@ -51,7 +52,7 @@ class DefaultController extends Controller
                 ->add('User_Name', null, array('required' => true,'attr' => array('class' => 'input-block-level')))
                 ->add('Name', null, array('required' => true,'attr' => array('class' => 'input-block-level')))
                 ->add('Email', "email", array('required' => true,'attr' => array('class' => 'input-block-level')))
-                ->add('Password',"password", array('required' => true,'attr' => array('class' => 'input-block-level')))
+                ->add('Password',"password", array('required' => true,'attr' => array('class' => 'input-block-level','oninput'=>'check(this)')))
                 ->add('Confirm_Password', "password", array('required' => true,'attr' => array('class' => 'input-block-level')))
                 ->add('User_Type', 'choice', array('required' => true,'choices'=>$userType,'attr' => array('class' => 'input-block-level')))
         ;
@@ -253,6 +254,8 @@ class DefaultController extends Controller
                                 $company->setEmail($data['Email']);
                                 $pass_crypt = \crypt($data['Password']);
                                 $company->setPassword($pass_crypt);
+                                $company->setCreatedAt(new \DateTime());
+                                $company->setUpdatedAt(new \DateTime());
                                 $em->persist($company);
                                 $em->flush($company);
                                 $session = $this->getRequest()->getSession();
@@ -269,15 +272,16 @@ class DefaultController extends Controller
     	$request = $this->container->get('request');
     	$session = $this->getRequest()->getSession();
     	$picName = $request->get('name');
+    	$customerId = $session->get('id');
     	$em=$this->getDoctrine()->getEntityManager();
     	$allLikesAndRatings = $em->getRepository('SiteSavalizeBundle:ProductRating')->getAllRatingsAndLikes($picName);
     	$allLikes = $allLikesAndRatings[0]['likesCount'];
-    	//$username = $session->get('userName');
-    	$username = 'samarhassan';
+    	$username = $session->get('userName');
+    	//$username = 'samarhassan';
     	$productBrandObj = $em->getRepository('SiteSavalizeBundle:ProductBrand')->findOneByPicture($picName);
     	$customerObj = $em->getRepository('SiteSavalizeBundle:User')->findOneByUsername($username);
+    	$customerId = $customerObj->getId();
 	//$productBrandId = 2;
-	$customerId = $customerObj->getId();
 	$pbId = $productBrandObj->getId();
     	$userLikeAndRating = $em->getRepository('SiteSavalizeBundle:ProductRating')->getUserLikeAndRating($pbId, $customerId);
     	/*if ($userLikeAndRating[0]['userLike'])
@@ -296,7 +300,59 @@ class DefaultController extends Controller
     	//return new Response($allLiksAndRatings[0]['likesCount']);	
     	//return new Response($userLike);
     	//return new Response($pbId);
-    	return $this->render('SiteSavalizeBundle:Default:oneReview.html.twig', array('picName'=>$picName, 'allLikes'=>$allLikes, 'userLike'=>$userLike, 'userRating'=>$userRating));
+    	return $this->render('SiteSavalizeBundle:Default:oneReview.html.twig', array('customerId'=>$customerId, 'pbId'=>$pbId,'username'=>$username,'picName'=>$picName, 'allLikes'=>$allLikes, 'userLike'=>$userLike, 'userRating'=>$userRating));
+    }
+    public function updateLikeAction()
+    {
+    	$request = $this->container->get('request');
+    	$userLikeVal = $request->get('userLikeVal');
+    	$session = $this->getRequest()->getSession();
+    	$id = $request->get('id');
+    	$em=$this->getDoctrine()->getEntityManager();
+    	$customerObj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
+    	if($userLikeVal == 1)
+    	$result = $em->getRepository('SiteSavalizeBundle:ProductRating')->updateLike($customerObj, 0);
+    	else
+    	{$result = $em->getRepository('SiteSavalizeBundle:ProductRating')->updateLike($customerObj, 1);}
+    	return new Response (json_encode($result));
+    }
+    public function addCommentAction()
+    {
+    	$request = $this->container->get('request');
+    	$comment = $request->get('userComment');
+    	$customerId = $request->get('customerId');
+    	$pbId = $request->get('pbId');
+    	//$em=$this->getDoctrine()->getEntityManager();
+    	//$product_brand = $em->getRepository('')
+    	//$result = $em->getRepository('SiteSavalizeBundle:ProductComment')->addComment($customerId);
+    	//$pcId = $result[0]['pcId'];
+    	$em=$this->getDoctrine()->getEntityManager();
+    	$customer = $em->getRepository('SiteSavalizeBundle:Customer')->find($customerId);
+    	$pb = $em->getRepository('SiteSavalizeBundle:ProductBrand')->find($pbId);
+    	$pc = new ProductComment();
+    	$pc->setComment($comment);
+    	$pc->setCustomer($customer);
+    	$pc->setProductBrand($pb);
+    	
+    	$em->persist($pc);
+    	$em->flush($pc);
+    	return new Response(json_encode($pcId));
+    }
+    public function showCommentsAction($pbId)
+    {
+    	$em=$this->getDoctrine()->getEntityManager();
+    	$allComments = $em->getRepository('SiteSavalizeBundle:ProductComment')->findAll();
+    	$comments=array();
+    	$pic=array();
+    	foreach($allComments as $comment)
+    	{
+    		$pic[]=$comment->getCustomer()->getUser()->getPicture();
+    		$comments[]=$comment->getComment(); 		
+    	}
+    	//echo $pbId;
+    	//print_r($comments);
+    	//exit;
+    	return $this->render('SiteSavalizeBundle:Default:allComments.html.twig', array('comments'=>$comments, 'pic'=>$pic));
     }
     public function showAllReviewsAction()
     {
@@ -342,5 +398,29 @@ class DefaultController extends Controller
 	}
     	return new Response (json_encode($brandPics));
     	
+}
+    
+    public function getpictureAction(){
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getEntityManager();
+        $session = $request->getSession();
+        $id = $session->get('id');
+        $role = $session->get('role');
+        if ($role == 'company'){
+            $obj = $em->getRepository('SiteSavalizeBundle:Company')->find($id);
+            $picname = $obj->getPicture();
+        }
+        elseif ($role == 'admin') {
+            $obj = $em->getRepository('SiteSavalizeBundle:Admin')->find($id);
+            $picname = $obj->getUser()->getPicture();
+        }
+        elseif ($role == 'customer'){
+            $obj = $em->getRepository('SiteSavalizeBundle:Customer')->find($id);
+            $picname = $obj->getUser()->getPicture();
+        }
+        if(!$picname)
+            $picname="anonymous.jpg";
+        return new Response($picname);
+	//return new Response();
     }
 }

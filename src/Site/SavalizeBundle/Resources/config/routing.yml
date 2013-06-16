@@ -20,10 +20,6 @@ site_savalize_viewNotifications:
 site_savalize_displayDummyChart:
     pattern: /displayChart
     defaults: { _controller: SiteSavalizeBundle:Customer:displayEnteryChartPage }
-    
-site_savalize_ajaxtoshowchart:
-  pattern:  /usr/renderreport
-  defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChart }
 
 SiteSavalizeBundle_one_review:
     pattern:  /review/show/{name}
@@ -93,6 +89,10 @@ user_signOut:
     pattern:  /signOut
     defaults: { _controller: "SiteSavalizeBundle:Default:signOut" }
     
+site_default_getpicture:
+    pattern:  /basepicture
+    defaults: { _controller: "SiteSavalizeBundle:Default:getpicture" }
+    
 user_addProduct:
     pattern:  /addProduct
     defaults: { _controller: "SiteSavalizeBundle:Customer:addProduct" }
@@ -100,6 +100,11 @@ user_addProduct:
 user_getProducts:
     pattern:  /getProduct
     defaults: { _controller: "SiteSavalizeBundle:Customer:getProduct"}
+    requirements: { _method: post }
+
+user_getBrands:
+    pattern:  /getBrands
+    defaults: { _controller: "SiteSavalizeBundle:Customer:getBrands"}
     requirements: { _method: post }
     
 user_report_fromCategory:
@@ -115,19 +120,38 @@ user_chart_datesOnly:
     pattern:  /usr/renderreportdatesonly
     defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesOnly }
 
-
+user_chart_datesCategory:
+  pattern:  /usr/renderreportcategory
+  defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesCategory }
+    
+user_chart_ProductBrand:
+    pattern: /usr/renderreportproductbrand
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartProductBrand }
+    
+user_chart_datesProduct:
+    pattern: /usr/renderreportproduct
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesProduct }
+    
+user_chart_datesBrand:
+    pattern: /usr/renderreportbrand
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartDatesBrand }
+    
+user_chart_ProductBrandCategory:
+    pattern: /usr/renderreportCBP
+    defaults: { _controller: SiteSavalizeBundle:Customer:displayUserChartProductBrandCategory }
 
 show_new_product_details:
-    pattern: /showproduct/{notf_id}
+    pattern: /showproduct
     defaults: { _controller: SiteSavalizeBundle:Customer:showNewProductDetails }
 
 company_view_product:
-    pattern: /company/newproduct/{id}
-    defaults: { _controller: SiteSavalizeBundle:Company:inserNewProduct }
-
-company_add_newproduct:
-    pattern: /company/products/{id}
+    pattern: /company/products
     defaults: { _controller: SiteSavalizeBundle:Company:viewProduct }
+
+company_choose_brandproduct:
+    pattern: /company/product
+    defaults: { _controller: SiteSavalizeBundle:Company:displayDataByAjax }
+
 site_brands_cat:
     pattern: /categories
     defaults: { _controller: SiteSavalizeBundle:Default:getBrandsOfCategory }
@@ -136,4 +160,68 @@ brand_pictures:
     pattern: /brand/pics
     defaults: { _controller: SiteSavalizeBundle:Default:getBrandPictures }
     requirements: { _method: post }
+
+company_add_newbrand:
+    pattern: /addcompanybrand
+    defaults: { _controller: SiteSavalizeBundle:Company:insertNewBrand }
+
+admin_report_fromCategory:
+    pattern: /fromCategory
+    defaults: { _controller: "SiteSavalizeBundle:AdminAccount:fromCategoryAdmin" }
+
+site_savalize_displayAdminChart:
+    pattern: /reportCharts
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayReportChartPage }
+
+company_add_newproduct:
+    pattern: /addcompanyproduct
+    defaults: { _controller: SiteSavalizeBundle:Company:insertNewProduct }
+
+
+admin_chart_datesOnly:
+    pattern:  /admin/renderreportdatesonly
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartDatesOnly }
+
+admin_chart_datesCategory:
+  pattern:  /admin/renderreportcategory
+  defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartDatesCategory }
     
+admin_chart_ProductBrand:
+    pattern: /admin/renderreportproductbrand
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartProductBrand }
+    
+admin_chart_datesProduct:
+    pattern: /admin/renderreportproduct
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartDatesProduct }
+    
+admin_chart_datesBrand:
+    pattern: /admin/renderreportbrand
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartDatesBrand }
+    
+admin_chart_ProductBrandCategory:
+    pattern: /admin/renderreportCBP
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartProductBrandCategory }
+
+admin_New_ProductsApprovel:
+    pattern: /admin/NewProductsApprovel
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:NewProductsApprovel }
+    
+product_approval_submit:
+    pattern: /admin/productApprovalSubmit
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:productApprovalSubmit }
+    requirements: { _method: post }
+brand_approval_submit:
+    pattern: /admin/brandApprovalSubmit
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:brandApprovalSubmit }
+    requirements: { _method: post }
+site_like:
+    pattern: /like
+    defaults: { _controller: SiteSavalizeBundle:Default:updateLike }
+    requirements: { _method: post }
+site_add_comment:
+    pattern: /comment
+    defaults: { _controller: SiteSavalizeBundle:Default:addComment }
+    requirements: { _method: post }
+site_show_comments:
+    pattern: /comments/{pbId}
+    defaults: { _controller: SiteSavalizeBundle:Default:showComments, pbId: 1 }
