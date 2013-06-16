@@ -133,9 +133,7 @@ $(document).ready(function(){
                         $("#productIP").autocomplete({
                             source: productsCategory
                         });
-                        $('#region').on('click', function(){
-                            CategoryBrandProductRegion();
-                        });    
+                     
                     }
                 });
             });
@@ -338,10 +336,22 @@ $(document).ready(function(){
         });
     }
     
-    function CategoryBrandProductRegion(){
+    function Region(r){
+    var urlr;
+    if(r == 1) {
+        urlr = CategoryRegionpath;
+    }else if(r == 2) {
+        urlr = BrandRegionpath;
+    }else if(r == 3) {
+        urlr = ProductRegionpath;
+    }else if(r == 4) {
+        urlr = BrandProductRegionpath;
+    }else if(r == 5) {
+        urlr = CategoryBrandProductRegionpath;
+    }   
         $.ajax({
             type: 'POST',
-            url: CategoryBrandProductRegionpath,
+            url: urlr,
             datatype: 'json',
             data: {
                 startDate: userChartStartDate, 
@@ -486,6 +496,7 @@ $(document).ready(function(){
             var myNewChart = new Chart(ctx).Line(data);
         }
     }
+    
     $('#generateReport').on('click', function(){
         if(filterSelect.val() == 1){ 
             dateAndCategory();
@@ -499,6 +510,36 @@ $(document).ready(function(){
             CategoryBrandProduct();
         }
     });
+    
+    $('#region').on('click', function(){
+        if(filterSelect.val() == 1){ 
+            Region(1);
+        }else if(filterSelect.val() == 2){
+            Region(2);
+        }else if(filterSelect.val() == 3){
+            Region(3);
+        }else if(filterSelect.val() == 4){
+            Region(4);
+        }else if(filterSelect.val() == 5){
+            Region(5);
+        }
+       
+    });   
+    
+    $('#city').on('click', function(){
+        if(filterSelect.val() == 1){ 
+            City(1);
+        }else if(filterSelect.val() == 2){
+            City(2);
+        }else if(filterSelect.val() == 3){
+            City(3);
+        }else if(filterSelect.val() == 4){
+            City(4);
+        }else if(filterSelect.val() == 5){
+            City(5);
+        }
+       
+    }); 
      
     $('#reportViaDatesOnly').on('click', function(){
         reportViaDatesOnly();

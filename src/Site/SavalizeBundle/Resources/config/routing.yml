@@ -198,6 +198,20 @@ admin_chart_ProductBrandCategory:
 admin_chart_Region:
     pattern: /admin/renderreportRegion
     defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegion }
+    
+admin_chart_BrandProductRegion:
+    pattern: /admin/renderreportBPRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegionBP }
+admin_chart_CategoryRegion:
+    pattern: /admin/renderreportCRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegionC }
+admin_chart_BrandRegion:
+    pattern: /admin/renderreportBRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegionB }
+admin_chart_ProductRegion:
+    pattern: /admin/renderreportPRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegionP }
+
 
 admin_New_ProductsApprovel:
     pattern: /admin/NewProductsApprovel
