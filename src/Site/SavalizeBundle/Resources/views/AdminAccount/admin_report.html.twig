@@ -19,7 +19,10 @@
 
         <div class="nav-collapse">
             <ul class="nav inline" style="font-weight:normal">
-                <li class="active"><a href="{{ path('site_savalize_displayAdminChart') }}">Reports</a></li>
+                <li><a href="{{ path('user_addProduct') }}">New Purchases</a> </li>
+                <li><a href="{{ path('site_ajax_get_calendar') }}">History</a></li>
+                <li><a href="#">Product Reviews</a></li>
+                <li class="active"><a href="{{ path('site_savalize_displayDummyChart') }}">Reports</a></li>
                 <li><a href="#">New Product Approval</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="#">Contact Us</a></li>
@@ -44,7 +47,7 @@
                     </select> from: <input type="date" id="startDate"> to: <input type="date" id="endDate">
 
 
-                    <br>To be more specific, I would like to search by <select id="filterSelect">
+                     <select id="filterSelect">
                         <option>--Choose Filter(s)--</option>--Type of Chart--
                         <option value="1">Category</option>
                         <option value="2">Brand</option>
