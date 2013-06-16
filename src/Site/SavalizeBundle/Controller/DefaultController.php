@@ -127,7 +127,7 @@ class DefaultController extends Controller
                 }
                 else
                 {
-                    $msg="Username or Password is wroung ";
+                    $msg="Invalid Username or Password";
                     return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>$msg));
                 }
             }
@@ -145,13 +145,13 @@ class DefaultController extends Controller
                 }
                 else
                 {
-                    $msg="Username or Password is wroung company";
+                    $msg="Invalid Username or Password";
                     return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>$msg));
                 }
             }
             else
             {
-                $msg="Username or Password is wroung not all";
+                $msg="Invalid Username or Password";
                 return $this->render('SiteSavalizeBundle:Default:error.html.twig', array("msg"=>$msg));                
             }
         }
