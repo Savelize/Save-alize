@@ -243,6 +243,8 @@ class DefaultController extends Controller
                                 $em->flush($customer);
                                 $session = $this->getRequest()->getSession();
                                 $session->set('userName',$data['User_Name']);
+                                $session->set('id',$customer->getId());
+                                $session->set('role',"customer");
                                 return $this->redirect($this->generateUrl('site_personal_user_settings'));
                         }
                         else
@@ -259,6 +261,8 @@ class DefaultController extends Controller
                                 $em->flush($company);
                                 $session = $this->getRequest()->getSession();
                                 $session->set('userName',$data['User_Name']);
+                                $session->set('id',$company->getId());
+                                $session->set('role',"company");
                                 return $this->redirect($this->generateUrl('site_personal_company_settings'));
                      }
                 }
