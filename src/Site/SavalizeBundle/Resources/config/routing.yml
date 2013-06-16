@@ -158,30 +158,52 @@ company_add_newbrand:
     pattern: /addcompanybrand
     defaults: { _controller: SiteSavalizeBundle:Company:insertNewBrand }
 
+admin_report_fromCategory:
+    pattern: /fromCategory
+    defaults: { _controller: "SiteSavalizeBundle:AdminAccount:fromCategoryAdmin" }
+
+site_savalize_displayAdminChart:
+    pattern: /reportCharts
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayReportChartPage }
+
 company_add_newproduct:
     pattern: /addcompanyproduct
     defaults: { _controller: SiteSavalizeBundle:Company:insertNewProduct }
 
+
 admin_chart_datesOnly:
     pattern:  /admin/renderreportdatesonly
-    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartDatesOnly }
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartDatesOnly }
 
 admin_chart_datesCategory:
   pattern:  /admin/renderreportcategory
-  defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartDatesCategory }
+  defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartDatesCategory }
     
 admin_chart_ProductBrand:
     pattern: /admin/renderreportproductbrand
-    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartProductBrand }
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartProductBrand }
     
 admin_chart_datesProduct:
     pattern: /admin/renderreportproduct
-    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartDatesProduct }
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartDatesProduct }
     
 admin_chart_datesBrand:
     pattern: /admin/renderreportbrand
-    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartDatesBrand }
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartDatesBrand }
     
 admin_chart_ProductBrandCategory:
     pattern: /admin/renderreportCBP
-    defaults: { _controller: SiteSavalizeBundle:Customer:displayAdminChartProductBrandCategory }
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartProductBrandCategory }
+
+admin_New_ProductsApprovel:
+    pattern: /admin/NewProductsApprovel
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:NewProductsApprovel }
+    
+product_approval_submit:
+    pattern: /admin/productApprovalSubmit
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:productApprovalSubmit }
+    requirements: { _method: post }
+brand_approval_submit:
+    pattern: /admin/brandApprovalSubmit
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:brandApprovalSubmit }
+    requirements: { _method: post }

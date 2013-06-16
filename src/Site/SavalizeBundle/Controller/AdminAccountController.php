@@ -3,10 +3,11 @@
 namespace Site\SavalizeBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use Site\SavalizeBundle\Entity\AdminAccount;
+use Site\SavalizeBundle\Entity\Admin;
 use Site\SavalizeBundle\Form\AdminAccountType;
 
 use Symfony\Component\Validator\Constraints\Image;
@@ -24,11 +25,151 @@ class AdminAccountController extends Controller
      * Lists all AdminAccount entities.
      *
      */
+    public function NewProductsApprovelAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $NotConfirmedProducts = $em->getRepository('SiteSavalizeBundle:Product')->findByConfirmed(0);
+        $NotConfirmedBrands = $em->getRepository('SiteSavalizeBundle:Brand')->findByConfirmed(0);
+        $productSelectTag = array();
+        foreach ($NotConfirmedProducts as $prod) {
+            $productSelectTag[$prod->getId()] = $prod->getName();
+        }
+        $brandSelectTag = array();
+        foreach ($NotConfirmedBrands as $brand) {
+            $brandSelectTag[$brand->getId()] = $brand->getName();
+        }
+        $collectionConstraint = new Collection(array(
+                                'Products' => new NotBlank(),
+        ));
+        $data = array();
+        
+        $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Products', 'choice', array(
+                                'choices' => $productSelectTag,
+                                'multiple' => true,
+                                'attr' => array('class' => 'input-large','size'=>"20%",)
+                                )
+                                    )
+                    ;
+        $productForm = $formBuilder->getForm();
+        
+        $collectionConstraint = new Collection(array(
+                                'Brands' => new NotBlank(),
+        ));
+        $data = array();
+        $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Brands', 'choice', array(
+                                'choices' => $brandSelectTag,
+                                'multiple' => true,
+                                'attr' => array('class' => 'input-large','size'=>"20%",)
+                                )
+                                    )
+                    ;
+        $brandForm = $formBuilder->getForm();
+        return $this->render('SiteSavalizeBundle:AdminAccount:NewProductsApprovel.html.twig', array('productForm' => $productForm->createView(),'brandForm' => $brandForm->createView()));
+    }
+    public function productApprovalSubmitAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $prodRepo = $em->getRepository('SiteSavalizeBundle:Product');
+        $NotConfirmedProducts=$prodRepo->findByConfirmed(0);
+        $productSelectTag = array();
+        foreach ($NotConfirmedProducts as $prod) {
+            $productSelectTag[$prod->getId()] = $prod->getName();
+        }
+        $collectionConstraint = new Collection(array(
+                                'Products' => new NotBlank(),
+        ));
+        $data = array();
+        $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Products', 'choice', array(
+                                'choices' => $productSelectTag,
+                                'multiple' => true,
+                                'attr' => array('class' => 'input-large','size'=>"20%",)
+                                )
+                                    )
+                    ;
+        $productForm = $formBuilder->getForm();
+        $request = $this->getRequest();
+        $productForm->bindRequest($request);
+        if ($productForm->isValid())
+        {
+            $data = $productForm->getData();
+            $type=$request->get("submit");
+            if($type=="Approve")
+                $flag=1;
+            else
+                $flag=2;
+            
+            foreach ($data["Products"] as $prodID)
+                {
+                    $product=$prodRepo->find($prodID);
+                    $product->setConfirmed($flag);
+                }
+                $em->flush();
+                return $this->redirect($this->generateUrl('admin_New_ProductsApprovel'));
+        }
+        return new Response("data is not valid");
+    }
+    public function brandApprovalSubmitAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $brandRepo=$em->getRepository('SiteSavalizeBundle:Brand');
+        $NotConfirmedBrands = $brandRepo->findByConfirmed(0);
+        $brandSelectTag = array();
+        foreach ($NotConfirmedBrands as $brand) {
+            $brandSelectTag[$brand->getId()] = $brand->getName();
+        }
+        $collectionConstraint = new Collection(array(
+                                'Brands' => new NotBlank(),
+        ));
+        $data = array();
+        $formBuilder = $this->createFormBuilder($data, array(
+                                'validation_constraint' => $collectionConstraint,
+                            ))
+                            ->add('Brands', 'choice', array(
+                                'choices' => $brandSelectTag,
+                                'multiple' => true,
+                                'attr' => array('class' => 'input-large','size'=>"20%",)
+                                )
+                                    )
+                    ;
+        $brandForm = $formBuilder->getForm();
+        $request = $this->getRequest();
+        $brandForm->bindRequest($request);
+        $data = $brandForm->getData();
+        
+        if ($brandForm->isValid())
+        {
+            $data = $brandForm->getData();
+            $type=$request->get("submit");
+            if($type=="Approve")
+                $flag=1;
+            else
+                $flag=2;
+            
+            foreach ($data["Brands"] as $brandID)
+                {
+                    $brand=$brandRepo->find($brandID);
+                    $brand->setConfirmed($flag);
+                }
+                $em->flush();
+                return $this->redirect($this->generateUrl('admin_New_ProductsApprovel'));
+        }
+        return new Response("data is not valid");
+    }
+    
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('SiteSavalizeBundle:AdminAccount')->findAll();
+        $entities = $em->getRepository('SiteSavalizeBundle:Admin')->findAll();
 
         return $this->render('SiteSavalizeBundle:AdminAccount:index.html.twig', array(
             'entities' => $entities,
@@ -53,7 +194,7 @@ class AdminAccountController extends Controller
             return $this->redirect($this->generateUrl('adminaccount_show', array('id' => $entity->getId())));
         }
 
-        return $this->render('SiteSavalizeBundle:AdminAccount:new.html.twig', array(
+        return $this->render('SiteSavalizeBundle:Admin:new.html.twig', array(
             'entity' => $entity,
             'form'   => $form->createView(),
         ));
@@ -312,6 +453,24 @@ class AdminAccountController extends Controller
         return $this->render('SiteSavalizeBundle:AdminAccount:passwordadminsettings.html.twig', array('form' => $form->createView(), 'successMessage' => $successMessage, 'diffpasswd' => $diffpasswd, 'wrongpasswd' => $wrongpasswd));
     }
     
+     public function displayAdminChartDatesOnlyAction() {
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+
+        $result = $repository->dateRangeData($startDate, $endDate);
+
+//        for ($i = 0; $i < count($result); $i++) {
+//            $pb['price'] = $result[$i]['price'];
+//            $pb['name'] = $result[$i]['name'];
+//        }
+
+        return new Response(json_encode($result));
+    }
         public function displayAdminChartDatesProductAction() {
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
@@ -391,5 +550,22 @@ class AdminAccountController extends Controller
         $pb['brands'] = \array_values($pb['brands']);
 
         return new Response(json_encode($pb));
+    }
+    
+    
+    
+    
+     public function displayReportChartPageAction() {
+        $session = $this->getRequest()->getSession();
+        $userID = $session->get('id');
+        $role = $session->get('role');
+        
+        $repository = $this->getDoctrine()->getEntityManager();
+        
+        $result = $repository->getRepository('SiteSavalizeBundle:Category')->categoryAutocomplete();
+        $brand = $repository->getRepository('SiteSavalizeBundle:Category')->brandAutocompleteAdmin();
+        $product = $repository->getRepository('SiteSavalizeBundle:Category')->productAutocompleteAdmin();
+
+        return $this->render('SiteSavalizeBundle:AdminAccount:admin_report.html.twig', array('categories' => json_encode($result), 'products' => json_encode($product), 'brands' => json_encode($brand)));
     }
 }
