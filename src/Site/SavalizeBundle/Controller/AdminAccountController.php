@@ -517,7 +517,7 @@ class AdminAccountController extends Controller
 
         return new Response(json_encode($result));
     }
-
+   
     public function displayAdminChartDatesCategoryAction() {
         $request = $this->container->get('request');
         $startDate = $request->get('startDate');
@@ -552,9 +552,6 @@ class AdminAccountController extends Controller
         return new Response(json_encode($pb));
     }
     
-    
-    
-    
      public function displayReportChartPageAction() {
         $session = $this->getRequest()->getSession();
         $userID = $session->get('id');
@@ -567,5 +564,53 @@ class AdminAccountController extends Controller
         $product = $repository->getRepository('SiteSavalizeBundle:Category')->productAutocompleteAdmin();
 
         return $this->render('SiteSavalizeBundle:AdminAccount:admin_report.html.twig', array('categories' => json_encode($result), 'products' => json_encode($product), 'brands' => json_encode($brand)));
+    }
+    
+    
+    public function displayAdminChartRegionAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $productID = $request->get('productID');
+        $categoryID = $request->get('categoryID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersRegion($startDate, $endDate, $brandID, $productID, $categoryID);
+
+        return new Response(json_encode($result));
+    }
+    
+    public function displayAdminChartRegionPAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $productID = $request->get('productID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersRegionP($startDate, $endDate, $productID);
+
+        return new Response(json_encode($result));
+    }
+    
+    public function displayAdminChartRegionBAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersRegion($startDate, $endDate, $brandID);
+
+        return new Response(json_encode($result));
+    }
+    
+    public function displayAdminChartRegionBPAction() {
+        $request = $this->container->get('request');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $brandID = $request->get('brandID');
+        $productID = $request->get('productID');
+        $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Admin');
+        $result = $repository->adminChartFiltersRegion($startDate, $endDate, $brandID, $productID);
+
+        return new Response(json_encode($result));
     }
 }
