@@ -19,7 +19,7 @@
 
         <div class="nav-collapse">
             <ul class="nav inline" style="font-weight:normal">
-                <li class="active"><a href="#">Reports</a></li>
+                <li class="active"><a href="{{ path('site_savalize_displayAdminChart') }}">Reports</a></li>
                 <li><a href="#">New Product Approval</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="#">Contact Us</a></li>
@@ -43,8 +43,8 @@
                         <option value="Doughnut">Doughnut</option>
                     </select> from: <input type="date" id="startDate"> to: <input type="date" id="endDate">
 
-                    <input type="button" id="reportViaDatesOnly" value="Generate Report Via Dates Only" style="padding-right: 15%; padding-left: 15%; padding-top: 0.3%; padding-bottom: 0.3%"/>
-                    <br>To be more specific, I would like to search by <select id="filterSelect">
+
+                    <select id="filterSelect">
                         <option>--Choose Filter(s)--</option>--Type of Chart--
                         <option value="1">Category</option>
                         <option value="2">Brand</option>
@@ -52,15 +52,20 @@
                         <option value="4">Brand and Product</option>
                         <option value="5">Category,Brand and Product</option>
                     </select>
+                    <br>
+
+                    <input type="button" id="reportViaDatesOnly" value="Generate Report Via Dates Only" style="padding-top: 0.3%; padding-bottom: 0.3%;"/> <input type="button" id="generateReport" style="padding-top: 0.3%; padding-bottom: 0.3%;" value="Generate Report Via Filters"/>  <input type="button" id="country" style="padding-top: 0.3%; padding-bottom: 0.3%;" value="Generate Report According to Country"> <input type="button" id="city" style="padding-top: 0.3%; padding-bottom: 0.3%;" value="Generate Report According to City"> <input type="button" id="region" style="padding-top: 0.3%; padding-bottom: 0.3%;" value="Generate Report According to Region">
+                    <br><br>
                     <div id="filters"></div>
 
 
                 </div>
             </ul>
         </div>
-        <input type="button" id="generateReport" value="Generate Report"/>
 
-        <canvas id="myChart" width="400" height="400"></canvas>
+
+        <canvas id="myChart" width="900" height="700"></canvas>
+        
         <input type="hidden" id="hiddenCategory" value="{{ categories }}"> 
         <input type="hidden" id="hiddenBrand" value="{{ brands }}">
         <input type="hidden" id="hiddenProduct" value="{{ products }}">
@@ -75,6 +80,24 @@
             var dateBrandpath = "{{ path('admin_chart_datesBrand') }}";
             var ProductBrandpath = "{{ path('admin_chart_ProductBrand') }}";
             var CategoryBrandProductpath = "{{ path('admin_chart_ProductBrandCategory') }}";
+            
+            var CategoryBrandProductRegionpath = "{{ path('admin_chart_Region') }}";
+            var CategoryRegionpath = "{{ path('admin_chart_CategoryRegion') }}";
+            var BrandRegionpath = "{{ path('admin_chart_BrandRegion') }}";
+            var ProductRegionpath = "{{ path('admin_chart_ProductRegion') }}";
+            var BrandProductRegionpath = "{{ path('admin_chart_BrandProductRegion') }}";
+                     
+            var CategoryBrandProductCountrypath = "{{ path('admin_chart_Country') }}";
+            var CategoryCountrypath = "{{ path('admin_chart_CategoryCountry') }}";
+            var BrandCountrypath = "{{ path('admin_chart_BrandCountry') }}";
+            var ProductCountrypath = "{{ path('admin_chart_ProductCountry') }}";
+            var BrandProductCountrypath = "{{ path('admin_chart_BrandProductCountry') }}";
+            
+            var CategoryBrandProductCitypath = "{{ path('admin_chart_City') }}";
+            var CategoryCitypath = "{{ path('admin_chart_CategoryCity') }}";
+            var BrandCitypath = "{{ path('admin_chart_BrandCity') }}";
+            var ProductCitypath = "{{ path('admin_chart_ProductCity') }}";
+            var BrandProductCitypath = "{{ path('admin_chart_BrandProductCity') }}";    
             </script>
             <script> var fromCategoryPath = "{{ path('admin_report_fromCategory') }}" </script>
             <script src="{{asset('js/admin_chart.js')}}"></script>

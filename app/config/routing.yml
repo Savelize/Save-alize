@@ -2,5 +2,9 @@ site_savalize:
     resource: "@SiteSavalizeBundle/Resources/config/routing.yml"
     prefix:   /
     
+SiteSavalizeBundle_no:
+    resource: "@SiteSavalizeBundle/Resources/config/routing/productbrand.php"
+    prefix:   /no
+    
 
 

@@ -43,7 +43,7 @@ class AdminRepository extends EntityRepository
         // g stands for graph
         $q = $this->getEntityManager()->createQuery('
             SELECT SUM(h.price) as price , p.name as name
-            FROM SiteSavalizeBundle:History h
+            FROM SiteSavalizeBundle:User u
             JOIN h.productBrand pb
             JOIN pb.product p
             WHERE p.id = pb.product
@@ -154,6 +154,412 @@ class AdminRepository extends EntityRepository
           
             ')
                 ->setParameter('categoryID', $categoryID)
+                ->setParameter('brandID', $brandID)
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersRegion($startDate, $endDate, $brandID, $productID, $categoryID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.region as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND p.category = :categoryID
+            AND p.id = :productID
+            AND pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+           
+            GROUP BY u.region
+            ')
+                ->setParameter('categoryID', $categoryID)
+                ->setParameter('brandID', $brandID)
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+   
+    public function adminChartFiltersRegionC($startDate, $endDate, $categoryID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.region as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u            
+            WHERE p.category = :category
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.region
+            ')
+                ->setParameter('category', $categoryID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+   
+    public function adminChartFiltersRegionB($startDate, $endDate, $brandID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.region as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.region
+            ')
+                ->setParameter('brandID', $brandID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersRegionP($startDate, $endDate, $productID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.region as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+           
+            GROUP BY u.region
+            ')
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersRegionBP($startDate, $endDate, $brandID, $productID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.region as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND p.id = :productID
+            AND pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.region
+            ')
+                ->setParameter('brandID', $brandID)
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+
+    
+    public function adminChartFiltersCountry($startDate, $endDate, $brandID, $productID, $categoryID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.country as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND p.category = :categoryID
+            AND p.id = :productID
+            AND pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+           
+            GROUP BY u.country
+            ')
+                ->setParameter('categoryID', $categoryID)
+                ->setParameter('brandID', $brandID)
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+   
+    public function adminChartFiltersCountryC($startDate, $endDate, $categoryID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.country as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u            
+            WHERE p.category = :category
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.country
+            ')
+                ->setParameter('category', $categoryID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+   
+    public function adminChartFiltersCountryB($startDate, $endDate, $brandID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.country as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.country
+            ')
+                ->setParameter('brandID', $brandID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersCountryP($startDate, $endDate, $productID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.country as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+           
+            GROUP BY u.country
+            ')
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersCountryBP($startDate, $endDate, $brandID, $productID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.country as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND p.id = :productID
+            AND pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.country
+            ')
+                ->setParameter('brandID', $brandID)
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersCity($startDate, $endDate, $brandID, $productID, $categoryID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.city as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND p.category = :categoryID
+            AND p.id = :productID
+            AND pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+           
+            GROUP BY u.city
+            ')
+                ->setParameter('categoryID', $categoryID)
+                ->setParameter('brandID', $brandID)
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+   
+    public function adminChartFiltersCityC($startDate, $endDate, $categoryID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.city as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u            
+            WHERE p.category = :category
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.city
+            ')
+                ->setParameter('category', $categoryID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+   
+    public function adminChartFiltersCityB($startDate, $endDate, $brandID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.city as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.city
+            ')
+                ->setParameter('brandID', $brandID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersCityP($startDate, $endDate, $productID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.city as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+           
+            GROUP BY u.city
+            ')
+                ->setParameter('productID', $productID)
+                ->setParameter('start', $startDates)
+                ->setParameter('end', $endDate);
+
+        $result = $q->getResult();
+
+        return $result;
+    }
+    
+    public function adminChartFiltersCityBP($startDate, $endDate, $brandID, $productID){
+         $startDated = new \DateTime($startDate);
+        $startDates = $startDated->format("Y-m-d");
+        $endDate = new \DateTime($endDate);
+        $endDate = $endDate->format("Y-m-d");
+        // g stands for graph
+        $q = $this->getEntityManager()->createQuery('
+            SELECT SUM(h.price) as price , u.city as name
+            FROM SiteSavalizeBundle:History h
+            JOIN h.productBrand pb
+            JOIN pb.product p
+            JOIN h.customer u
+            WHERE pb.brand = :brandID
+            AND p.id = :productID
+            AND pb.product = :productID
+            AND h.baughtAt BETWEEN :start AND :end
+            GROUP BY u.city
+            ')
                 ->setParameter('brandID', $brandID)
                 ->setParameter('productID', $productID)
                 ->setParameter('start', $startDates)

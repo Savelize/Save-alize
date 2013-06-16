@@ -157,10 +157,11 @@ $(document).ready(function(){
                 price.length = 0;
                 chartproducts.length = 0;
                 price[0] = 0;
-                
-                for(var i in plots){    
+                var i=1;
+                for(var j = 0; j<plots.length;  j++){ 
                     price[i] = parseInt(plots[i].price);
                     chartproducts[i] = plots[i].name;
+                    i++;
                 }
                 var data = {
                     labels : chartproducts,
@@ -204,9 +205,11 @@ $(document).ready(function(){
                 plots = JSON.parse(response);
                 
                 console.log(plots);
-                for(var i in plots){    
+               var i=1;
+                for(var j = 0; j<plots.length;  j++){ 
                     price[i] = parseInt(plots[i].price);
                     chartproducts[i] = plots[i].name.date;
+                    i++;
                 }
                 var data = {
                     labels : chartproducts,
@@ -253,8 +256,7 @@ $(document).ready(function(){
                 plots = JSON.parse(response);
                 console.log(plots);
                 var j=1;
-                for(var i = 0; i<plots.length;  i++){
-//                for(var i in plots){    
+                for(var i = 0; i<plots.length;  i++){ 
                     price[j] = parseInt(plots[i].price);
                     chartproducts[j] = plots[i].name.date;
                     j++;
@@ -303,9 +305,11 @@ $(document).ready(function(){
                 plots = JSON.parse(response);
                 
                 console.log(plots);
-                for(var i in plots){    
+                var i=1;
+                for(var j = 0; j<plots.length;  j++){ 
                     price[i] = parseInt(plots[i].price);
                     chartproducts[i] = plots[i].name.date;
+                    i++;
                 }
                 var data = {
                     labels : chartproducts,
@@ -351,9 +355,11 @@ $(document).ready(function(){
                 price[0] = 0;
                 plots = JSON.parse(response);
                 console.log(plots);
-                for(var i in plots){  
+                var i=1;
+                for(var j = 0; j<plots.length;  j++){ 
                     price[i] = parseInt(plots[i].price);
                     chartproducts[i] = plots[i].name;
+                    i++;
                 }
                 var data = {
                     labels : chartproducts,
@@ -397,10 +403,11 @@ $(document).ready(function(){
                 chartproducts.length = 0;
                 price[0] = 0;
                 plots = JSON.parse(response);
-                console.log(plots);
-                for(var i in plots){    
+                console.log(plots); var i=1;
+                for(var j = 0; j<plots.length;  j++){   
                     price[i] = parseInt(plots[i].price);
                     chartproducts[i] = plots[i].products;
+                    i++;
                 }
                 var data = {
                     labels : chartproducts,

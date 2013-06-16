@@ -13,6 +13,9 @@ use Symfony\Component\Validator\Constraints\Collection;
 use Site\SavalizeBundle\Entity\Company;
 use Site\SavalizeBundle\Entity\Category;
 use Site\SavalizeBundle\Entity\Brand;
+use Site\SavalizeBundle\Entity\ProductBrand;
+use Site\SavalizeBundle\Entity\Product;
+use Site\SavalizeBundle\Entity\UserNotification;
 use Site\SavalizeBundle\Form\CompanyType;
 
 /**
@@ -368,123 +371,184 @@ class CompanyController extends Controller
     when company adds new product
 */
     public function viewProductAction(){
-
+        $request = $this->getRequest();
+        $session = $request->getSession();
+        $company_id = $session->get('id');
+        $role = $session->get('role');
+        if ($role == 'company'){
         $em = $this->getDoctrine()->getEntityManager();
-        // I NEED THE COMPANY_ID HEREEEEEEEEEEE >>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        $productsBrands = $em->getRepository('SiteSavalizeBundle:ProductBrand')->displayCompanyProducts(1);
-            for($i=0; $i<count($productsBrands); $i++)
-            {
-                $products['Brands'][$i] = $productsBrands[$i]->getBrand()->getName();
-                $products['Products'][$i] = $productsBrands[$i]->getProduct()->getName();
-            }
+        $productsBrands = $em->getRepository('SiteSavalizeBundle:ProductBrand')->displayCompanyProducts($company_id);
+        $brands = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Brand')->findByCompany(array('id' =>$company_id));
+
+        $p = array();
+        $b = array();
+
+        for($i=0; $i<count($brands); $i++)
+        {
+            $b[$i]= $brands[$i]->getName();
+        }
+       
+        for($i=0; $i<count($productsBrands); $i++)
+        {
+            $p[$i] = $productsBrands[$i]->getProduct()->getName();
+        }
 
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Category');
         $categories = $repository->categoryAutocomplete();
-        return $this->render('SiteSavalizeBundle:Company:newproduct.html.twig' , array('products' =>  $products,
+        }
+        return $this->render('SiteSavalizeBundle:Company:newproduct.html.twig' , array(
+                                                                                        'brands' => $b , 'products' => $p,
                                                                                         'categories' => $categories));
+        
     }
 
     public function displayDataByAjaxAction(){
-        $request = $this->container->get('request');
-        $category_id = $request->get('category_id');
+        $request = $this->getRequest();
+        $session = $request->getSession();
+        $company_id = $session->get('id');
+        $role = $session->get('role');
+        $req = $this->container->get('request');
+        $category_id = $req->get('category_id');
         $repository = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand');
         $result = $repository->displayCategoryData($category_id);
-        $pb = array();
+        $brands = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:Brand')->findByCompany(array('id' =>$company_id));
+        $p = array();
+        $b = array();
+
+        for($i=0; $i<count($brands); $i++)
+        {
+            $b[$i]= $brands[$i]->getName();
+        }
+       
         for($i=0; $i<count($result); $i++)
         {
-            $pb['brands'][$i] = $result[$i]->getBrand()->getName();
-            $pb['products'][$i] = $result[$i]->getProduct()->getName();
+            $p[$i] = $result[$i]->getProduct()->getName();
         }
-        return new Response(json_encode($pb));
+        return new Response(json_encode(array('brands' => $b , 'products' => $p)));
     }
 
     public function insertNewBrandAction(){
  // I NEED THE COMPANY_ID AS A PARAMETER
-        $request = $this->container->get('request');
-        $brand = $request->get('brand');
-        // $product = $request->get('product');
+        $request = $this->getRequest();
         $em = $this->getDoctrine()->getEntityManager();
-        $repository = $em->getRepository('SiteSavalizeBundle:Brand');
-        // check for the brand name in the database
-        $brandDB = $repository->findOneByName($brand);
-        $brandCompany = $em->getRepository('SiteSavalizeBundle:Company')->find(1);
-        // if not exists create a new brand with company = company_id
-        if(!$brandDB){
-            $brandDB = new Brand();
-            $brandDB->setName($brand);
-            $brandDB->setCompany($brandCompany);
-            $brandDB->setConfirmed(1);
-            $em->persist($brandDB);
-            return New Response($success);
-            $em->flush();    
-        }else{
-            // if it already exists check on the company_id
-            $brandCompany = $brandDB->getCompany();
-            if(!$brandCompany){
-                $repo = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand');
-                $result = $repo->updateCompany(1, $brand);
-                $success = '<p class="alert alert-success"> data has been added successively</p>';
-                return New Response($success);
-            }else{
-                // if the brand is assigned to a company ..
-                return New Response('<p class="alert alert-error"> this company is already assigned to another please contact us for more details</p>');
+        $session = $request->getSession();
+        $company_id = $session->get('id');
+        $role = $session->get('role');
+        if ($role == 'company'){
+            $req = $this->container->get('request');
+            $brand = $req->get('brand');
+            $em = $this->getDoctrine()->getEntityManager();
+            $repository = $em->getRepository('SiteSavalizeBundle:Brand');
+            // check for the brand name in the database
+            $brandDB = $repository->findOneByName($brand);
+            $brandCompany = $em->getRepository('SiteSavalizeBundle:Company')->find($company_id);
+            $companyName = $brandCompany->getName();
+            // if not exists create a new brand with company = company_id
+            if($brandDB == null){
+                $brandDB = new Brand();
+                $brandDB->setName($brand);
+                $brandDB->setCompany($brandCompany);
+                $brandDB->setConfirmed(1);
+                $brandDB->setIsDeleted(0);
+                $em->persist($brandDB);
+                $title = $companyName.'new Brand';
+                $content = 'check our new brand'. $brand .', its now available at the market ';
+                $notification = new UserNotification();
+                $notification->setTitle($title);
+                $notification->setContent($content);
+                $notification->setReleasedAt(new \DateTime());
+                $em->persist($notification);
 
+                $em->flush();
+                $success = '<p class="alert alert-success"> data has been added successively</p>';
+                return New Response($success);    
+            }else{
+                // if it already exists check on the company_id
+                $brandCompany = $brandDB->getCompany();
+                if(!$brandCompany){
+                    $repo = $this->getDoctrine()->getEntityManager()->getRepository('SiteSavalizeBundle:ProductBrand');
+                    $result = $repo->updateCompany($company_id, $brand);
+                    $success = '<p class="alert alert-success"> data has been added successively</p>';
+                    return New Response($success);
+                }else{
+                    // if the brand is assigned to a company ..
+                    return New Response('<p class="alert alert-error"> this company is already assigned to another please contact us for more details</p>');
+
+                }
             }
         }
     }
     
     public function insertNewProductAction(){
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getEntityManager();
+        $session = $request->getSession();
+        $company_id = $session->get('id');
+        $role = $session->get('role');
 
         $request = $this->container->get('request');
         $brand = $request->get('brand');
         $product = $request->get('product');
-        $category_id = $request->get('category_id');
-
+        $category = $request->get('category');
         $fileObject = $request->files->get('photoInput');
-        $imgext = $fileObject->guessExtension();
-        $picturename = $brand ."." . $imgext;
-        $dir = '/var/www/Save-alize/web/img/productImages';
-        $fileObject->move($dir , $picturename);
-        echo $category_id;exit;
+    if($brand && $product && $category && $fileObject){
 
-        // $category_id = $request->get('category_id');
         $em = $this->getDoctrine()->getEntityManager();        
         $repository = $em->getRepository('SiteSavalizeBundle:Product');
         $productDB = $repository->findOneByName($product);
         $repository = $em->getRepository('SiteSavalizeBundle:Brand');
         // check for the brand name in the database
         $brandDB = $repository->findOneByName($brand);
-        $category = $em->getRepository('SiteSavalizeBundle:Category')->find(1);
-        $brandCompany = $em->getRepository('SiteSavalizeBundle:Company')->find(1);
+        $category = $em->getRepository('SiteSavalizeBundle:Category')->find($category);
+        $brandCompany = $em->getRepository('SiteSavalizeBundle:Company')->find($company_id);
+        $companyName = $brandCompany->getName();
         // if the product does not exists
         if((!$productDB) && (!$brandDB)){
+        $imgext = $fileObject->guessExtension();
+        $picturename = $brand ."." . $imgext;
+        $dir = '/var/www/Save-alize/web/img/productImages';
+        $fileObject->move($dir , $picturename);
             $productDB = new Product();
             $brandDB = new Brand();
-            $productDB->setName($productDB);
-            $productDB->setCategory($category);
-            $productDB->setConfirmed(1);
+
             $brandDB->setName($brand);
-            $brandDB->setPicture($picturename);
             $brandDB->setCompany($brandCompany);
             $brandDB->setConfirmed(1);
-            $em->persist($productDB);
+            $brandDB->setIsDeleted(0);
             $em->persist($brandDB);
+
+            $productDB->setName($product);
+            $productDB->setCategory($category);
+            $productDB->setIsDeleted(0);
+            $productDB->setConfirmed(1);
+            $em->persist($productDB);
 
             $product_brand = new ProductBrand();
             $product_brand->setProduct($productDB);
             $product_brand->setBrand($brandDB);
-            // $product_brand->setPicture();
+            $product_brand->setPicture($picturename);
             $em->persist($product_brand);
-            $em->flush();
+
+                $title = $companyName.'new Brand';
+                $content = 'check our new Product,'. $brand .' it is available now in the market ';
+                $notification = new UserNotification();
+                $notification->setTitle($title);
+                $notification->setContent($content);
+                $notification->setReleasedAt(new \DateTime());
+                $em->persist($notification);
+                $em->flush();
+
             $success = '<p class="alert alert-success"> data has been added successively</p>';
             return New Response($success); 
 
         }else{
                 // 7aga metkarara ....
-            return New Response('<p class="alert alert-error"> this data already exists...</p>');
-        }
-            
-        
+                return New Response('<p class="alert alert-error"> this data already exists...</p>');
+            }
+        }else{
+
+                return New Response('<p class="alert alert-error"> please enter the right data </p>');
+            }       
     }
 }
 
