@@ -1,0 +1,26 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>ProductBrand</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Picture</th>
+                <td>{{ entity.picture }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('no') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% endblock %}

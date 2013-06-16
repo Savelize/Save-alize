@@ -12,13 +12,13 @@
         <a class="brand" href="#">Save and Socialize</a>
 
         <div class="nav-collapse">
-            <ul class="nav" style="font-weight:normal">
-                <li><a href="#">Reports</a></li>
-                <li class="active"><a href="#">New Product Approval</a></li>
-                <li><a href="#">Settings</a></li>
-                <li><a href="{{ path('contact_us_company') }}">Contact Us</a></li>
-            </ul>
-        </div>
+                    <ul class="nav" style="font-weight:normal">
+                        <li class="active"><a href="{{ url('company_view_product') }}">New Product</a> </li>
+                        <li><a href="#">Product Reviews</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="{{ path('contact_us_company') }}">Contact Us</a></li>
+                    </ul>
+                </div>
     </div>
 </nav>
 
@@ -26,12 +26,14 @@
         <div class="span4">
             <h4> Your Products </h4>
             <ul class="list-style">
-                {% for brands,products in products %}
-                <li><b>{{ brands }}</b></br></li>
+                <li><b>Brands</b></li>
+                {% for brand in brands %}
+                {{ brand }}  &nbsp
+                {% endfor %}</ul></br>
+                <ul><li><b>Productss</b></li>
                       {% for product in products %}
                         {{ product }} &nbsp
                       {% endfor %}
-                {% endfor %}
             </ul>
         </div>
 
@@ -62,10 +64,10 @@
                 <form id="submitForm" enctype="multipart/form-data">
             <table>
             <tr>
-                <td>Category: </td> <td><select  id="catInput">
+                <td>Category: </td> <td><select  id="catInput" name = "category">
                 <option value="0"></option>
                     {% for category in categories %}
-                    <option value="{{ category.id }}" name = "category_id"> {{ category.name }} </option>
+                    <option value="{{ category.id }}" > {{ category.name }} </option>
                     {% endfor %}
                     </select> </td>
             </tr>
@@ -77,10 +79,9 @@
             </tr>
             <tr>
                 <td>Upload Photo: </td><td><input type="file" name="photoInput" ></td>
-
             </tr>
-            <tr><input type="submit" class="btn" id="addProductButton" value="Add"/></tr>
-            </table>
+            <tr></tr>
+            </table><input type="submit" class="btn" value="Add"/>
         </form>
            
         </div>

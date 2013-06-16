@@ -202,6 +202,58 @@ admin_chart_ProductBrandCategory:
     pattern: /admin/renderreportCBP
     defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartProductBrandCategory }
 
+admin_chart_Region:
+    pattern: /admin/renderreportRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegion }
+    
+admin_chart_BrandProductRegion:
+    pattern: /admin/renderreportBPRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegionBP }
+admin_chart_CategoryRegion:
+    pattern: /admin/renderreportCRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegionC }
+admin_chart_BrandRegion:
+    pattern: /admin/renderreportBRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegionB }
+admin_chart_ProductRegion:
+    pattern: /admin/renderreportPRegion
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartRegionP }
+    
+admin_chart_Country:
+    pattern: /admin/renderreportCountry
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCountry }
+    
+admin_chart_BrandProductCountry:
+    pattern: /admin/renderreportBPCountry
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCountryBP }
+admin_chart_CategoryCountry:
+    pattern: /admin/renderreportCCountry
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCountryC }
+admin_chart_BrandCountry:
+    pattern: /admin/renderreportBCountry
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCountryB }
+admin_chart_ProductCountry:
+    pattern: /admin/renderreportPCountry
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCountryP }
+
+admin_chart_City:
+    pattern: /admin/renderreportCity
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCity }
+    
+admin_chart_BrandProductCity:
+    pattern: /admin/renderreportBPCity
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCityBP }
+admin_chart_CategoryCity:
+    pattern: /admin/renderreportCCity
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCityC }
+admin_chart_BrandCity:
+    pattern: /admin/renderreportBCity
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCityB }
+admin_chart_ProductCity:
+    pattern: /admin/renderreportPCity
+    defaults: { _controller: SiteSavalizeBundle:AdminAccount:displayAdminChartCityP }
+
+
 admin_New_ProductsApprovel:
     pattern: /admin/NewProductsApprovel
     defaults: { _controller: SiteSavalizeBundle:AdminAccount:NewProductsApprovel }
@@ -210,6 +262,7 @@ product_approval_submit:
     pattern: /admin/productApprovalSubmit
     defaults: { _controller: SiteSavalizeBundle:AdminAccount:productApprovalSubmit }
     requirements: { _method: post }
+
 brand_approval_submit:
     pattern: /admin/brandApprovalSubmit
     defaults: { _controller: SiteSavalizeBundle:AdminAccount:brandApprovalSubmit }
