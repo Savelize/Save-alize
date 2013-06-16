@@ -19,10 +19,7 @@
 
         <div class="nav-collapse">
             <ul class="nav inline" style="font-weight:normal">
-                <li><a href="{{ path('user_addProduct') }}">New Purchases</a> </li>
-                <li><a href="{{ path('site_ajax_get_calendar') }}">History</a></li>
-                <li><a href="#">Product Reviews</a></li>
-                <li class="active"><a href="{{ path('site_savalize_displayDummyChart') }}">Reports</a></li>
+                <li class="active"><a href="{{ path('site_savalize_displayAdminChart') }}">Reports</a></li>
                 <li><a href="#">New Product Approval</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="#">Contact Us</a></li>
@@ -47,7 +44,7 @@
                     </select> from: <input type="date" id="startDate"> to: <input type="date" id="endDate">
 
 
-                     <select id="filterSelect">
+                    <select id="filterSelect">
                         <option>--Choose Filter(s)--</option>--Type of Chart--
                         <option value="1">Category</option>
                         <option value="2">Brand</option>
@@ -67,7 +64,8 @@
         </div>
 
 
-        <canvas id="myChart" width="400" height="400"></canvas>
+        <canvas id="myChart" width="900" height="700"></canvas>
+        
         <input type="hidden" id="hiddenCategory" value="{{ categories }}"> 
         <input type="hidden" id="hiddenBrand" value="{{ brands }}">
         <input type="hidden" id="hiddenProduct" value="{{ products }}">
@@ -88,7 +86,18 @@
             var BrandRegionpath = "{{ path('admin_chart_BrandRegion') }}";
             var ProductRegionpath = "{{ path('admin_chart_ProductRegion') }}";
             var BrandProductRegionpath = "{{ path('admin_chart_BrandProductRegion') }}";
-                        
+                     
+            var CategoryBrandProductCountrypath = "{{ path('admin_chart_Country') }}";
+            var CategoryCountrypath = "{{ path('admin_chart_CategoryCountry') }}";
+            var BrandCountrypath = "{{ path('admin_chart_BrandCountry') }}";
+            var ProductCountrypath = "{{ path('admin_chart_ProductCountry') }}";
+            var BrandProductCountrypath = "{{ path('admin_chart_BrandProductCountry') }}";
+            
+            var CategoryBrandProductCitypath = "{{ path('admin_chart_City') }}";
+            var CategoryCitypath = "{{ path('admin_chart_CategoryCity') }}";
+            var BrandCitypath = "{{ path('admin_chart_BrandCity') }}";
+            var ProductCitypath = "{{ path('admin_chart_ProductCity') }}";
+            var BrandProductCitypath = "{{ path('admin_chart_BrandProductCity') }}";    
             </script>
             <script> var fromCategoryPath = "{{ path('admin_report_fromCategory') }}" </script>
             <script src="{{asset('js/admin_chart.js')}}"></script>

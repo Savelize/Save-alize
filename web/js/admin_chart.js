@@ -337,18 +337,140 @@ $(document).ready(function(){
     }
     
     function Region(r){
-    var urlr;
-    if(r == 1) {
-        urlr = CategoryRegionpath;
-    }else if(r == 2) {
-        urlr = BrandRegionpath;
-    }else if(r == 3) {
-        urlr = ProductRegionpath;
-    }else if(r == 4) {
-        urlr = BrandProductRegionpath;
-    }else if(r == 5) {
-        urlr = CategoryBrandProductRegionpath;
-    }   
+        var urlr;
+        if(r == 1) {
+            urlr = CategoryRegionpath;
+        }else if(r == 2) {
+            urlr = BrandRegionpath;
+        }else if(r == 3) {
+            urlr = ProductRegionpath;
+        }else if(r == 4) {
+            urlr = BrandProductRegionpath;
+        }else if(r == 5) {
+            urlr = CategoryBrandProductRegionpath;
+        }   
+        $.ajax({
+            type: 'POST',
+            url: urlr,
+            datatype: 'json',
+            data: {
+                startDate: userChartStartDate, 
+                endDate: userChartEndDate,
+                productID: (productHash[$("#productIP").val()]),
+                categoryID: (categoryHash[$("#categoryIP").val()]),
+                brandID: (brandHash[$("#brandIP").val()])
+            },
+            success: function(response) {
+                price.length = 0;
+                chartproducts.length = 0;
+                price[0] = 0;
+                plots = JSON.parse(response);
+                
+                console.log(plots);
+                for(var i in plots){    
+                    price[i] = parseInt(plots[i].price);
+                    chartproducts[i] = plots[i].name;
+                }
+                var data = {
+                    labels : chartproducts,
+                    datasets : [
+                    {
+                        fillColor : "rgba(220,220,220,0.5)",
+                        strokeColor : "rgba(220,220,220,1)",
+                        pointColor : "rgba(220,220,220,1)",
+                        pointStrokeColor : "#fff",
+                        data : price
+                    }
+                    ]
+                }
+                
+                var dataCurve = []
+                for(i=0; i<price.length; i++){
+                    dataCurve.push( {
+                        value: price[i],
+                        labels: chartproducts[i],
+                        color: getRandomColour()
+                    });		
+                }
+                graphType(data, dataCurve);
+            }
+        });
+    }
+    
+    function Country(r){
+        var urlr;
+        if(r == 1) {
+            urlr = CategoryCountrypath;
+        }else if(r == 2) {
+            urlr = BrandCountrypath;
+        }else if(r == 3) {
+            urlr = ProductCountrypath;
+        }else if(r == 4) {
+            urlr = BrandProductCountrypath;
+        }else if(r == 5) {
+            urlr = CategoryBrandProductCountrynpath;
+        }   
+        $.ajax({
+            type: 'POST',
+            url: urlr,
+            datatype: 'json',
+            data: {
+                startDate: userChartStartDate, 
+                endDate: userChartEndDate,
+                productID: (productHash[$("#productIP").val()]),
+                categoryID: (categoryHash[$("#categoryIP").val()]),
+                brandID: (brandHash[$("#brandIP").val()])
+            },
+            success: function(response) {
+                price.length = 0;
+                chartproducts.length = 0;
+                price[0] = 0;
+                plots = JSON.parse(response);
+                
+                console.log(plots);
+                for(var i in plots){    
+                    price[i] = parseInt(plots[i].price);
+                    chartproducts[i] = plots[i].name;
+                }
+                var data = {
+                    labels : chartproducts,
+                    datasets : [
+                    {
+                        fillColor : "rgba(220,220,220,0.5)",
+                        strokeColor : "rgba(220,220,220,1)",
+                        pointColor : "rgba(220,220,220,1)",
+                        pointStrokeColor : "#fff",
+                        data : price
+                    }
+                    ]
+                }
+                
+                var dataCurve = []
+                for(i=0; i<price.length; i++){
+                    dataCurve.push( {
+                        value: price[i],
+                        label: chartproducts[i],
+                        color: getRandomColour()
+                    });		
+                }
+                graphType(data, dataCurve);
+            }
+        });
+    }
+    
+    function City(r){
+        var urlr;
+        if(r == 1) {
+            urlr = CategoryCitypath;
+        }else if(r == 2) {
+            urlr = BrandCitypath;
+        }else if(r == 3) {
+            urlr = ProductCitypath;
+        }else if(r == 4) {
+            urlr = BrandProductCitypath;
+        }else if(r == 5) {
+            urlr = CategoryBrandProductCitynpath;
+        }   
         $.ajax({
             type: 'POST',
             url: urlr,
@@ -525,6 +647,21 @@ $(document).ready(function(){
         }
        
     });   
+    
+    $('#country').on('click', function(){
+        if(filterSelect.val() == 1){ 
+            Country(1);
+        }else if(filterSelect.val() == 2){
+            Country(2);
+        }else if(filterSelect.val() == 3){
+            Country(3);
+        }else if(filterSelect.val() == 4){
+            Country(4);
+        }else if(filterSelect.val() == 5){
+            Country(5);
+        }
+       
+    });
     
     $('#city').on('click', function(){
         if(filterSelect.val() == 1){ 
