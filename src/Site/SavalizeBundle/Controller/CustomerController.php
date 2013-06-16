@@ -402,10 +402,15 @@ class CustomerController extends Controller {
     }
 
     public function shownotificationAction($page) {
-        $maxResults = 2;
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getEntityManager();
+        $session = $request->getSession();
+        $user_id = $session->get('id');
+        $role = $session->get('role');
+        $maxResults = 4;
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('SiteSavalizeBundle:UserNotification');
-        $count = $repo->count(1);
+        $count = $repo->count($user_id);
         $notfCount = $count['0']['notfCount'];
 
         // calculate the last page number
@@ -413,7 +418,7 @@ class CustomerController extends Controller {
         if (($notfCount % $maxResults) > 0) {
             $lastPageNumber++;
         }
-        $notifications = $repo->showNotifications(1, $page, $maxResults);
+        $notifications = $repo->showNotifications($user_id, $page, $maxResults);
         if (!$em) {
             throw $this->createNotFoundException('Unable to find Customer entity.');
         }
@@ -435,18 +440,18 @@ class CustomerController extends Controller {
         exit;
     }
 
-    // public function displaynotification($content){
-    //     $em = $this->getDoctrine()->getEntityManager();
-    //     $customer = $em->getRepository('SiteSavalizeBundle:Customer')->find(1);
-    //     $notification = $em->getRepository('SiteSavalizeBundle:UserNotification')->find($notf_id);
-    // }
-
     public function showNewProductDetailsAction() {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getEntityManager();
+        $session = $request->getSession();
+        $user_id = $session->get('id');
+        $role = $session->get('role');
+
         $request = $this->container->get('request');
         $content = $request->get('content');
         $releasedat = $request->get('releasedat');
         $em = $this->getDoctrine()->getEntityManager();
-        $user = $em->getRepository('SiteSavalizeBundle:User')->find(1);
+        $user = $em->getRepository('SiteSavalizeBundle:User')->find($user_id);
         $user_name = $user->getUsername();
         return $this->render('SiteSavalizeBundle:Customer:showewroductdetails.html.twig', array('username' => $user_name,
                     'content' => $content,

@@ -15,6 +15,7 @@ use Site\SavalizeBundle\Entity\Category;
 use Site\SavalizeBundle\Entity\Brand;
 use Site\SavalizeBundle\Entity\ProductBrand;
 use Site\SavalizeBundle\Entity\Product;
+use Site\SavalizeBundle\Entity\UserNotification;
 use Site\SavalizeBundle\Form\CompanyType;
 
 /**
@@ -441,6 +442,7 @@ class CompanyController extends Controller
             // check for the brand name in the database
             $brandDB = $repository->findOneByName($brand);
             $brandCompany = $em->getRepository('SiteSavalizeBundle:Company')->find($company_id);
+            $companyName = $brandCompany->getName();
             // if not exists create a new brand with company = company_id
             if($brandDB == null){
                 $brandDB = new Brand();
@@ -449,6 +451,14 @@ class CompanyController extends Controller
                 $brandDB->setConfirmed(1);
                 $brandDB->setIsDeleted(0);
                 $em->persist($brandDB);
+                $title = $companyName.'new Brand';
+                $content = 'check our new brand'. $brand .', its now available at the market ';
+                $notification = new UserNotification();
+                $notification->setTitle($title);
+                $notification->setContent($content);
+                $notification->setReleasedAt(new \DateTime());
+                $em->persist($notification);
+
                 $em->flush();
                 $success = '<p class="alert alert-success"> data has been added successively</p>';
                 return New Response($success);    
@@ -491,6 +501,7 @@ class CompanyController extends Controller
         $brandDB = $repository->findOneByName($brand);
         $category = $em->getRepository('SiteSavalizeBundle:Category')->find($category);
         $brandCompany = $em->getRepository('SiteSavalizeBundle:Company')->find($company_id);
+        $companyName = $brandCompany->getName();
         // if the product does not exists
         if((!$productDB) && (!$brandDB)){
         $imgext = $fileObject->guessExtension();
@@ -499,30 +510,33 @@ class CompanyController extends Controller
         $fileObject->move($dir , $picturename);
             $productDB = new Product();
             $brandDB = new Brand();
-            $productDB->setName($productDB);
-            $productDB->setCategory($category);
-            $productDB->setIsDeleted(0);
-            $productDB->setConfirmed(1);
-            $em->persist($productDB);
-            $em->flush($productDB);
 
             $brandDB->setName($brand);
             $brandDB->setCompany($brandCompany);
             $brandDB->setConfirmed(1);
             $brandDB->setIsDeleted(0);
             $em->persist($brandDB);
-            $em->flush($brandDB);
 
-            // $brandID = $brandDB->getId();
-            // $productID = $productDB->getId();
-            // echo $brandID;exit;
+            $productDB->setName($product);
+            $productDB->setCategory($category);
+            $productDB->setIsDeleted(0);
+            $productDB->setConfirmed(1);
+            $em->persist($productDB);
 
             $product_brand = new ProductBrand();
             $product_brand->setProduct($productDB);
             $product_brand->setBrand($brandDB);
             $product_brand->setPicture($picturename);
             $em->persist($product_brand);
-            $em->flush($product_brand);
+
+                $title = $companyName.'new Brand';
+                $content = 'check our new Product,'. $brand .' it is available now in the market ';
+                $notification = new UserNotification();
+                $notification->setTitle($title);
+                $notification->setContent($content);
+                $notification->setReleasedAt(new \DateTime());
+                $em->persist($notification);
+                $em->flush();
 
             $success = '<p class="alert alert-success"> data has been added successively</p>';
             return New Response($success); 

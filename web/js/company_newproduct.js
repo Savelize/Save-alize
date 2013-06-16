@@ -18,7 +18,7 @@ $(document).ready(function(){
 			            success: function(response) {
 
 			            	var pb = JSON.parse(response);
-			            	alert(pb);
+			            	// alert(pb);
 			            	for(var b in pb.brands){ 
 								brands[b] = pb.brands[b];
 							}
